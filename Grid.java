@@ -50,8 +50,11 @@ public class Grid {
             for (int j = 0; j < grid.length; j++) {
                 if (this.grid[i][j].getVal() == SVal.CIRCLE) {
                     System.out.print("O");
+//                    System.out.print("◦");
                 } else if (this.grid[i][j].getVal() == SVal.CROSS) {
                     System.out.print("X");
+//                    System.out.print("+");
+//                    System.out.print("×");
                 } else {
                     System.out.print(" ");
                 }

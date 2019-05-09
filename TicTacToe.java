@@ -21,6 +21,7 @@ public class TicTacToe {
         g.insert(1, 0, Square.SVal.CIRCLE);
         g.insert(1, 1, Square.SVal.CIRCLE);
         g.insert(1, 2, Square.SVal.CIRCLE);
+        g.insert(1, 3, Square.SVal.CIRCLE);
         
         g.insert(0, 1, Square.SVal.CIRCLE);
         g.insert(0, 2, Square.SVal.CIRCLE);
@@ -33,7 +34,11 @@ public class TicTacToe {
         g.insert(2, 2, Square.SVal.CROSS);
         g.insert(3, 3, Square.SVal.CROSS);
         g.printGrid();
-        Rules.test(g);
+//        Rules.test(g);
+        System.out.println(Rules.findWinner(g, 4));
+        
+        Game game = new Game();
+        game.play();
         
     }
     
