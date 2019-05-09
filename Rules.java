@@ -18,14 +18,20 @@ public class Rules {
      * case of no winner).
      *
      * @param g
-     * @param ruleLength
+     * @param streakLength
      * @return
      */
-    public static SVal findWinner(Grid g, int ruleLength) {
-        if (g.size() < ruleLength) {
-            throw new IllegalArgumentException("ruleLength can't be bigger then g.size().");
+    public static SVal findWinner(Grid g, int streakLength) {
+        if (g.size() < streakLength) {
+            throw new IllegalArgumentException("streakLength can't be bigger then g.size().");
         }
-        return null;
+        if (checkEverything(g, SVal.CROSS, streakLength)) {
+            return SVal.CROSS;
+        } else if (checkEverything(g, SVal.CIRCLE, streakLength)) {
+            return SVal.CIRCLE;
+        } else {
+            return null;
+        }
     }
 
     public static void test(Grid g) {
@@ -40,44 +46,49 @@ public class Rules {
 //        System.out.println(checkLeftDiagonal(g, SVal.CIRCLE, 2, 0, 2));
 //        System.out.println("");
 //        System.out.println(checkLeftDiagonal(g, SVal.CROSS, 3, 0, 0));
-        
+
 //        System.out.println(checkLeftDiagonals(g, SVal.CIRCLE, 2));
 //        System.out.println(checkLeftDiagonals(g, SVal.CIRCLE, 3));
 //        System.out.println(checkLeftDiagonals(g, SVal.CROSS, 3));
-        
 //        System.out.println(checkRightDiagonal(g, SVal.CIRCLE, 2, 0, 2));
 //        System.out.println(checkRightDiagonal(g, SVal.CROSS, 2, 2, 4));
 //        System.out.println(checkRightDiagonal(g, SVal.CROSS, 2, 3, 4));
-
-        System.out.println(checkRightDiagonals(g, SVal.CROSS, 3));
-        System.out.println(checkRightDiagonals(g, SVal.CROSS, 2));
-        System.out.println(checkRightDiagonals(g, SVal.CIRCLE, 3));
-        System.out.println(checkRightDiagonals(g, SVal.CIRCLE, 2));
+//        System.out.println(checkRightDiagonals(g, SVal.CROSS, 3));
+//        System.out.println(checkRightDiagonals(g, SVal.CROSS, 2));
+//        System.out.println(checkRightDiagonals(g, SVal.CIRCLE, 3));
+//        System.out.println(checkRightDiagonals(g, SVal.CIRCLE, 2));
     }
-    
-    private static boolean checkCircles(Grid g, int ruleLength){
-        
+
+    private static boolean checkEverything(Grid g, SVal val, int streakLength) {
+        if (checkRows(g, val, streakLength)
+                || checkColumns(g, val, streakLength)
+                || checkLeftDiagonals(g, val, streakLength)
+                || checkRightDiagonals(g, val, streakLength)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
-     * Check for continuous streak of length ruleLength of values val in rows of
+     * Check for continuous streak of length streakLength of values val in rows of
      * Grid g
      *
      * @param g
      * @param val
-     * @param ruleLength
+     * @param streakLength
      * @return Returns true if streak is found
      */
-    private static boolean checkRows(Grid g, SVal val, int ruleLength) {
+    private static boolean checkRows(Grid g, SVal val, int streakLength) {
         for (int i = 0; i < g.size(); i++) {
-            if (checkRow(g, val, ruleLength, i)) {
+            if (checkRow(g, val, streakLength, i)) {
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean checkRow(Grid g, SVal val, int ruleLength, int row) {
+    private static boolean checkRow(Grid g, SVal val, int streakLength, int row) {
         int counter = 0;
 
         for (int j = 0; j < g.size(); j++) {
@@ -86,7 +97,7 @@ public class Rules {
             } else if (g.getVal(row, j) == val) {
                 counter++;
             }
-            if (counter == ruleLength) {
+            if (counter == streakLength) {
                 return true;
             }
         }
@@ -95,24 +106,24 @@ public class Rules {
     }
 
     /**
-     * Check for continuous streak of length ruleLength of values val in columns
+     * Check for continuous streak of length streakLength of values val in columns
      * of Grid g
      *
      * @param g
      * @param val
-     * @param ruleLength
+     * @param streakLength
      * @return Returns true if streak is found
      */
-    private static boolean checkColumns(Grid g, SVal val, int ruleLength) {
+    private static boolean checkColumns(Grid g, SVal val, int streakLength) {
         for (int i = 0; i < g.size(); i++) {
-            if (checkColumn(g, val, ruleLength, i)) {
+            if (checkColumn(g, val, streakLength, i)) {
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean checkColumn(Grid g, SVal val, int ruleLength, int column) {
+    private static boolean checkColumn(Grid g, SVal val, int streakLength, int column) {
         int counter = 0;
 
         for (int j = 0; j < g.size(); j++) {
@@ -121,31 +132,31 @@ public class Rules {
             } else if (g.getVal(j, column) == val) {
                 counter++;
             }
-            if (counter == ruleLength) {
+            if (counter == streakLength) {
                 return true;
             }
         }
 
         return false;
     }
-    
-    private static boolean checkLeftDiagonals(Grid g, SVal val, int ruleLength){
+
+    private static boolean checkLeftDiagonals(Grid g, SVal val, int streakLength) {
         // checking diagonals starting on left side
         for (int i = 0; i < g.size(); i++) {
-            if (checkLeftDiagonal(g, val, ruleLength, i, 0)) {
+            if (checkLeftDiagonal(g, val, streakLength, i, 0)) {
                 return true;
             }
         }
         // checking diagonals starting on upper side
         for (int i = 0; i < g.size(); i++) {
-            if (checkLeftDiagonal(g, val, ruleLength, 0, i)) {
+            if (checkLeftDiagonal(g, val, streakLength, 0, i)) {
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean checkLeftDiagonal(Grid g, SVal val, int ruleLength, int startingRow, int startingColumn) {
+    private static boolean checkLeftDiagonal(Grid g, SVal val, int streakLength, int startingRow, int startingColumn) {
         if (startingRow != 0 && startingColumn != 0) {
             throw new IllegalSetOfArgumentsException();
         }
@@ -160,7 +171,7 @@ public class Rules {
             } else if (g.getVal(row, column) == val) {
                 counter++;
             }
-            if (counter == ruleLength) {
+            if (counter == streakLength) {
                 return true;
             }
             row++;
@@ -169,25 +180,25 @@ public class Rules {
 
         return false;
     }
-    
-        private static boolean checkRightDiagonals(Grid g, SVal val, int ruleLength){
+
+    private static boolean checkRightDiagonals(Grid g, SVal val, int streakLength) {
         // checking diagonals starting on right side
         for (int i = 0; i < g.size(); i++) {
-            if (checkRightDiagonal(g, val, ruleLength, i, g.size()-1)) {
+            if (checkRightDiagonal(g, val, streakLength, i, g.size() - 1)) {
                 return true;
             }
         }
         // checking diagonals starting on upper side
         for (int i = 0; i < g.size(); i++) {
-            if (checkRightDiagonal(g, val, ruleLength, 0, i)) {
+            if (checkRightDiagonal(g, val, streakLength, 0, i)) {
                 return true;
             }
         }
         return false;
     }
-    
-    private static boolean checkRightDiagonal(Grid g, SVal val, int ruleLength, int startingRow, int startingColumn) {
-        if (startingRow != 0 && startingColumn != g.size()-1) {
+
+    private static boolean checkRightDiagonal(Grid g, SVal val, int streakLength, int startingRow, int startingColumn) {
+        if (startingRow != 0 && startingColumn != g.size() - 1) {
             throw new IllegalSetOfArgumentsException();
         }
 
@@ -201,7 +212,7 @@ public class Rules {
             } else if (g.getVal(row, column) == val) {
                 counter++;
             }
-            if (counter == ruleLength) {
+            if (counter == streakLength) {
                 return true;
             }
             row++;
