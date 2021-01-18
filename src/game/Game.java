@@ -3,11 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoe;
+package game;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import tictactoe.Square.SVal;
+
+import game_components.Grid;
+import game_components.Square;
+import game_components.Square.SVal;
+import game_mechanics.Rules;
 
 /**
  *

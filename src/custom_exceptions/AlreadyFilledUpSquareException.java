@@ -3,19 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoe;
+package custom_exceptions;
 
 /**
  *
  * @author glabka
  */
-public class IllegalSetOfArgumentsException extends RuntimeException{
+public class AlreadyFilledUpSquareException extends RuntimeException{
     
-    public IllegalSetOfArgumentsException(){
+    public AlreadyFilledUpSquareException(){
         super();
     }
     
-    public IllegalSetOfArgumentsException(String s){
+    public AlreadyFilledUpSquareException(String s){
         super(s);
     }
 }

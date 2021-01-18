@@ -3,13 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoe;
+package game;
+
+import game_mechanics.Rules;
+import game_components.Grid;
+import game_components.Square;
+import game_components.Square.SVal;
 
 /**
  *
  * @author glabka
  */
-public class TicTacToe {
+public class Main {
 
     /**
      * @param args the command line arguments

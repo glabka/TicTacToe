@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoe;
+package game_mechanics;
 
-import tictactoe.Square.SVal;
+import custom_exceptions.IllegalSetOfArgumentsException;
+import game_components.Grid;
+import game_components.Square.SVal;
 
 /**
  *
