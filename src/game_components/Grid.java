@@ -93,9 +93,9 @@ public class Grid {
                     if (squareVal == null) {
                         System.out.print("+");
                     } else if (squareVal == SVal.CIRCLE) {
-                        System.out.print("◦");
+                        System.out.print("o");
                     } else if (squareVal == SVal.CROSS) {
-                        System.out.print("×");
+                        System.out.print("x");
                     }
                 } else if (squareVal == Square.SVal.CIRCLE) {
                     System.out.print("O");
