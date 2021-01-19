@@ -6,6 +6,7 @@
 package game_components;
 
 import custom_exceptions.AlreadyFilledUpSquareException;
+import custom_exceptions.IndexesOutOfRangeException;
 import game_components.Square.SVal;
 
 /**
@@ -31,12 +32,27 @@ public class Grid {
         if (val == null) {
             throw new IllegalArgumentException("Value of SVal val can't be null.");
         }
+        
+        if(grid.length <= row) {
+        	throw new IndexesOutOfRangeException("int row is " + row + " but max row index is " + (grid.length - 1));
+        } else if (row < 0) {
+        	throw new IndexesOutOfRangeException("int row is smaller then zero");
+        } else if (grid[0].length <= column) {
+        	throw new IndexesOutOfRangeException("int column is " + column + " but max column index is " + (grid[0].length - 1));
+        } else if (column < 0) {
+        	throw new IndexesOutOfRangeException("int column is smaller then zero");
+        }
+        
         Square s = this.grid[row][column];
         if (s.isEmpty()) {
             s.setVal(val);
         } else {
             throw new AlreadyFilledUpSquareException("Square of coordinates row = " + row + ", column = " + column + " is already filled.");
         }
+    }
+    
+    public void insert(Move mv) {
+        insert(mv.getRow(), mv.getColumn(), mv.getVal());
     }
 
     public SVal getVal(int row, int column) {
