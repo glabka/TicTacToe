@@ -15,6 +15,8 @@ import game_components.Square.SVal;
 public class Grid {
 
     private Square[][] grid;
+    private Integer cursorRow;
+    private Integer cursorColumn;
 
     public Grid(int length) {
         this.grid = new Square[length][length];
@@ -44,18 +46,45 @@ public class Grid {
     public int size() {
         return this.grid.length;
     }
-
+    
+    public void setCursonRow(Integer row) {
+    	if(row == null) {
+    		cursorColumn = null;
+    	}
+    	cursorRow = row;
+    }
+    
+    public void setCursonColumn(Integer column) {
+    	if(column == null) {
+    		cursorRow = null;
+    	}
+    	cursorColumn = column;
+    }
+    
+    public Integer getCursorRow() {
+    	return cursorRow;
+    }
+    
+    public Integer getCursorColumn() {
+    	return cursorColumn;
+    }
+    
     public void printGrid() {
         for (int i = 0; i < grid.length; i++) {
-//            System.out.println("------------");
             for (int j = 0; j < grid.length; j++) {
-                if (this.grid[i][j].getVal() == SVal.CIRCLE) {
+                SVal squareVal = grid[i][j].getVal();
+                if (cursorRow != null && cursorColumn != null && cursorRow == i && cursorColumn == j) {
+                    if (squareVal == null) {
+                        System.out.print("+");
+                    } else if (squareVal == SVal.CIRCLE) {
+                        System.out.print("◦");
+                    } else if (squareVal == SVal.CROSS) {
+                        System.out.print("×");
+                    }
+                } else if (squareVal == Square.SVal.CIRCLE) {
                     System.out.print("O");
-//                    System.out.print("◦");
-                } else if (this.grid[i][j].getVal() == SVal.CROSS) {
+                } else if (squareVal == Square.SVal.CROSS) {
                     System.out.print("X");
-//                    System.out.print("+");
-//                    System.out.print("×");
                 } else {
                     System.out.print(" ");
                 }

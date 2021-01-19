@@ -71,7 +71,9 @@ public class Game {
         SVal winner;
         while ((winner = Rules.findWinner(g, streakLength)) == null) {
             System.out.println("\n\n\n\n");
-            printGrid();
+            g.setCursonRow(cursorRow);
+            g.setCursonColumn(cursorColumn);
+            g.printGrid();
             char nextChar = readChar();
             switch (nextChar) {
                 case 'w':
@@ -108,11 +110,10 @@ public class Game {
                     }
                     break;
             }
-
         }
 
         System.out.println("\n\n\n\n");
-        printGrid();
+        g.printGrid();
         printOutWinner(winner);
     }
 
@@ -143,32 +144,6 @@ public class Game {
         return false;
     }
 
-    private void printGrid() {
-        for (int i = 0; i < g.size(); i++) {
-            for (int j = 0; j < g.size(); j++) {
-                SVal squareVal = g.getVal(i, j);
-                if (cursorRow == i && cursorColumn == j) {
-                    if (squareVal == null) {
-                        System.out.print("+");
-                    } else if (squareVal == SVal.CIRCLE) {
-                        System.out.print("◦");
-                    } else if (squareVal == SVal.CROSS) {
-                        System.out.print("×");
-                    }
-                } else if (squareVal == Square.SVal.CIRCLE) {
-                    System.out.print("O");
-                } else if (squareVal == Square.SVal.CROSS) {
-                    System.out.print("X");
-                } else {
-                    System.out.print(" ");
-                }
-                if (j != g.size() - 1) {
-                    System.out.print("|");
-                }
-            }
-            System.out.println("");
-        }
-    }
 
     private char readChar() {
         Scanner in = new Scanner(System.in);
