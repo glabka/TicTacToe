@@ -8,10 +8,13 @@ package game;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import custom_exceptions.PlayersWithSameSValException;
 import game_components.Grid;
+import game_components.Move;
 import game_components.Square;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
+import players.Player;
 
 /**
  *
@@ -21,100 +24,52 @@ public class Game {
 
     private final Grid g;
     private int streakLength;
-    private int cursorRow;
-    private int cursorColumn;
-    private SVal currentVal;
+    private Player currentPlayer;
+    private Player player1;
+    private Player player2;
 
-    public Game() {
-        System.out.println("What should be a size of grid?");
-        int size;
-        while (true) {
-            size = readInt();
-            if (size < 1) {
-                System.out.println("Enter number greater than zero.");
-            } else {
-                break;
-            }
-        }
-        g = new Grid(size);
-
-        System.out.println("What should be a size of required streak?");
-        while (true) {
-            streakLength = readInt();
-            if (streakLength > size) {
-                System.out.println("Enter number less than or equal to entered size, i.e. " + size + ".");
-            } else {
-                break;
-            }
-        }
-
-        currentVal = SVal.CROSS;
-        cursorRow = size / 2;
-        cursorColumn = size / 2;
+    public Game(Player player1, Player player2, Grid g, int streakLength) {
+        this.g = g;
+        this.streakLength = streakLength;
+        this.player1 = player1;
+        this.player2 = player2;
+        currentPlayer = player1;
+        checkPlayers();
+        
+        int cursorRow = g.size() / 2;
+        int cursorColumn = g.size() / 2;
+        g.setCursonRow(cursorRow);
+        g.setCursonColumn(cursorColumn);
     }
-
-    private int readInt() {
-        Scanner in = new Scanner(System.in);
-        while (true) {
-            if (in.hasNextInt()) {
-                int a = in.nextInt();
-                in.nextLine();
-                return a;
-            } else {
-                System.out.println("There's been problem with entered number, please enter correct number.");
-                in.nextLine();
-            }
-        }
+    
+    private void checkPlayers() {
+    	if(player1.getSVal() == player2.getSVal()) {
+    		throw new PlayersWithSameSValException();
+    	}
     }
 
     public void play() {
         SVal winner;
         while ((winner = Rules.findWinner(g, streakLength)) == null) {
             System.out.println("\n\n\n\n");
-            g.setCursonRow(cursorRow);
-            g.setCursonColumn(cursorColumn);
             g.printGrid();
-            char nextChar = readChar();
-            switch (nextChar) {
-                case 'w':
-                    if (cursorRow == 0) {
-                        cursorRow = g.size() - 1;
-                    } else {
-                        cursorRow -= 1;
-                    }
-                    break;
-                case 's':
-                    if (cursorRow == g.size() - 1) {
-                        cursorRow = 0;
-                    } else {
-                        cursorRow += 1;
-                    }
-                    break;
-                case 'a':
-                    if (cursorColumn == 0) {
-                        cursorColumn = g.size() - 1;
-                    } else {
-                        cursorColumn -= 1;
-                    }
-                    break;
-                case 'd':
-                    if (cursorColumn == g.size() - 1) {
-                        cursorColumn = 0;
-                    } else {
-                        cursorColumn += 1;
-                    }
-                    break;
-                case 'i':
-                    if (insertVal()) {
-                        changePlayer();
-                    }
-                    break;
+            Move nextMove = currentPlayer.nextMove(g);
+            if(insertVal(nextMove)) {
+            	changePlayer();
             }
         }
 
         System.out.println("\n\n\n\n");
         g.printGrid();
         printOutWinner(winner);
+    }
+    
+    private boolean insertVal(Move mv) {
+        if (g.isSquareEmpty(mv.getRow(), mv.getColumn())) {
+            g.insert(mv);
+            return true;
+        }
+        return false;
     }
 
     private void printOutWinner(SVal winner) {
@@ -129,34 +84,12 @@ public class Game {
     }
 
     private void changePlayer() {
-        if (currentVal == SVal.CROSS) {
-            currentVal = SVal.CIRCLE;
+        if (currentPlayer == player1) {
+        	currentPlayer = player2;
         } else {
-            currentVal = SVal.CROSS;
+        	currentPlayer = player1;
         }
     }
 
-    private boolean insertVal() {
-        if (g.getVal(cursorRow, cursorColumn) == null) {
-            g.insert(cursorRow, cursorColumn, currentVal);
-            return true;
-        }
-        return false;
-    }
-
-
-    private char readChar() {
-        Scanner in = new Scanner(System.in);
-        while (true) {
-            if (in.hasNext()) {
-                String str = in.next();
-                in.nextLine();
-                return str.charAt(0);
-            } else {
-                System.out.println("Enter w, s, a or d to change cursor position or enter i to insert cross or circle.");
-                in.nextLine();
-            }
-        }
-    }
 
 }

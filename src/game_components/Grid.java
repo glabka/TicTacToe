@@ -58,6 +58,10 @@ public class Grid {
     public SVal getVal(int row, int column) {
         return this.grid[row][column].getVal();
     }
+    
+    public boolean isSquareEmpty(int row, int column) {
+    	return grid[row][column].getVal() == null;
+    }
 
     public int size() {
         return this.grid.length;
