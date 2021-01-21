@@ -94,9 +94,9 @@ public class Rules {
         int counter = 0;
 
         for (int j = 0; j < g.size(); j++) {
-            if (g.getVal(row, j) == null) {
+            if (g.getVal(row, j) != val) {
                 counter = 0;
-            } else if (g.getVal(row, j) == val) {
+            } else {
                 counter++;
             }
             if (counter == streakLength) {
@@ -129,9 +129,9 @@ public class Rules {
         int counter = 0;
 
         for (int j = 0; j < g.size(); j++) {
-            if (g.getVal(j, column) == null) {
+            if (g.getVal(j, column) != val) {
                 counter = 0;
-            } else if (g.getVal(j, column) == val) {
+            } else {
                 counter++;
             }
             if (counter == streakLength) {
@@ -168,9 +168,9 @@ public class Rules {
         int column = startingColumn;
 
         while (row < g.size() && column < g.size()) {
-            if (g.getVal(row, column) == null) {
+            if (g.getVal(row, column) != val) {
                 counter = 0;
-            } else if (g.getVal(row, column) == val) {
+            } else {
                 counter++;
             }
             if (counter == streakLength) {
@@ -209,9 +209,9 @@ public class Rules {
         int column = startingColumn;
 
         while (row < g.size() && column >= 0) {
-            if (g.getVal(row, column) == null) {
+            if (g.getVal(row, column) != val) {
                 counter = 0;
-            } else if (g.getVal(row, column) == val) {
+            } else {
                 counter++;
             }
             if (counter == streakLength) {
