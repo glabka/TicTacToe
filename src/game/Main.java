@@ -134,16 +134,42 @@ public class Main {
 //        for (PotentialStreak streak : potRowStreaksCross) {
 //        	System.out.println(streak);
 //        }
+//        
+//        Collection<PotentialStreak> potColumnStreaksCircle = Computations.getPotentialColumnStreaks(g, SVal.CIRCLE, 3);
+//        System.out.println("potential column CIRCLE streaks");
+//        for (PotentialStreak streak : potColumnStreaksCircle) {
+//        	System.out.println(streak);
+//        }
+//        
+//        Collection<PotentialStreak> potColumnStreaksCross = Computations.getPotentialColumnStreaks(g, SVal.CROSS, 3);
+//        System.out.println("potential column CROSS streaks");
+//        for (PotentialStreak streak : potColumnStreaksCross) {
+//        	System.out.println(streak);
+//        }
+//        
+//        
+//        
+//        Collection<PotentialStreak> potLeftDiagonalStreaksCircle = Computations.getPotentialLeftDiagonalStreaks(g, SVal.CIRCLE, 3);
+//        System.out.println("potential left diagonal CIRCLE streaks");
+//        for (PotentialStreak streak : potLeftDiagonalStreaksCircle) {
+//        	System.out.println(streak);
+//        }
+//        
+//        Collection<PotentialStreak> potLeftDiagonalStreaksCross = Computations.getPotentialLeftDiagonalStreaks(g, SVal.CROSS, 3);
+//        System.out.println("potential column CROSS streaks");
+//        for (PotentialStreak streak : potLeftDiagonalStreaksCross) {
+//        	System.out.println(streak);
+//        }
         
-        Collection<PotentialStreak> potColumnStreaksCircle = Computations.getPotentialColumnStreaks(g, SVal.CIRCLE, 3);
-        System.out.println("potential column CIRCLE streaks");
-        for (PotentialStreak streak : potColumnStreaksCircle) {
+        Collection<PotentialStreak> potRightDiagonalStreaksCircle = Computations.getPotentialRightDiagonalStreaks(g, SVal.CIRCLE, 3);
+        System.out.println("potential right diagonal CIRCLE streaks");
+        for (PotentialStreak streak : potRightDiagonalStreaksCircle) {
         	System.out.println(streak);
         }
         
-        Collection<PotentialStreak> potColumnStreaksCross = Computations.getPotentialColumnStreaks(g, SVal.CROSS, 3);
-        System.out.println("potential column CROSS streaks");
-        for (PotentialStreak streak : potColumnStreaksCross) {
+        Collection<PotentialStreak> potRightDiagonalStreaksCross = Computations.getPotentialRightDiagonalStreaks(g, SVal.CROSS, 3);
+        System.out.println("potential right CROSS streaks");
+        for (PotentialStreak streak : potRightDiagonalStreaksCross) {
         	System.out.println(streak);
         }
         

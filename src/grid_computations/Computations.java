@@ -238,6 +238,49 @@ public class Computations {
 		return allStreaks;
 	}
 	
+	public static Collection<PotentialStreak> getPotentialLeftDiagonalStreaks(Grid g, SVal val, int streakLength) {
+		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
+		Stripe leftDiagonal;
+		
+		// checking diagonals starting on left side
+		for (int row = 0; row < g.size(); row++) {
+			leftDiagonal = createLeftDiagonal(g, row, 0);
+			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(leftDiagonal, val, streakLength).stream())
+					.collect(Collectors.toList());
+        }
+		
+		// checking diagonals starting on upper side (starts at 1 because first row = 0 already checked column = 0 diagonal)
+		for (int column = 1; column < g.size(); column++) {
+			leftDiagonal = createLeftDiagonal(g, 0, column);
+			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(leftDiagonal, val, streakLength).stream())
+					.collect(Collectors.toList());
+		}
+
+		return allStreaks;
+	}
+	
+	public static Collection<PotentialStreak> getPotentialRightDiagonalStreaks(Grid g, SVal val, int streakLength) {
+		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
+		Stripe rightDiagonal;
+		
+		// checking diagonals starting on right side
+		for (int row = 0; row < g.size(); row++) {
+			rightDiagonal = createRightDiagonal(g, row, g.size() - 1);
+			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(rightDiagonal, val, streakLength).stream())
+					.collect(Collectors.toList());
+        }
+		
+		// checking diagonals starting on upper side (ends at g.size() - 1 because diagonal starting on last column was already checked)
+		for (int column = 0; column < g.size() - 1; column++) {
+			rightDiagonal = createRightDiagonal(g, 0, column);
+			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(rightDiagonal, val, streakLength).stream())
+					.collect(Collectors.toList());
+		}
+
+		return allStreaks;
+	}
+
+	
 	public static Collection<PotentialStreak> getPotentialStreaksFromStripe(Stripe stripe, SVal val, int streakLength) {
 		Collection<PotentialStreak> streaks = new ArrayList<PotentialStreak>();
 		
