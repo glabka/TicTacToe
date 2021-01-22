@@ -204,6 +204,13 @@ public class Computations {
 	
 	//--------------------Potential Streaks--------------------
 	
+	public static Collection<PotentialStreak> getAllPotentialStreaks(Grid g, SVal val, int streakLength) {
+		Stream<PotentialStreak> allStreaksStream = Stream.concat(getPotentialRowStreaks(g, val, streakLength).stream(), getPotentialColumnStreaks(g, val, streakLength).stream());
+		allStreaksStream = Stream.concat(allStreaksStream, getPotentialLeftDiagonalStreaks(g, val, streakLength).stream());
+		allStreaksStream = Stream.concat(allStreaksStream, getPotentialRightDiagonalStreaks(g, val, streakLength).stream());
+		return allStreaksStream.collect(Collectors.toList());
+	}
+	
 	public static Collection<PotentialStreak> getPotentialRowStreaks(Grid g, SVal val, int streakLength) {
 		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
 		
