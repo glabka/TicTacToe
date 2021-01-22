@@ -6,7 +6,7 @@
 package game;
 
 import game_mechanics.Rules;
-import grid_computations.Computer;
+import grid_computations.Computations;
 import grid_computations.FullStreak;
 import grid_computations.PotentialStreak;
 import players.Player;
@@ -41,12 +41,16 @@ public class Main {
         g.insert(0, 2, Square.SVal.CIRCLE);
         g.insert(0, 4, Square.SVal.CIRCLE);
         
+//        g.insert(3,2, SVal.CIRCLE);
+        
         g.insert(2, 4, Square.SVal.CROSS);
         g.insert(3, 4, Square.SVal.CROSS);
         g.insert(4, 4, Square.SVal.CROSS);
         
         g.insert(2, 2, Square.SVal.CROSS);
         g.insert(3, 3, Square.SVal.CROSS);
+        
+//        g.insert(4,0, SVal.CROSS);
         g.printGrid();
 //        Rules.test(g);
         System.out.println(Rules.findWinner(g, 4));
@@ -54,29 +58,80 @@ public class Main {
 		////////////////////////////////////////////////////////////////////////////
 		//-------------------------------Streak testing-----------------------------
 		////////////////////////////////////////////////////////////////////////////
-        Collection<FullStreak> circlesRowStreaks = Computer.getFullRowStreaks(g, SVal.CIRCLE);
-        System.out.println("circle streaks");
-        for (FullStreak streak : circlesRowStreaks) {
-        	System.out.println(streak);
-        }
+
+	    Collection<FullStreak> circlesRightDiagonalStreaks = Computations.getFullRightDiagonalStreaks(g, SVal.CIRCLE);
+	    System.out.println("circle right diagonal streaks");
+	    for (FullStreak streak : circlesRightDiagonalStreaks) {
+	  	  System.out.println(streak);
+	    }
+	  
+	    Collection<FullStreak> crossRightDigonalStreaks = Computations.getFullRightDiagonalStreaks(g, SVal.CROSS);
+	    System.out.println("cross right diagonal streaks");
+	    for (FullStreak streak : crossRightDigonalStreaks) {
+	    	System.out.println(streak);
+	    }
         
-        Collection<FullStreak> crossRowStreaks = Computer.getFullRowStreaks(g, SVal.CROSS);
-        System.out.println("cross streaks");
-        for (FullStreak streak : crossRowStreaks) {
-        	System.out.println(streak);
-        }
         
-        Collection<PotentialStreak> potRowStreaksCircle = Computer.getPotentialRowStreaks(g, SVal.CIRCLE, 3);
-        System.out.println("potential CIRCLE streaks");
-        for (PotentialStreak streak : potRowStreaksCircle) {
-        	System.out.println(streak);
-        }
-        
-        Collection<PotentialStreak> potRowStreaksCross = Computer.getPotentialRowStreaks(g, SVal.CROSS, 3);
-        System.out.println("potential CIRCLE streaks");
-        for (PotentialStreak streak : potRowStreaksCross) {
-        	System.out.println(streak);
-        }
+//        Collection<FullStreak> triviaCirclelStreaks = Computations.getTrivialFullSteraksFromGrid(g, SVal.CIRCLE);
+//        System.out.println("circle trivial streaks");
+//        for (FullStreak streak : triviaCirclelStreaks) {
+//  	  	  System.out.println(streak);
+//  	    }
+//        
+//        Collection<FullStreak> trivialCrossStreaks = Computations.getTrivialFullSteraksFromGrid(g, SVal.CROSS);
+//        System.out.println("circle trivial streaks");
+//        for (FullStreak streak : trivialCrossStreaks) {
+//  	  	  System.out.println(streak);
+//  	    }
+//        
+//	    Collection<FullStreak> circlesLeftDiagonalStreaks = Computations.getFullLeftDiagonalStreaks(g, SVal.CIRCLE);
+//	    System.out.println("circle left diagonal streaks");
+//	    for (FullStreak streak : circlesLeftDiagonalStreaks) {
+//	  	  System.out.println(streak);
+//	    }
+//	  
+//	    Collection<FullStreak> crossLeftDigonalStreaks = Computations.getFullLeftDiagonalStreaks(g, SVal.CROSS);
+//	    System.out.println("cross left diagonal streaks");
+//	    for (FullStreak streak : crossLeftDigonalStreaks) {
+//	    	System.out.println(streak);
+//	    }
+//
+//        
+//	    Collection<FullStreak> circlesColumnStreaks = Computations.getFullColumnStreaks(g, SVal.CIRCLE);
+//	    System.out.println("circle column streaks");
+//	    for (FullStreak streak : circlesColumnStreaks) {
+//	  	  System.out.println(streak);
+//	    }
+//	  
+//	    Collection<FullStreak> crossColumnStreaks = Computations.getFullColumnStreaks(g, SVal.CROSS);
+//	    System.out.println("cross column streaks");
+//	    for (FullStreak streak : crossColumnStreaks) {
+//	    	System.out.println(streak);
+//	    }
+//      
+//        Collection<FullStreak> circlesRowStreaks = Computations.getFullRowStreaks(g, SVal.CIRCLE);
+//        System.out.println("circle row streaks");
+//        for (FullStreak streak : circlesRowStreaks) {
+//        	System.out.println(streak);
+//        }
+//        
+//        Collection<FullStreak> crossRowStreaks = Computations.getFullRowStreaks(g, SVal.CROSS);
+//        System.out.println("cross row streaks");
+//        for (FullStreak streak : crossRowStreaks) {
+//        	System.out.println(streak);
+//        }
+//        
+//        Collection<PotentialStreak> potRowStreaksCircle = Computations.getPotentialRowStreaks(g, SVal.CIRCLE, 3);
+//        System.out.println("potential CIRCLE streaks");
+//        for (PotentialStreak streak : potRowStreaksCircle) {
+//        	System.out.println(streak);
+//        }
+//        
+//        Collection<PotentialStreak> potRowStreaksCross = Computations.getPotentialRowStreaks(g, SVal.CROSS, 3);
+//        System.out.println("potential CIRCLE streaks");
+//        for (PotentialStreak streak : potRowStreaksCross) {
+//        	System.out.println(streak);
+//        }
         
         ////////////////////////////////////////////////////////////////////////////
         //----------------------------------GAME------------------------------------

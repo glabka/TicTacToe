@@ -1,5 +1,7 @@
 package grid_computations;
 
+import java.util.Arrays;
+
 import javax.management.remote.SubjectDelegationPermission;
 
 import custom_exceptions.AlreadyAFullStreakException;
@@ -18,10 +20,12 @@ public class PotentialStreak extends MetaStreak {
 			throw new IllegalArgumentException();
 		}
 		
+		Arrays.sort(psc);
 		this.psc = psc;
 		if(psc.length == this.getLength()) {
 			throw new AlreadyAFullStreakException(this.toString());
 		}
+
 		areTheCoordinatesOfPotentialStreak();
 		
 	}
