@@ -12,7 +12,15 @@ package game_components;
 public class Square {
 
     public enum SVal {
-        CIRCLE, CROSS
+        CIRCLE, CROSS;
+        
+        public static SVal getOpposite(SVal val) {
+        	if (val == CIRCLE) {
+        		return CROSS;
+        	} else {
+        		return CIRCLE;
+        	}
+        }
     }
     
     private SVal val = null;

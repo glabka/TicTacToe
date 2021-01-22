@@ -6,9 +6,13 @@
 package game;
 
 import game_mechanics.Rules;
+import grid_computations.Computer;
+import grid_computations.FullStreak;
+import grid_computations.PotentialStreak;
 import players.Player;
 import players.ui_players.UIPlayer;
 
+import java.util.Collection;
 import java.util.Scanner;
 
 import game_components.Grid;
@@ -47,6 +51,36 @@ public class Main {
 //        Rules.test(g);
         System.out.println(Rules.findWinner(g, 4));
         
+		////////////////////////////////////////////////////////////////////////////
+		//-------------------------------Streak testing-----------------------------
+		////////////////////////////////////////////////////////////////////////////
+        Collection<FullStreak> circlesRowStreaks = Computer.getFullRowStreaks(g, SVal.CIRCLE);
+        System.out.println("circle streaks");
+        for (FullStreak streak : circlesRowStreaks) {
+        	System.out.println(streak);
+        }
+        
+        Collection<FullStreak> crossRowStreaks = Computer.getFullRowStreaks(g, SVal.CROSS);
+        System.out.println("cross streaks");
+        for (FullStreak streak : crossRowStreaks) {
+        	System.out.println(streak);
+        }
+        
+        Collection<PotentialStreak> potRowStreaksCircle = Computer.getPotentialRowStreaks(g, SVal.CIRCLE, 3);
+        System.out.println("potential CIRCLE streaks");
+        for (PotentialStreak streak : potRowStreaksCircle) {
+        	System.out.println(streak);
+        }
+        
+        Collection<PotentialStreak> potRowStreaksCross = Computer.getPotentialRowStreaks(g, SVal.CROSS, 3);
+        System.out.println("potential CIRCLE streaks");
+        for (PotentialStreak streak : potRowStreaksCross) {
+        	System.out.println(streak);
+        }
+        
+        ////////////////////////////////////////////////////////////////////////////
+        //----------------------------------GAME------------------------------------
+        ////////////////////////////////////////////////////////////////////////////
         
         System.out.println("What should be a size of grid?");
         int size;
