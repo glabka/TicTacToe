@@ -13,6 +13,14 @@ public class Computations {
 	
 	//--------------------Full Streaks--------------------
 
+	public static Collection<FullStreak> getAllFullStreaks(Grid g, SVal val) {
+		Stream<FullStreak> allStreaksStream = Stream.concat(getTrivialFullSteraksFromGrid(g, val).stream(), getFullRowStreaks(g, val).stream());
+		allStreaksStream = Stream.concat(allStreaksStream, getFullColumnStreaks(g, val).stream());
+		allStreaksStream = Stream.concat(allStreaksStream, getFullLeftDiagonalStreaks(g, val).stream());
+		allStreaksStream = Stream.concat(allStreaksStream, getFullRightDiagonalStreaks(g, val).stream());
+		return allStreaksStream.collect(Collectors.toList());
+	}
+	
 	/**
 	 * Function finds out full row streaks in grid of certain SVal. Substreaks are not included.
 	 * @param g
@@ -198,16 +206,35 @@ public class Computations {
 	
 	public static Collection<PotentialStreak> getPotentialRowStreaks(Grid g, SVal val, int streakLength) {
 		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
-		for (int i = 0; i < g.size(); i++) {
-			
+		
+		for (int rowIndex = 0; rowIndex < g.size(); rowIndex++) {
 			Stripe row = new Stripe();
-			for(int j = 0; j < g.size(); j++) {
-				row.add(new ValueCoordinate(i, j, g.getVal(i, j)));
+			
+			for(int columnIndex = 0; columnIndex < g.size(); columnIndex++) {
+				row.add(new ValueCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
 			}
 			
 			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(row, val, streakLength).stream())
 					.collect(Collectors.toList());
         }
+		
+		return allStreaks;
+	}
+	
+	public static Collection<PotentialStreak> getPotentialColumnStreaks(Grid g, SVal val, int streakLength) {
+		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
+		
+		for (int columnIndex = 0; columnIndex < g.size(); columnIndex++) {
+			Stripe column = new Stripe();
+			
+			for(int rowIndex = 0; rowIndex < g.size(); rowIndex++) {
+				column.add(new ValueCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
+			}
+			
+			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(column, val, streakLength).stream())
+					.collect(Collectors.toList());
+        }
+		
 		return allStreaks;
 	}
 	
@@ -216,7 +243,7 @@ public class Computations {
 		
 		for(int i = 0; i < stripe.size(); i++) {
 			if(checkForPotentialStreak(stripe, val, streakLength, i)) {
-				streaks.add(createPotRowStreak(stripe, val, streakLength, i));
+				streaks.add(createPotStreak(stripe, val, streakLength, i));
 			}
 		}
 		
@@ -241,7 +268,7 @@ public class Computations {
 		return (counter > 0 ) && (counter < streakLength) ? true : false;
 	}
 	
-	private static PotentialStreak createPotRowStreak(Stripe stripe, SVal val, int streakLength, int startIndex) {
+	private static PotentialStreak createPotStreak(Stripe stripe, SVal val, int streakLength, int startIndex) {
 		// coordinates filled with val
 		ArrayList<Coordinate> filledCoordinates = new ArrayList<>();
 		for(int i = startIndex; i < startIndex + streakLength; i++) {
