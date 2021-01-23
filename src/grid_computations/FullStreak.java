@@ -7,6 +7,10 @@ package grid_computations;
  */
 public class FullStreak extends MetaStreak {
 
+	public FullStreak(Coordinate trivialCoordinate) {
+		super(trivialCoordinate);
+	}
+	
 	public FullStreak(Coordinate oneEnd, Coordinate secondEnd) {
 		super(oneEnd, secondEnd);
 	}

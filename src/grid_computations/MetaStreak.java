@@ -1,17 +1,20 @@
 package grid_computations;
 
-import java.util.ArrayList;
-import java.util.Collection;
 
 import custom_exceptions.FatalErrorInCodeException;
 import custom_exceptions.NotALegalStreakException;
-import game_components.Square.SVal;
 
 public class MetaStreak {
 
 	private final Coordinate start;
 	private final Coordinate end;
 	private final StreakType type;
+	
+	public MetaStreak(Coordinate trivialCoordinate) {
+		start = trivialCoordinate;
+		end = trivialCoordinate;
+		type = StreakType.TRIVIAL;
+	}
 	
 	/**
 	 * MetaStreak consist of at least one square and must be in row, column, left or right diagonal.
@@ -68,7 +71,7 @@ public class MetaStreak {
 	}
 	
 	public static int getLength(Coordinate oneEnd, Coordinate secondEnd) {
-		return Math.max(Math.abs(oneEnd.getRow()- secondEnd.getRow()), Math.abs(oneEnd.getColumn()- secondEnd.getColumn())) + 1; // + 1 because both coordinates are inclusive
+		return Math.max(Math.abs(oneEnd.getRow() - secondEnd.getRow()), Math.abs(oneEnd.getColumn() - secondEnd.getColumn())) + 1; // + 1 because both coordinates are inclusive
 	}
 	
 	private boolean isThisStreakLegal() {

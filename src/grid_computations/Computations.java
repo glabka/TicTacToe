@@ -270,13 +270,11 @@ public class Computations {
 	
 	private static PotentialStreak createPotStreak(Stripe stripe, SVal val, int streakLength, int startIndex) {
 		// coordinates filled with val
-		ArrayList<Coordinate> filledCoordinates = new ArrayList<>();
+		LinkedList<ValuedCoordinate> coordinates = new LinkedList<>();
 		for(int i = startIndex; i < startIndex + streakLength; i++) {
-			if(stripe.get(i).getVal() == val) {
-				filledCoordinates.add(stripe.get(i));
-			}
+			coordinates.add(stripe.get(i));
 		}
 		
-		return new PotentialStreak(stripe.get(startIndex), stripe.get(startIndex + streakLength - 1), filledCoordinates.toArray(new Coordinate[0]));
+		return new PotentialStreak(coordinates.toArray(new ValuedCoordinate[0]));
 	}
 }

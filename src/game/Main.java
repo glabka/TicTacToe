@@ -85,17 +85,17 @@ public class Main {
         
         // Potential streaks
         
-//        Collection<PotentialStreak> allPotStreaksCircle = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
-//        System.out.println("all potential CIRCLE streaks");
-//        for (PotentialStreak streak : allPotStreaksCircle) {
-//        	System.out.println(streak);
-//        }
-//        
-//        Collection<PotentialStreak> allPotStreaksCross = Computations.getAllPotentialStreaks(g, SVal.CROSS, 3);
-//        System.out.println("all potential CROSS streaks");
-//        for (PotentialStreak streak : allPotStreaksCross) {
-//        	System.out.println(streak);
-//        }
+        Collection<PotentialStreak> allPotStreaksCircle = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
+        System.out.println("all potential CIRCLE streaks");
+        for (PotentialStreak streak : allPotStreaksCircle) {
+        	System.out.println(streak);
+        }
+        
+        Collection<PotentialStreak> allPotStreaksCross = Computations.getAllPotentialStreaks(g, SVal.CROSS, 3);
+        System.out.println("all potential CROSS streaks");
+        for (PotentialStreak streak : allPotStreaksCross) {
+        	System.out.println(streak);
+        }
         
 
         

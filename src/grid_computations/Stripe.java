@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+/**
+ * Subset of Grid - can be a part of row, column, left or right diagonal.
+ * @author glabk
+ *
+ */
 public class Stripe {
 
 	private ArrayList<ValuedCoordinate> stripe = new ArrayList<>();
