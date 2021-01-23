@@ -1,7 +1,6 @@
 package grid_computations;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,14 +130,16 @@ public class Computations {
 	 */
 	public static List<FullStreak> getAllFullStreaks(Grid g, SVal val){
 		Stream<FullStreak> trivialStreaks = getTrivialFullStreaks(g, val).stream();
+		List<FullStreak> streaksFromStripes = getFullStreaksFromStripes(getAllStripes(g), val);
 		
+		return Stream.concat(trivialStreaks, streaksFromStripes.stream()).collect(Collectors.toList());
+	}
+	
+	public static List<Stripe> getAllStripes(Grid g) {
 		Stream<Stripe> allStripesStream = Stream.concat(getAllRows(g).stream(), getAllColumns(g).stream());
 		allStripesStream = Stream.concat(allStripesStream, getAllLeftDiagonals(g).stream());
 		allStripesStream = Stream.concat(allStripesStream, getAllRightDiagonals(g).stream());
-		List<Stripe> allStripes = allStripesStream.collect(Collectors.toList());
-		Collection<FullStreak> streaksFromStripes = getFullStreaksFromStripes(allStripes, val);
-		
-		return Stream.concat(trivialStreaks, streaksFromStripes.stream()).collect(Collectors.toList());
+		return allStripesStream.collect(Collectors.toList());
 	}
 		
 
@@ -222,92 +223,23 @@ public class Computations {
 	
 	//--------------------Potential Streaks--------------------
 	
-	public static Collection<PotentialStreak> getAllPotentialStreaks(Grid g, SVal val, int streakLength) {
-		Stream<PotentialStreak> allStreaksStream = Stream.concat(getPotentialRowStreaks(g, val, streakLength).stream(), getPotentialColumnStreaks(g, val, streakLength).stream());
-		allStreaksStream = Stream.concat(allStreaksStream, getPotentialLeftDiagonalStreaks(g, val, streakLength).stream());
-		allStreaksStream = Stream.concat(allStreaksStream, getPotentialRightDiagonalStreaks(g, val, streakLength).stream());
-		return allStreaksStream.collect(Collectors.toList());
+	public static List<PotentialStreak> getAllPotentialStreaks(Grid g, SVal val, int streakLength) {
+		return getPotentialStreaksFromStripes(getAllStripes(g), val, streakLength);
 	}
 	
-	public static Collection<PotentialStreak> getPotentialRowStreaks(Grid g, SVal val, int streakLength) {
-		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
+	public static List<PotentialStreak> getPotentialStreaksFromStripes(List<Stripe> stripes, SVal val, int streakLength) {
+		Stream<PotentialStreak> streaksFromStripesStream = getPotentialStreaksFromStripe(stripes.get(0), val, streakLength).stream();
+		stripes = stripes.subList(1, stripes.size());
 		
-		for (int rowIndex = 0; rowIndex < g.size(); rowIndex++) {
-			Stripe row = new Stripe();
-			
-			for(int columnIndex = 0; columnIndex < g.size(); columnIndex++) {
-				row.add(new ValuedCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
-			}
-			
-			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(row, val, streakLength).stream())
-					.collect(Collectors.toList());
+		for (Stripe stripe : stripes) {			
+			streaksFromStripesStream = Stream.concat(streaksFromStripesStream, getPotentialStreaksFromStripe(stripe, val, streakLength).stream());
         }
 		
-		return allStreaks;
+		return streaksFromStripesStream.collect(Collectors.toList());
 	}
 	
-	public static Collection<PotentialStreak> getPotentialColumnStreaks(Grid g, SVal val, int streakLength) {
-		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
-		
-		for (int columnIndex = 0; columnIndex < g.size(); columnIndex++) {
-			Stripe column = new Stripe();
-			
-			for(int rowIndex = 0; rowIndex < g.size(); rowIndex++) {
-				column.add(new ValuedCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
-			}
-			
-			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(column, val, streakLength).stream())
-					.collect(Collectors.toList());
-        }
-		
-		return allStreaks;
-	}
-	
-	public static Collection<PotentialStreak> getPotentialLeftDiagonalStreaks(Grid g, SVal val, int streakLength) {
-		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
-		Stripe leftDiagonal;
-		
-		// checking diagonals starting on left side
-		for (int row = 0; row < g.size(); row++) {
-			leftDiagonal = createLeftDiagonal(g, row, 0);
-			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(leftDiagonal, val, streakLength).stream())
-					.collect(Collectors.toList());
-        }
-		
-		// checking diagonals starting on upper side (starts at 1 because first row = 0 already checked column = 0 diagonal)
-		for (int column = 1; column < g.size(); column++) {
-			leftDiagonal = createLeftDiagonal(g, 0, column);
-			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(leftDiagonal, val, streakLength).stream())
-					.collect(Collectors.toList());
-		}
-
-		return allStreaks;
-	}
-	
-	public static Collection<PotentialStreak> getPotentialRightDiagonalStreaks(Grid g, SVal val, int streakLength) {
-		Collection<PotentialStreak> allStreaks = new ArrayList<PotentialStreak>();
-		Stripe rightDiagonal;
-		
-		// checking diagonals starting on right side
-		for (int row = 0; row < g.size(); row++) {
-			rightDiagonal = createRightDiagonal(g, row, g.size() - 1);
-			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(rightDiagonal, val, streakLength).stream())
-					.collect(Collectors.toList());
-        }
-		
-		// checking diagonals starting on upper side (ends at g.size() - 1 because diagonal starting on last column was already checked)
-		for (int column = 0; column < g.size() - 1; column++) {
-			rightDiagonal = createRightDiagonal(g, 0, column);
-			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(rightDiagonal, val, streakLength).stream())
-					.collect(Collectors.toList());
-		}
-
-		return allStreaks;
-	}
-
-	
-	public static Collection<PotentialStreak> getPotentialStreaksFromStripe(Stripe stripe, SVal val, int streakLength) {
-		Collection<PotentialStreak> streaks = new ArrayList<PotentialStreak>();
+	public static List<PotentialStreak> getPotentialStreaksFromStripe(Stripe stripe, SVal val, int streakLength) {
+		List<PotentialStreak> streaks = new ArrayList<PotentialStreak>();
 		
 		for(int i = 0; i < stripe.size(); i++) {
 			if(checkForPotentialStreak(stripe, val, streakLength, i)) {
