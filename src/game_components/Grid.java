@@ -62,6 +62,17 @@ public class Grid {
     public boolean isSquareEmpty(int row, int column) {
     	return grid[row][column].getVal() == null;
     }
+    
+    public boolean isGridFull() {
+    	for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid.length; j++) {
+				if(grid[i][j].isEmpty()) {
+					return false;
+				}
+			}
+		}
+    	return true;
+    }
 
     public int size() {
         return this.grid.length;

@@ -61,6 +61,8 @@ public class DumbAIPlayer extends Player {
 			int column = row;
 			if(g.isSquareEmpty(row, column)) {
 				return new Coordinate(row , column);
+//			} else if (g.size() > 2 && g.isSquareEmpty(row - 1, column - 1)) {
+//				return new Coordinate(row - 1, column - 1);
 			} else {
 				return firtEmptySquare(g);
 			}

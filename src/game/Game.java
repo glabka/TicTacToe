@@ -49,8 +49,7 @@ public class Game {
     }
 
     public void play() {
-        SVal winner;
-        while ((winner = Rules.findWinner(g, streakLength)) == null) {
+        while (!Rules.endOfGame(g, streakLength)) {
             System.out.println("\n\n\n\n");
             g.printGrid();
             Move nextMove = currentPlayer.nextMove(g);
@@ -61,7 +60,7 @@ public class Game {
 
         System.out.println("\n\n\n\n");
         g.printGrid();
-        printOutWinner(winner);
+        printOutWinner(Rules.findWinner(g, streakLength));
     }
     
     private boolean insertVal(Move mv) {
@@ -74,9 +73,8 @@ public class Game {
 
     private void printOutWinner(SVal winner) {
         if (winner == null) {
-            throw new IllegalArgumentException();
-        }
-        if (winner == SVal.CROSS) {
+            System.out.println("There is no winner.");
+        } else if (winner == SVal.CROSS) {
             System.out.println("The winner is cross.");
         } else {
             System.out.println("The winner is circle.");

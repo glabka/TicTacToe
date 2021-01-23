@@ -21,7 +21,7 @@ public class Rules {
 
     /**
      * Function finds winner of Tic Tac Toe. Returns CIRCLE, CROSS or null (in
-     * case of no winner).
+     * case of no winner yet or at all).
      *
      * @param g
      * @param streakLength
@@ -38,6 +38,16 @@ public class Rules {
         } else {
             return null;
         }
+    }
+    
+    public static boolean endOfGame(Grid g, int streakLengtt) {
+    	if(findWinner(g, streakLengtt) != null) {
+    		return true;
+    	} else if (g.isGridFull()) {
+    		return true;
+    	} else {
+    		return false;
+    	}
     }
 
     public static void test(Grid g) {

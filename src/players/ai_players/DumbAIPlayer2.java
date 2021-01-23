@@ -27,7 +27,6 @@ public class DumbAIPlayer2 extends Player {
 	
 	@Override
 	public Move nextMove(Grid g) {
-		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength);
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength);
 		
 		return new Move(DumbAIPlayer.attack(potStreaks, g), this.getSVal());

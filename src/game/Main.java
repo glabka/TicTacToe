@@ -116,10 +116,10 @@ public class Main {
 		//---------------------------------AI GAME----------------------------------
 		////////////////////////////////////////////////////////////////////////////
         g = new Grid(10);
-        int reqStreakLength = 4;
+        int reqStreakLength = 5;
         Player aiPlayer1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", reqStreakLength);
-//        Player aiPlayer2 = new DumbAIPlayer(SVal.CIRCLE, "dumb ai player 2", reqStreakLength);
-        Player aiPlayer2 = new DumbAIPlayer2(SVal.CIRCLE, "dumb ai 2 player 2", reqStreakLength);
+        Player aiPlayer2 = new DumbAIPlayer(SVal.CIRCLE, "dumb ai player 2", reqStreakLength);
+//        Player aiPlayer2 = new DumbAIPlayer2(SVal.CIRCLE, "dumb ai 2 player 2", reqStreakLength);
         
         Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
         aiGame.play();
