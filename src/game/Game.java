@@ -15,6 +15,7 @@ import game_components.Square;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
 import players.Player;
+import players.ui_players.UIPlayer;
 
 /**
  *
@@ -38,8 +39,10 @@ public class Game {
         
         int cursorRow = g.size() / 2;
         int cursorColumn = g.size() / 2;
-        g.setCursonRow(cursorRow);
-        g.setCursonColumn(cursorColumn);
+        if(player1 instanceof UIPlayer || player2 instanceof UIPlayer) {
+        	g.setCursonRow(cursorRow);
+        	g.setCursonColumn(cursorColumn);
+        }
     }
     
     private void checkPlayers() {

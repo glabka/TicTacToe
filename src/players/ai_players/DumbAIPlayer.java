@@ -12,9 +12,7 @@ import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
 import players.Player;
 
-public class DumbAIPlayer extends Player {
-	
-	private int streakLength;
+public class DumbAIPlayer extends AbstractAIPlayer {
 
 	/**
 	 * 
@@ -23,8 +21,7 @@ public class DumbAIPlayer extends Player {
 	 * @param streakLength winning streak length
 	 */
 	public DumbAIPlayer(SVal playersSVal, String name, int streakLength) {
-		super(playersSVal, name);
-		this.streakLength = streakLength;
+		super(playersSVal, name, streakLength);
 	}
 
 	@Override
@@ -61,8 +58,8 @@ public class DumbAIPlayer extends Player {
 			int column = row;
 			if(g.isSquareEmpty(row, column)) {
 				return new Coordinate(row , column);
-//			} else if (g.size() > 2 && g.isSquareEmpty(row - 1, column - 1)) {
-//				return new Coordinate(row - 1, column - 1);
+			} else if (g.size() > 2 && g.isSquareEmpty(row - 1, column - 1)) {
+				return new Coordinate(row - 1, column - 1);
 			} else {
 				return firtEmptySquare(g);
 			}

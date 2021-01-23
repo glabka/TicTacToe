@@ -6,13 +6,10 @@ import game_components.Grid;
 import game_components.Move;
 import game_components.Square.SVal;
 import grid_computations.Computations;
-import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
 import players.Player;
 
-public class DumbAIPlayer2 extends Player {
-
-	private int streakLength;
+public class DumbAIPlayer2 extends AbstractAIPlayer {
 
 	/**
 	 * 
@@ -21,8 +18,7 @@ public class DumbAIPlayer2 extends Player {
 	 * @param streakLength winning streak length
 	 */
 	public DumbAIPlayer2(SVal playersSVal, String name, int streakLength) {
-		super(playersSVal, name);
-		this.streakLength = streakLength;
+		super(playersSVal, name, streakLength);
 	}
 	
 	@Override
