@@ -2,6 +2,8 @@ package grid_computations;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -11,71 +13,60 @@ import game_components.Square.SVal;
 
 public class Computations {
 	
-	//--------------------Full Streaks--------------------
-
-	public static Collection<FullStreak> getAllFullStreaks(Grid g, SVal val) {
-		Stream<FullStreak> allStreaksStream = Stream.concat(getTrivialFullSteraksFromGrid(g, val).stream(), getFullRowStreaks(g, val).stream());
-		allStreaksStream = Stream.concat(allStreaksStream, getFullColumnStreaks(g, val).stream());
-		allStreaksStream = Stream.concat(allStreaksStream, getFullLeftDiagonalStreaks(g, val).stream());
-		allStreaksStream = Stream.concat(allStreaksStream, getFullRightDiagonalStreaks(g, val).stream());
-		return allStreaksStream.collect(Collectors.toList());
+	public static LinkedList<Stripe> getAllRows(Grid g){
+		LinkedList<Stripe> allRows = new LinkedList<>();
+		
+		for(int rowIndex = 0; rowIndex < g.size(); rowIndex++) {
+			allRows.add(createRow(g, rowIndex));
+		}
+		
+		return allRows;
 	}
 	
-	/**
-	 * Function finds out full row streaks in grid of certain SVal. Substreaks are not included.
-	 * @param g
-	 * @param val
-	 * @return
-	 */
-	public static Collection<FullStreak> getFullRowStreaks(Grid g, SVal val){
-		Collection<FullStreak> allStreaks = new ArrayList<FullStreak>();
+	private static Stripe createRow(Grid g, int rowIndex) {
+		Stripe row = new Stripe();
 		
-		for (int rowIndex = 0; rowIndex < g.size(); rowIndex++) {	
-			Stripe row = new Stripe();
-			for(int columnIndex = 0; columnIndex < g.size(); columnIndex++) {
-				row.add(new ValueCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
-			}
+		for(int columnIndex = 0; columnIndex < g.size(); columnIndex++) {
+			row.add(new ValuedCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
+		}
 		
-			allStreaks = Stream.concat(allStreaks.stream(), getFullStreaksFromStripe(row, val).stream())
-					.collect(Collectors.toList());
-        }
-		return allStreaks;
+		return row;
 	}
 	
-	public static Collection<FullStreak> getFullColumnStreaks(Grid g, SVal val){
-		Collection<FullStreak> allStreaks = new ArrayList<FullStreak>();
+	public static LinkedList<Stripe> getAllColumns(Grid g) {
+		LinkedList<Stripe> allColumns = new LinkedList<>();
 		
-		for(int columnIndex = 0; columnIndex < g.size(); columnIndex++)  {
-			Stripe column = new Stripe();
-			for (int rowIndex = 0; rowIndex < g.size(); rowIndex++) {
-				column.add(new ValueCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
-			}
+		for(int columnIndex = 0; columnIndex < g.size(); columnIndex++) {
+			allColumns.add(createColumn(g, columnIndex));
+		}
 		
-			allStreaks = Stream.concat(allStreaks.stream(), getFullStreaksFromStripe(column, val).stream())
-					.collect(Collectors.toList());
-        }
-		return allStreaks;
+		return allColumns;
 	}
 	
-	public static Collection<FullStreak> getFullLeftDiagonalStreaks(Grid g, SVal val){
-		Collection<FullStreak> allStreaks = new ArrayList<FullStreak>();
-		Stripe leftDiagonal;
+	private static Stripe createColumn(Grid g, int columnIndex) {
+		Stripe column = new Stripe();
+		
+		for(int rowIndex = 0; rowIndex < g.size(); rowIndex++) {
+			column.add(new ValuedCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
+		}
+		
+		return column;
+	}
+	
+	public static LinkedList<Stripe> getAllLeftDiagonals(Grid g) {
+		LinkedList<Stripe> leftDiagonals = new LinkedList<>();
 		
 		// checking diagonals starting on left side
 		for (int row = 0; row < g.size(); row++) {
-			leftDiagonal = createLeftDiagonal(g, row, 0);
-        	allStreaks = Stream.concat(allStreaks.stream(), getFullStreaksFromStripe(leftDiagonal, val).stream())
-					.collect(Collectors.toList());
+			leftDiagonals.add(createLeftDiagonal(g, row, 0));
         }
 		
 		// checking diagonals starting on upper side (starts at 1 because first row = 0 already checked column = 0 diagonal)
 		for (int column = 1; column < g.size(); column++) {
-			leftDiagonal = createLeftDiagonal(g, 0, column);
-        	allStreaks = Stream.concat(allStreaks.stream(), getFullStreaksFromStripe(leftDiagonal, val).stream())
-					.collect(Collectors.toList());
+			leftDiagonals.add(createLeftDiagonal(g, 0, column));
         }
 		
-		return allStreaks;
+		return leftDiagonals;
 	}
 	
 	private static Stripe createLeftDiagonal(Grid g, int startingRow, int startingColumn) {
@@ -88,7 +79,7 @@ public class Computations {
         Stripe stripe = new Stripe();
 
         while (row < g.size() && column < g.size()) {
-            stripe.add(new ValueCoordinate(row, column, g.getVal(row, column)));
+            stripe.add(new ValuedCoordinate(row, column, g.getVal(row, column)));
             row++;
             column++;
         }
@@ -96,25 +87,20 @@ public class Computations {
         return stripe;
 	}
 	
-	public static Collection<FullStreak> getFullRightDiagonalStreaks(Grid g, SVal val){
-		Collection<FullStreak> allStreaks = new ArrayList<FullStreak>();
-		Stripe rightDiagonal;
+	public static LinkedList<Stripe> getAllRightDiagonals(Grid g) {
+		LinkedList<Stripe> rightDiagonals = new LinkedList<>();
 		
 		// checking diagonals starting on right side
 		for (int row = 0; row < g.size(); row++) {
-			rightDiagonal = createRightDiagonal(g, row, g.size() - 1);
-        	allStreaks = Stream.concat(allStreaks.stream(), getFullStreaksFromStripe(rightDiagonal, val).stream())
-					.collect(Collectors.toList());
+			rightDiagonals.add(createRightDiagonal(g, row, g.size() - 1));
         }
 		
 		// checking diagonals starting on upper side (ends at g.size() - 1 because diagonal starting on last column was already checked)
 		for (int column = 0; column < g.size() - 1; column++) {
-			rightDiagonal = createRightDiagonal(g, 0, column);
-        	allStreaks = Stream.concat(allStreaks.stream(), getFullStreaksFromStripe(rightDiagonal, val).stream())
-					.collect(Collectors.toList());
-        }
+			rightDiagonals.add(createRightDiagonal(g, 0, column));
+		}
 		
-		return allStreaks;
+		return rightDiagonals;
 	}
 	
 	private static Stripe createRightDiagonal(Grid g, int startingRow, int startingColumn) {
@@ -127,7 +113,7 @@ public class Computations {
         Stripe stripe = new Stripe();
 
         while (row < g.size() && column >= 0) {
-            stripe.add(new ValueCoordinate(row, column, g.getVal(row, column)));
+            stripe.add(new ValuedCoordinate(row, column, g.getVal(row, column)));
             row++;
             column--;
         }
@@ -135,8 +121,40 @@ public class Computations {
         return stripe;
 	}
 	
-	public static Collection<FullStreak> getFullStreaksFromStripe(Stripe stripe, SVal val){
-		Collection<FullStreak> streaks = new ArrayList<FullStreak>();
+	//--------------------Full Streaks--------------------
+	
+	/**
+	 * Function finds out full streaks in grid of certain SVal. Substreaks are not included.
+	 * @param g
+	 * @param val
+	 * @return
+	 */
+	public static List<FullStreak> getAllFullStreaks(Grid g, SVal val){
+		Stream<FullStreak> trivialStreaks = getTrivialFullStreaks(g, val).stream();
+		
+		Stream<Stripe> allStripesStream = Stream.concat(getAllRows(g).stream(), getAllColumns(g).stream());
+		allStripesStream = Stream.concat(allStripesStream, getAllLeftDiagonals(g).stream());
+		allStripesStream = Stream.concat(allStripesStream, getAllRightDiagonals(g).stream());
+		List<Stripe> allStripes = allStripesStream.collect(Collectors.toList());
+		Collection<FullStreak> streaksFromStripes = getFullStreaksFromStripes(allStripes, val);
+		
+		return Stream.concat(trivialStreaks, streaksFromStripes.stream()).collect(Collectors.toList());
+	}
+		
+
+	public static List<FullStreak> getFullStreaksFromStripes(List<Stripe> stripes, SVal val){
+		Stream<FullStreak> streaksFromStripesStream = getFullStreaksFromStripe(stripes.get(0), val).stream();
+		stripes = stripes.subList(1, stripes.size());
+		
+		for (Stripe stripe : stripes) {			
+			streaksFromStripesStream = Stream.concat(streaksFromStripesStream, getFullStreaksFromStripe(stripe, val).stream());
+        }
+		
+		return streaksFromStripesStream.collect(Collectors.toList());
+	}
+	
+	public static List<FullStreak> getFullStreaksFromStripe(Stripe stripe, SVal val){
+		List<FullStreak> streaks = new ArrayList<FullStreak>();
 		if(stripe.size() <= 1) {
 			// trivial FullStreaks don't count - return empty streak
 			return streaks;
@@ -167,8 +185,8 @@ public class Computations {
         return streaks;
 	}
 	
-	public static Collection<FullStreak> getTrivialFullSteraksFromGrid(Grid g, SVal val){
-		Collection<FullStreak> allStreaks = new ArrayList<FullStreak>();
+	public static List<FullStreak> getTrivialFullStreaks(Grid g, SVal val){
+		List<FullStreak> allStreaks = new ArrayList<FullStreak>();
 		
 		for (int i = 0; i < g.size(); i++) {
 			for (int j = 0; j < g.size(); j++) {
@@ -218,7 +236,7 @@ public class Computations {
 			Stripe row = new Stripe();
 			
 			for(int columnIndex = 0; columnIndex < g.size(); columnIndex++) {
-				row.add(new ValueCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
+				row.add(new ValuedCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
 			}
 			
 			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(row, val, streakLength).stream())
@@ -235,7 +253,7 @@ public class Computations {
 			Stripe column = new Stripe();
 			
 			for(int rowIndex = 0; rowIndex < g.size(); rowIndex++) {
-				column.add(new ValueCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
+				column.add(new ValuedCoordinate(rowIndex, columnIndex, g.getVal(rowIndex, columnIndex)));
 			}
 			
 			allStreaks = Stream.concat(allStreaks.stream(), getPotentialStreaksFromStripe(column, val, streakLength).stream())
@@ -329,7 +347,4 @@ public class Computations {
 		
 		return new PotentialStreak(stripe.get(startIndex), stripe.get(startIndex + streakLength - 1), filledCoordinates.toArray(new Coordinate[0]));
 	}
-	
-	
-	
 }

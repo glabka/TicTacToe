@@ -6,31 +6,42 @@ import java.util.Collections;
 
 public class Stripe {
 
-	private ArrayList<ValueCoordinate> stripe = new ArrayList<>();
+	private ArrayList<ValuedCoordinate> stripe = new ArrayList<>();
 	
 	public Stripe() {}
 	
-	public Stripe(ValueCoordinate start) {
+	public Stripe(ValuedCoordinate start) {
 		stripe.add(start);
 	}
 	
-	public Stripe(ValueCoordinate[] coordinates) {
+	public Stripe(ValuedCoordinate[] coordinates) {
 		Arrays.sort(coordinates);
-		for(ValueCoordinate coo : coordinates) {
+		for(ValuedCoordinate coo : coordinates) {
 			stripe.add(coo);
 		}
 	}
 	
-	public void add(ValueCoordinate coordinate) {
+	public void add(ValuedCoordinate coordinate) {
 		stripe.add(coordinate);
 		Collections.sort(stripe);
 	}
 	
-	public ValueCoordinate get(int index) {
+	public ValuedCoordinate get(int index) {
 		return stripe.get(index);
 	}
 	
 	public int size() {
 		return stripe.size();
+	}
+	
+	public String toString() {
+		StringBuilder strB = new StringBuilder();
+		
+		for(Coordinate c : stripe) {
+			strB.append(c.toString() + ",");
+		}
+		strB.deleteCharAt(strB.length() - 1);
+		
+		return strB.toString();
 	}
 }

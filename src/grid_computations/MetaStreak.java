@@ -1,7 +1,11 @@
 package grid_computations;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import custom_exceptions.FatalErrorInCodeException;
 import custom_exceptions.NotALegalStreakException;
+import game_components.Square.SVal;
 
 public class MetaStreak {
 
