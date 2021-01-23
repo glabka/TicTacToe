@@ -86,6 +86,18 @@ public class PotentialStreak extends MetaStreak {
 		return Arrays.copyOf(coos, coos.length);
 	}
 	
+	public int potentialCoosSize() {
+		return nullCoos.length;
+	}
+	
+	public int filledCoosSize() {
+		return filledCoos.length;
+	}
+	
+	public int coosSize() {
+		return coos.length;
+	}
+	
 	public static boolean areTheseCoordinatesOfPotentialStreak(Coordinate[] c) {
 		if (c.length == 1) {
 			// Trivial Streak

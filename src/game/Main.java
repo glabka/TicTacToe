@@ -8,11 +8,16 @@ package game;
 import game_mechanics.Rules;
 import grid_computations.Computations;
 import grid_computations.FullStreak;
+import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
 import players.Player;
+import players.ai_players.DumbAIPlayer;
+import players.ai_players.DumbAIPlayer2;
 import players.ui_players.UIPlayer;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 import game_components.Grid;
@@ -97,7 +102,40 @@ public class Main {
         	System.out.println(streak);
         }
         
-
+		////////////////////////////////////////////////////////////////////////////
+		//----------------------PotentialStreak's Comparators-----------------------
+		////////////////////////////////////////////////////////////////////////////
+        List<PotentialStreak> allPotStreaksCircle0 = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
+        Collections.sort(allPotStreaksCircle0, new PotStreakFilledLengthComparator());
+        System.out.println("PotStreakFilledLengthComparator");
+        for (PotentialStreak streak : allPotStreaksCircle0) {
+        	System.out.println(streak);
+        }
+        
+		////////////////////////////////////////////////////////////////////////////
+		//---------------------------------AI GAME----------------------------------
+		////////////////////////////////////////////////////////////////////////////
+        g = new Grid(10);
+        int reqStreakLength = 4;
+        Player aiPlayer1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", reqStreakLength);
+//        Player aiPlayer2 = new DumbAIPlayer(SVal.CIRCLE, "dumb ai player 2", reqStreakLength);
+        Player aiPlayer2 = new DumbAIPlayer2(SVal.CIRCLE, "dumb ai 2 player 2", reqStreakLength);
+        
+        Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
+        aiGame.play();
+        
+		////////////////////////////////////////////////////////////////////////////
+		//----------------------------AI vs Person Game ----------------------------
+		////////////////////////////////////////////////////////////////////////////
+        
+//        g = new Grid(5);
+//        int streakLength1 = 3;
+//        Player aiPlayer1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength1);
+//        Player aiPlayer2 = new UIPlayer(SVal.CIRCLE, "ui player");
+//        
+//        Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
+//        aiGame.play();
+        
         
         ////////////////////////////////////////////////////////////////////////////
         //----------------------------------GAME------------------------------------
