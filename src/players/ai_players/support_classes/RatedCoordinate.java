@@ -1,4 +1,4 @@
-package players.ui_players.support_classes;
+package players.ai_players.support_classes;
 
 import grid_computations.Coordinate;
 
