@@ -3,11 +3,11 @@ package players.ai_players.support_classes;
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
 
-public class PoweredLengthCoordinateValueEstimator extends AbstractCoordinateValueFromStreakEstimator {
+public class PoweredLengthCooValEstimator extends AbstractCooValFromStreakEstimator {
 
 	private int power;
 	
-	public PoweredLengthCoordinateValueEstimator(int power) {
+	public PoweredLengthCooValEstimator(int power) {
 		this.power = power;
 	}
 	
