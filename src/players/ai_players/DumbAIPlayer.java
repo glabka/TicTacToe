@@ -29,9 +29,9 @@ public class DumbAIPlayer extends AbstractAIPlayer {
 		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength);
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength);
 		
-		Coordinate blockingCoordinate = defend(opponentsPotStreaks, streakLength - 2);
-		if(blockingCoordinate != null) {
-			return new Move(blockingCoordinate, this.getSVal());
+		Coordinate cooForDefending = defend(opponentsPotStreaks, streakLength - 2);
+		if(cooForDefending != null) {
+			return new Move(cooForDefending, this.getSVal());
 		} else {
 			return new Move(attack(potStreaks, g), this.getSVal());
 		}
@@ -71,7 +71,7 @@ public class DumbAIPlayer extends AbstractAIPlayer {
 		return fullestStreak.potentialCoos()[0];
 	}
 	
-	private static Coordinate firtEmptySquare(Grid g) {
+	public static Coordinate firtEmptySquare(Grid g) {
 		for (int i = 0; i < g.size(); i++) {
 			for (int j = 0; j < g.size(); j++) {
 				if(g.isSquareEmpty(i, j)) {

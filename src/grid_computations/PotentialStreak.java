@@ -121,7 +121,17 @@ public class PotentialStreak extends MetaStreak {
 		return coos.length;
 	}
 	
+	public boolean contains(Coordinate coo0) {
+		for(Coordinate coo : coos) {
+			if(coo0.equals(coo)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
+	@Override
 	public String toString() {
 		StringBuilder strB = new StringBuilder();
 		strB.append("<" + getStart().toString() + ">,");

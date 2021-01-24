@@ -126,6 +126,44 @@ public class Grid {
             System.out.println("");
         }
     }
+    
+    public void printGridDebug() {
+        for (int i = 0; i < grid.length; i++) {
+        	if(i == 0) {
+        		System.out.print(" ");
+        		for (int j = 0; j < grid.length; j++) {
+    				System.out.print(j);
+        			if (j != grid.length - 1) {
+                        System.out.print("|");
+                    }
+				}
+        		System.out.println();
+        	}
+        	System.out.print(i);
+            for (int j = 0; j < grid.length; j++) {
+                SVal squareVal = grid[i][j].getVal();
+                if (cursorRow != null && cursorColumn != null && cursorRow == i && cursorColumn == j) {
+                    if (squareVal == null) {
+                        System.out.print("+");
+                    } else if (squareVal == SVal.CIRCLE) {
+                        System.out.print("o");
+                    } else if (squareVal == SVal.CROSS) {
+                        System.out.print("x");
+                    }
+                } else if (squareVal == Square.SVal.CIRCLE) {
+                    System.out.print("O");
+                } else if (squareVal == Square.SVal.CROSS) {
+                    System.out.print("X");
+                } else {
+                    System.out.print(" ");
+                }
+                if (j != grid.length - 1) {
+                    System.out.print("|");
+                }
+            }
+            System.out.println("");
+        }
+    }
 
     public void test() {
 //        System.out.println(this.grid[0]);

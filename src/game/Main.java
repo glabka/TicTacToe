@@ -11,6 +11,8 @@ import grid_computations.FullStreak;
 import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
 import players.Player;
+import players.ai_players.AIPlayer;
+import players.ai_players.AbstractAIPlayer;
 import players.ai_players.DumbAIPlayer;
 import players.ai_players.DumbAIPlayer2;
 import players.ui_players.UIPlayer;
@@ -115,14 +117,17 @@ public class Main {
 		////////////////////////////////////////////////////////////////////////////
 		//---------------------------------AI GAME----------------------------------
 		////////////////////////////////////////////////////////////////////////////
-        g = new Grid(10);
-        int reqStreakLength = 5;
-        Player aiPlayer1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", reqStreakLength);
-        Player aiPlayer2 = new DumbAIPlayer(SVal.CIRCLE, "dumb ai player 2", reqStreakLength);
-//        Player aiPlayer2 = new DumbAIPlayer2(SVal.CIRCLE, "dumb ai 2 player 2", reqStreakLength);
+//        g = new Grid(5);
+//        int reqStreakLength = 3;
+//        AbstractAIPlayer aiPlayer1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", reqStreakLength);
+//        AbstractAIPlayer aiPlayer2 = new AIPlayer(SVal.CIRCLE, "ai player", reqStreakLength);
+////        Player aiPlayer2 = new DumbAIPlayer2(SVal.CIRCLE, "dumb ai 2 player 2", reqStreakLength);
+//      Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
+//      aiGame.play();
+
+        testAIs();
         
-        Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
-        aiGame.play();
+
         
 		////////////////////////////////////////////////////////////////////////////
 		//----------------------------AI vs Person Game ----------------------------
@@ -136,6 +141,13 @@ public class Main {
 //        Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
 //        aiGame.play();
         
+        
+		////////////////////////////////////////////////////////////////////////////
+		//--------------------------AI Players' methods-----------------------------
+		////////////////////////////////////////////////////////////////////////////
+        
+//        AIPlayer aiPlayer = new AIPlayer(SVal.CIRCLE, "name", 3);
+//        aiPlayer.test();
         
         ////////////////////////////////////////////////////////////////////////////
         //----------------------------------GAME------------------------------------
@@ -188,6 +200,42 @@ public class Main {
                 in.nextLine();
             }
         }
+    }
+    
+    private static void testAIs() {
+    	int[][] gameSizeAndStreakSizes = new int[][] {{4,2}, {5,3}, {5,4}, {6,4}, {7,4}, {8,4}, {8,5}, {8,6}, {9,6}, {10,5}, {10,6}};
+    	
+    	int p1Wins = 0;
+    	int p2Wins = 0;
+    	int ties = 0;
+  		StringBuilder strB = new StringBuilder();
+  		
+    	for(int[] size : gameSizeAndStreakSizes) {
+  
+    		Grid g = new Grid(size[0]);
+    		int streakSize = size[1];
+    		Player p1= new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", streakSize);
+    		Player p2= new AIPlayer(SVal.CIRCLE, "ai player", streakSize);
+    		
+    		Game game = new Game(p1, p2, g, streakSize);
+    		System.out.println("\n\n\n\n" + game);
+    		SVal winner = game.play();
+    		
+    		strB.append("{" + size[0] +"}" + "{" + size[1] + "}" + " the winner is ");
+    		if(winner == p1.getSVal()) {
+    			strB.append(p1.getSVal() + "\n");
+    			p1Wins++;
+    		} else if(winner == p2.getSVal()) {
+    			strB.append(p2.getSVal() + "\n");
+    			p2Wins++;
+    		} else {
+    			strB.append("noone \n");
+    			ties++;
+    		}
+    	}
+    	
+    	System.out.println(strB.toString());
+    	System.out.println("p1Wins = " + p1Wins + "\np2Wins = " + p2Wins + "\nties = " + ties);
     }
     
 }

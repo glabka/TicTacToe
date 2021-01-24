@@ -51,19 +51,24 @@ public class Game {
     	}
     }
 
-    public void play() {
+    public SVal play() {
         while (!Rules.endOfGame(g, streakLength)) {
             System.out.println("\n\n\n\n");
-            g.printGrid();
+//            g.printGrid();
+            g.printGridDebug();
             Move nextMove = currentPlayer.nextMove(g);
+            System.out.println("nextMove = " + nextMove);
             if(insertVal(nextMove)) {
             	changePlayer();
             }
         }
 
         System.out.println("\n\n\n\n");
-        g.printGrid();
-        printOutWinner(Rules.findWinner(g, streakLength));
+//        g.printGrid();
+        g.printGridDebug();
+        SVal winner = Rules.findWinner(g, streakLength);
+        printOutWinner(winner);
+        return winner;
     }
     
     private boolean insertVal(Move mv) {
@@ -92,5 +97,8 @@ public class Game {
         }
     }
 
-
+    public String toString() {
+    	return player1.getName() + " vs " + player2.getName() + ", grid = " + g.size() + ", streakLength = " + streakLength;
+    }
+    
 }
