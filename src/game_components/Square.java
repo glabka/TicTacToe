@@ -29,6 +29,10 @@ public class Square {
         
     }
     
+    public Square(SVal val) {
+    	this.val = val;
+    }
+    
     public boolean isEmpty(){
         if(val == null){
             return true;

@@ -5,9 +5,12 @@
  */
 package game_components;
 
+import java.util.List;
+
 import custom_exceptions.AlreadyFilledUpSquareException;
 import custom_exceptions.IndexesOutOfRangeException;
 import game_components.Square.SVal;
+import grid_computations.Coordinate;
 
 /**
  *
@@ -19,10 +22,10 @@ public class Grid {
     private Integer cursorRow;
     private Integer cursorColumn;
 
-    public Grid(int length) {
-        this.grid = new Square[length][length];
-        for (int i = 0; i < length; i++) {
-            for (int j = 0; j < length; j++) {
+    public Grid(int size) {
+        this.grid = new Square[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 grid[i][j] = new Square();
             }
         }
@@ -53,6 +56,20 @@ public class Grid {
     
     public void insert(Move mv) {
         insert(mv.getRow(), mv.getColumn(), mv.getVal());
+    }
+    
+    public void delete(int row, int column) {
+    	grid[row][column].setVal(null);
+    }
+    
+    public void delete(List<Move> moves) {
+    	for(Move move : moves) {
+    		grid[move.getRow()][move.getColumn()].setVal(null);
+    	}
+    }
+    
+    public void delete(Coordinate coo) {
+    	grid[coo.getRow()][coo.getColumn()] = null;
     }
 
     public SVal getVal(int row, int column) {
@@ -163,6 +180,20 @@ public class Grid {
             }
             System.out.println("");
         }
+    }
+    
+    public Grid gridsCopy() {
+    	Grid newGrid = new Grid(this.size());
+    	for (int i = 0; i < newGrid.size(); i++) {
+			for (int j = 0; j < newGrid.size(); j++) {
+				SVal val = grid[i][j].getVal();
+				if(val != null) {
+					newGrid.insert(i, j, val);
+				}
+			}
+		}
+    	
+    	return newGrid;
     }
 
     public void test() {
