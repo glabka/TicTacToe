@@ -40,8 +40,8 @@ public class Rules {
         }
     }
     
-    public static boolean endOfGame(Grid g, int streakLengtt) {
-    	if(findWinner(g, streakLengtt) != null) {
+    public static boolean endOfGame(Grid g, int streakLength) {
+    	if(findWinner(g, streakLength) != null) {
     		return true;
     	} else if (g.isGridFull()) {
     		return true;

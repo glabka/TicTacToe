@@ -1,59 +1,32 @@
-package players.ai_players;
+package players.ai_players.heuristics;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import game_components.Grid;
-import game_components.Move;
 import game_components.Square.SVal;
 import grid_computations.Computations;
-import grid_computations.Coordinate;
-import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
-import grid_computations.ValuedCoordinate;
-import players.ai_players.heuristics.Common;
+import players.ai_players.DumbAIPlayer;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
-import players.ai_players.support_classes.LengthCooValEstimator;
 import players.ai_players.support_classes.PoweredLengthCooValEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
-import players.ai_players.support_classes.RatedCoordinatesValueComparator;
 
-public class MergeAIPlayer extends AbstractAIPlayer {
-
-	public MergeAIPlayer(SVal playersSVal, String name, int streakLength) {
-		super(playersSVal, name, streakLength);
-	}
+public class MergedHeuristic extends AbstractHeuristic{
 
 	@Override
-	public Move nextMove(Grid g) {
-		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength);
-		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength);
+	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength,
+			AbstractCooValFromStreakEstimator cooEstimator) {
+		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(playersSVal), streakLength);
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playersSVal, streakLength);
 		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
 		
 		List<RatedCoordinate> coosForDefending = defend(opponentsPotStreaks, estimator);
-//		if(coosForDefending != null) {
-//			Collections.sort(coosForDefending, new RatedCoordinatesValueComparator()); // debug
-//			Collections.reverse(coosForDefending); // debug	
-//		}
-		System.out.println(coosForDefending); // debug
 		List<RatedCoordinate> coosForAttack = attack(g, potStreaks, estimator);
-//		if(coosForAttack != null) {
-//			Collections.sort(coosForAttack, new RatedCoordinatesValueComparator()); // debug
-//			Collections.reverse(coosForAttack); // debug
-//		}
-		System.out.println(coosForAttack); // debug
 		
 		List<RatedCoordinate> combinedCoos = combineTwoEqualRatedCoosFromTwoLists(coosForDefending, coosForAttack);
-//		Collections.sort(combinedCoos, new RatedCoordinatesValueComparator()); // debug
-//		Collections.reverse(combinedCoos); // debug
-//		System.out.println(combinedCoos); // debug
-		RatedCoordinate coo = Collections.max(combinedCoos, new RatedCoordinatesValueComparator());
-		
-		return new Move(coo, playersSVal);
+		return combinedCoos;
 	}
 	
 	private List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
@@ -61,7 +34,7 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 			List<RatedCoordinate> list = new ArrayList<>();
 			int row = g.size() / 2;
 			int column = row;
-			int value = streakLength - 1;
+			double value = Double.POSITIVE_INFINITY;
 			if(g.isSquareEmpty(row, column)) {
 				list.add(new RatedCoordinate(row, column, value));
 				return list;
@@ -69,6 +42,7 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 				list.add(new RatedCoordinate(row - 1, column - 1, value));
 				return list;
 			} else {
+				
 				list.add(new RatedCoordinate(DumbAIPlayer.firtEmptySquare(g), value));
 				return list;
 			}
@@ -154,46 +128,6 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 		}
 		
 		return combinedCoos;
-	}
-	
-	public void test() {
-//		List<RatedCoordinate> ratedCoos0 = new LinkedList<>();
-//		List<RatedCoordinate> combined0 = this.combineAllEqualRatedCoos(ratedCoos0);
-//		System.out.println(combined0);
-//		
-//		
-//		List<RatedCoordinate> ratedCoos1 = new LinkedList<>();
-//		ratedCoos1.add(new RatedCoordinate(0, 0, 1));
-//		ratedCoos1.add(new RatedCoordinate(0, 0, 2));
-//		ratedCoos1.add(new RatedCoordinate(0, 0, 3));
-//		ratedCoos1.add(new RatedCoordinate(0, 1, 1));
-//		ratedCoos1.add(new RatedCoordinate(0, 1, 1));
-//		ratedCoos1.add(new RatedCoordinate(2, 2, 1.4));
-//		ratedCoos1.add(new RatedCoordinate(2, 2, 1));
-//		ratedCoos1.add(new RatedCoordinate(2, 2, 1.3));
-//		
-//		List<RatedCoordinate> combined1 = this.combineAllEqualRatedCoos(ratedCoos1);
-//		System.out.println(combined1);
-//		
-//		List<RatedCoordinate> ratedCoos2 = new LinkedList<>();
-//		ratedCoos2.add(new RatedCoordinate(0, 0, -1));
-//		ratedCoos2.add(new RatedCoordinate(0, 0, 2));
-//		ratedCoos2.add(new RatedCoordinate(0, 0, 3));
-//		ratedCoos2.add(new RatedCoordinate(0, 1, 0.5));
-//		ratedCoos2.add(new RatedCoordinate(0, 1, 1));
-//		ratedCoos2.add(new RatedCoordinate(2, 2, 1.4));
-//		ratedCoos2.add(new RatedCoordinate(2, 2, 1));
-//		ratedCoos2.add(new RatedCoordinate(2, 2, 1.3));
-//		
-//		List<RatedCoordinate> combined2 = this.combineAllEqualRatedCoos(ratedCoos2);
-//		System.out.println(combined2);
-//		
-//		List<RatedCoordinate> combinedLists = this.combineTwoEqualRatedCoosFromTwoLists(combined1, combined2);
-//		System.out.println(combinedLists);
-//		
-//		Collections.sort(combinedLists, new RatedCoordinatesValueComparator());
-//		System.out.println(combinedLists);
-		
 	}
 
 }

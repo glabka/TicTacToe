@@ -52,6 +52,7 @@ public class Game {
     }
 
     public SVal play() {
+    	int moveNumberDebug = 0; // debug
         while (!Rules.endOfGame(g, streakLength)) {
             System.out.println("\n\n\n\n");
 //            g.printGrid();
@@ -59,6 +60,8 @@ public class Game {
             Move nextMove = currentPlayer.nextMove(g);
             System.out.println("nextMove = " + nextMove);
             if(insertVal(nextMove)) {
+            	System.out.println("game grid size: " + g.size() + ", streakLength: "+ streakLength + ", move number = " + moveNumberDebug); // debug
+            	moveNumberDebug++; // debug
             	changePlayer();
             }
         }

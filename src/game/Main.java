@@ -11,10 +11,15 @@ import grid_computations.FullStreak;
 import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
 import players.Player;
-import players.ai_players.AIPlayer;
+import players.ai_players.MergeAIPlayer;
 import players.ai_players.AbstractAIPlayer;
 import players.ai_players.DumbAIPlayer;
 import players.ai_players.DumbAIPlayer2;
+import players.ai_players.FewBestDepthAIPlayer;
+import players.ai_players.OneStepAIPlayer;
+import players.ai_players.heuristics.AttackBlockHeuristic;
+import players.ai_players.heuristics.AttackHeuristic;
+import players.ai_players.heuristics.MergedHeuristic;
 import players.ui_players.UIPlayer;
 
 import java.util.Collection;
@@ -203,21 +208,36 @@ public class Main {
     }
     
     private static void testAIs() {
-    	int[][] gameSizeAndStreakSizes = new int[][] {{4,2}, {5,3}, {5,4}, {6,4}, {7,4}, {8,4}, {8,5}, {8,6}, {9,6}, {10,5}, {10,6}};
+//    	int[][] gameSizeAndStreakSizes = new int[][] {{8,4}};
+//    	int[][] gameSizeAndStreakSizes = new int[][] {{5,3}};
+    	int[][] gameSizeAndStreakSizes = new int[][] {{5,3}, {5,4}, {6,4}, {7,4}, {8,4}, {8,5}, {8,6}, {9,6}, {10,5}, {10,6}};
     	
     	int p1Wins = 0;
     	int p2Wins = 0;
     	int ties = 0;
   		StringBuilder strB = new StringBuilder();
+  		Player p1 = null;
+  		Player p2 = null;
   		
     	for(int[] size : gameSizeAndStreakSizes) {
   
     		Grid g = new Grid(size[0]);
-    		int streakSize = size[1];
-    		Player p1= new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", streakSize);
-    		Player p2= new AIPlayer(SVal.CIRCLE, "ai player", streakSize);
+    		int streakLength = size[1];
+    		p1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
+//    		p1 = new DumbAIPlayer2(SVal.CROSS, "dumb ai player 1", streakLength);
+//    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with ABheuristic", streakLength, new AttackBlockHeuristic());
+//    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with Attackheuristic", streakLength, new AttackHeuristic());
+//    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with mergeHeuristic", streakLength, new MergedHeuristic());
+//    		p1 = new MergeAIPlayer(SVal.CROSS, "merge ai player 1", streakLength);
     		
-    		Game game = new Game(p1, p2, g, streakSize);
+//     		p2 = new MergeAIPlayer(SVal.CIRCLE, "merge ai player 2", streakLength);
+//    		p2 = new DumbAIPlayer2(SVal.CIRCLE, "dumb ai 2 player 2", streakLength);
+//    		p2 = new DumbAIPlayer(SVal.CIRCLE, "dumb ai player 2", streakLength);
+//    		p2 = new MergeAIPlayer(SVal.CIRCLE, "merge ai player 2", streakLength);
+    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "Few Best Depth ai 2", streakLength, new MergedHeuristic(), 3, 3);
+//    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "AB Depth ai 2", streakLength, new AttackBlockHeuristic(), 3, 3);
+    		
+    		Game game = new Game(p1, p2, g, streakLength);
     		System.out.println("\n\n\n\n" + game);
     		SVal winner = game.play();
     		
@@ -235,7 +255,7 @@ public class Main {
     	}
     	
     	System.out.println(strB.toString());
-    	System.out.println("p1Wins = " + p1Wins + "\np2Wins = " + p2Wins + "\nties = " + ties);
+    	System.out.println("p1Wins = " + p1.getName() + " = " + p1Wins + "\np2Wins = " + p2.getName() +" = " + p2Wins + "\nties = " + ties);
     }
     
 }
