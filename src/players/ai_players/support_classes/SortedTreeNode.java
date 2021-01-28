@@ -11,18 +11,23 @@ public class SortedTreeNode <T> implements Comparable<SortedTreeNode<T>>{
 	private List<SortedTreeNode<T>> children;
 	private T containedValue;
 	private Comparator<T> comparator;
+	private int depth;
 	private Double nodeEvaluationNumber = null; // number of node evaluated from outside
 	
-	public SortedTreeNode(SortedTreeNode<T> parent, T containedValue, Comparator<T> comparator) {
+	public SortedTreeNode(SortedTreeNode<T> parent, T containedValue, Comparator<T> comparator, int depth) {
 		this.parent = parent;
 		this.children = new LinkedList<SortedTreeNode<T>>();
 		this.containedValue = containedValue;
 		this.comparator = comparator;
+		this.depth = depth;
 	}
 	
 	public void addChild(SortedTreeNode<T> child) {
 		children.add(child);
-		Collections.sort(children, Collections.reverseOrder());
+//		Collections.sort(children, Collections.reverseOrder());
+		
+		Collections.sort(children);
+		Collections.reverse(children);
 	}
 	
 	public T getVal() {
@@ -50,4 +55,22 @@ public class SortedTreeNode <T> implements Comparable<SortedTreeNode<T>>{
 		return this.nodeEvaluationNumber;
 	}
 	
+	public int getDepth() {
+		return depth;
+	}
+	
+	public String superToString() {
+		return "" + hashCode();
+	}
+	
+	public String toString() {
+		
+		String str = "{ this: " + superToString() + " parent: " + (parent != null ? parent.superToString() : null) + " depth: " + depth;
+		if (nodeEvaluationNumber == null) {
+			str += " evalNum: " + nodeEvaluationNumber;
+		}
+		str += " cVal: " + containedValue + "}";
+		
+		return str; 
+	}
 }

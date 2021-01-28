@@ -15,7 +15,7 @@ import grid_computations.Coordinate;
 import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
 import grid_computations.ValuedCoordinate;
-import players.ai_players.heuristics.Common;
+import players.ai_players.heuristics.HeuristicCommon;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.LengthCooValEstimator;
 import players.ai_players.support_classes.PoweredLengthCooValEstimator;
@@ -74,13 +74,13 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 			}
 		}
 		
-		List<RatedCoordinate> allRatedCoos = Common.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);
+		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);
 		List<RatedCoordinate> combinedCoos = combineAllEqualRatedCoos(allRatedCoos);
 		return combinedCoos;
 	}
 	
 	private List<RatedCoordinate> defend(List<PotentialStreak> opponentsPotStreaks, AbstractCooValFromStreakEstimator estimator){
-		List<RatedCoordinate> allRatedCoos = Common.getAllRatedCoosFromPotOfPotStreaks(opponentsPotStreaks, estimator);
+		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(opponentsPotStreaks, estimator);
 //		// filtering out just rated coordinates of value bigger then steakLength - 2
 //		List<RatedCoordinate> filteredRatedCoos = allRatedCoos.stream().filter(c -> c.getValue() > streakLength - 2).collect(Collectors.toList());
 //		List<RatedCoordinate> combinedCoos = combineAllEqualRatedCoos(filteredRatedCoos);

@@ -13,7 +13,13 @@ import players.ai_players.support_classes.RatedCoordinate;
  *
  */
 public abstract class AbstractSquareHeuristic {
+	
+	protected AbstractCooValFromStreakEstimator cooEstimator;
+	
+	public AbstractSquareHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
+		this.cooEstimator = cooEstimator;
+	}
 
-	public abstract List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength, AbstractCooValFromStreakEstimator cooEstimator);
+	public abstract List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength);
 	
 }

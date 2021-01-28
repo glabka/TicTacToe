@@ -12,7 +12,7 @@ import grid_computations.ValuedCoordinate;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
-public class Common {
+public class HeuristicCommon {
 
 	public static List<RatedCoordinate> getAllRatedCoosFromPotOfPotStreaks(List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
 		if(potStreaks == null || potStreaks.isEmpty()) {

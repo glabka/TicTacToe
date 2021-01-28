@@ -15,9 +15,12 @@ import players.ai_players.support_classes.RatedCoordinate;
 
 public class SquareMergedHeuristic extends AbstractSquareHeuristic{
 
+	public SquareMergedHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
+		super(cooEstimator);
+	}
+
 	@Override
-	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength,
-			AbstractCooValFromStreakEstimator cooEstimator) {
+	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength) {
 		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(playersSVal), streakLength);
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playersSVal, streakLength);
 		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
@@ -48,13 +51,13 @@ public class SquareMergedHeuristic extends AbstractSquareHeuristic{
 			}
 		}
 		
-		List<RatedCoordinate> allRatedCoos = Common.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);
+		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);
 		List<RatedCoordinate> combinedCoos = combineAllEqualRatedCoos(allRatedCoos);
 		return combinedCoos;
 	}
 	
 	private List<RatedCoordinate> defend(List<PotentialStreak> opponentsPotStreaks, AbstractCooValFromStreakEstimator estimator){
-		List<RatedCoordinate> allRatedCoos = Common.getAllRatedCoosFromPotOfPotStreaks(opponentsPotStreaks, estimator);
+		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(opponentsPotStreaks, estimator);
 //		// filtering out just rated coordinates of value bigger then steakLength - 2
 //		List<RatedCoordinate> filteredRatedCoos = allRatedCoos.stream().filter(c -> c.getValue() > streakLength - 2).collect(Collectors.toList());
 //		List<RatedCoordinate> combinedCoos = combineAllEqualRatedCoos(filteredRatedCoos);

@@ -1,6 +1,7 @@
 package players.ai_players.support_classes;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SortedNodesTree<T> {
@@ -9,16 +10,25 @@ public class SortedNodesTree<T> {
 	private Comparator<T> comparator;
 	
 	/**
-	 * Just a container for SortedTreeNodes. Nodes are sorted only on node level, not on tree level.
-	 * @param root
-	 * @param copmarator
+	 * 
+	 * @param rootValue
+	 * @param comparator
 	 */
-	public SortedNodesTree(SortedTreeNode<T> root, Comparator<T> comparator) {
-		this.root = root;
+	public SortedNodesTree(T rootValue, Comparator<T> comparator) {
+		this.root = new SortedTreeNode<T>(null, rootValue, comparator, 0);
+		this.comparator = comparator;
 	}
 	
-	public void addChild(SortedTreeNode<T> parent, T childValue) {
-		parent.addChild(new SortedTreeNode<T>(parent, childValue, comparator));
+	/**
+	 * Method returns the child
+	 * @param parent
+	 * @param childValue
+	 * @return
+	 */
+	public SortedTreeNode<T> addChild(SortedTreeNode<T> parent, T childValue) {
+		SortedTreeNode<T> child = new SortedTreeNode<T>(parent, childValue, comparator, parent.getDepth() + 1);
+		parent.addChild(child);
+		return child;
 	}
 	
 	public SortedTreeNode<T> getRoot() {
@@ -31,6 +41,39 @@ public class SortedNodesTree<T> {
 	
 	public SortedTreeNode<T> getParent(SortedTreeNode<T> node) {
 		return node.getParent();
+	}
+	
+	public int getDepth(SortedTreeNode<T> node) {
+		return node.getDepth();
+	}
+	
+	public void setNodeEvaluationNumber(SortedTreeNode<T> node, double evalNumber) {
+		node.setNodeEvaluationNumber(evalNumber);
+	}
+	
+	public String toString() {
+//		breadth search 
+		StringBuilder strB = new StringBuilder();
+		
+		List<SortedTreeNode> queue = new LinkedList<SortedTreeNode>();
+		queue.add(root);
+		
+		int lastDepth = -1;
+		while(!queue.isEmpty()) {
+			SortedTreeNode treeNode = queue.get(0);
+			queue.remove(0);
+			strB.append(treeNode);
+			
+			if(lastDepth != treeNode.getDepth()) {
+				strB.append("\n");
+			}
+			
+			lastDepth = treeNode.getDepth();
+			
+			queue.addAll(treeNode.getChildren());
+		}
+		
+		return strB.toString();
 	}
 	
 }

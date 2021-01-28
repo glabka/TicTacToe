@@ -15,9 +15,12 @@ import players.ai_players.support_classes.RatedCoordinate;
 
 public class SquareAttackHeuristic extends AbstractSquareHeuristic {
 
+	public SquareAttackHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
+		super(cooEstimator);
+	}
+
 	@Override
-	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength,
-			AbstractCooValFromStreakEstimator cooEstimator) {
+	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength) {
 		
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playersSVal, streakLength);
 		
@@ -37,11 +40,11 @@ public class SquareAttackHeuristic extends AbstractSquareHeuristic {
 				ratedCoos.add(new RatedCoordinate(row - 1, column - 1, val));
 				return ratedCoos;
 			} else {
-				ratedCoos.add(new RatedCoordinate(Common.firtEmptySquare(g), val));
+				ratedCoos.add(new RatedCoordinate(HeuristicCommon.firtEmptySquare(g), val));
 				return ratedCoos;
 			}
 		}
 		
-		return Common.getAllRatedCoosFromPotOfPotStreaks(potStreaks, cooEstimator);
+		return HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, cooEstimator);
 	}
 }

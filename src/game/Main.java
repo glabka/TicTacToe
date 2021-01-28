@@ -27,10 +27,13 @@ import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
 import players.ai_players.support_classes.FewBestRatedCoosFilter;
 import players.ai_players.support_classes.PoweredLengthCooValEstimator;
+import players.ai_players.support_classes.SortedNodesTree;
+import players.ai_players.support_classes.SortedTreeNode;
 import players.ui_players.UIPlayer;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -126,6 +129,27 @@ public class Main {
         	System.out.println(streak);
         }
         
+        
+		////////////////////////////////////////////////////////////////////////////
+		//-------------------------some things in development-----------------------
+		////////////////////////////////////////////////////////////////////////////
+        SortedNodesTree<Integer> tree = new SortedNodesTree<Integer>(0, new IntegerComparator());
+        
+        SortedTreeNode<Integer> child1 = tree.addChild(tree.getRoot(), Integer.valueOf(5));
+        SortedTreeNode<Integer> child2 = tree.addChild(tree.getRoot(), Integer.valueOf(6));
+        SortedTreeNode<Integer> child3 = tree.addChild(tree.getRoot(), Integer.valueOf(1));
+        
+        
+        SortedTreeNode<Integer> child11 = tree.addChild(child1, Integer.valueOf(10));
+        SortedTreeNode<Integer> child12 = tree.addChild(child1, Integer.valueOf(12));
+        
+        SortedTreeNode<Integer> child21 = tree.addChild(child2, Integer.valueOf(10));
+        SortedTreeNode<Integer> child22 = tree.addChild(child2, Integer.valueOf(11));
+        
+        SortedTreeNode<Integer> child211 = tree.addChild(child21, Integer.valueOf(100));
+        
+        System.out.println(tree);
+        
 		////////////////////////////////////////////////////////////////////////////
 		//---------------------------------AI GAME----------------------------------
 		////////////////////////////////////////////////////////////////////////////
@@ -137,7 +161,7 @@ public class Main {
 //      Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
 //      aiGame.play();
 
-        testAIs();
+//        testAIs();
         
 
         
@@ -228,7 +252,7 @@ public class Main {
   		
   		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
   		AbstractRatedCoosFilter fewBestFilter = new FewBestRatedCoosFilter(3);
-  		AbstractSquareHeuristic sqH = new SquareMergedHeuristic();
+  		AbstractSquareHeuristic sqH = new SquareMergedHeuristic(estimator);
   		AbstractGridHeuristic gH = new GridDiffHeuristic(sqH, estimator, fewBestFilter);
   		
   		
@@ -273,4 +297,13 @@ public class Main {
     	System.out.println("p1Wins = " + p1.getName() + " = " + p1Wins + "\np2Wins = " + p2.getName() +" = " + p2Wins + "\nties = " + ties);
     }
     
+    
+    static class IntegerComparator implements Comparator<Integer> {
+
+		@Override
+		public int compare(Integer arg0, Integer arg1) {
+			return arg0.compareTo(arg1);
+		}
+    	
+    }
 }

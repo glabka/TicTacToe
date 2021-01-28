@@ -22,8 +22,7 @@ public class OneStepAIPlayer extends AbstractAIPlayer {
 
 	@Override
 	public Move nextMove(Grid g) {
-		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
-		List<RatedCoordinate> suggestedCoos = this.squareHeuristic.getRatedCoos(playersSVal, g, streakLength, estimator);
+		List<RatedCoordinate> suggestedCoos = this.squareHeuristic.getRatedCoos(playersSVal, g, streakLength);
 //		if(suggestedCoos != null) { // debug
 //			Collections.sort(suggestedCoos, new RatedCoordinatesValueComparator()); // debug
 //			Collections.reverse(suggestedCoos); // debug
