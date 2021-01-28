@@ -13,7 +13,7 @@ import players.ai_players.DumbAIPlayer;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
-public class AttackHeuristic extends AbstractHeuristic {
+public class SquareAttackHeuristic extends AbstractSquareHeuristic {
 
 	@Override
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength,

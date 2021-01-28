@@ -13,7 +13,7 @@ import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.PoweredLengthCooValEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
-public class MergedHeuristic extends AbstractHeuristic{
+public class SquareMergedHeuristic extends AbstractSquareHeuristic{
 
 	@Override
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength,

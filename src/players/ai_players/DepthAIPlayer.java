@@ -8,33 +8,22 @@ import game_components.Grid;
 import game_components.Move;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
-import players.ai_players.heuristics.AbstractHeuristic;
+import players.ai_players.heuristics.AbstractGridHeuristic;
+import players.ai_players.heuristics.AbstractSquareHeuristic;
 import players.ai_players.heuristics.Common;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
+import players.ai_players.support_classes.AbstractRatedCoosFilter;
 import players.ai_players.support_classes.PoweredLengthCooValEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
-public abstract class AbstractDepthAIPlayer extends AbstractAIPlayer {
+public class DepthAIPlayer extends AbstractAIPlayer {
 	
 	protected int depth;
 
-	public AbstractDepthAIPlayer(SVal playersSVal, String name, int streakLength, AbstractHeuristic heuristic, int depth) {
-		super(playersSVal, name, streakLength, heuristic);
+	public DepthAIPlayer(SVal playersSVal, String name, int streakLength, AbstractSquareHeuristic squareHeuristic, AbstractGridHeuristic gridHeuristic, AbstractRatedCoosFilter ratedCoosFilter, int depth) {
+		super(playersSVal, name, streakLength, squareHeuristic, gridHeuristic, ratedCoosFilter);
 		this.depth = depth;
 	}
-	
-	/**
-	 * Method returns sorted RatedCoordinates from best to worse
-	 * @param ratedCoos
-	 * @return
-	 */
-	protected abstract List<RatedCoordinate> filterRatedCoosForSearch(List<RatedCoordinate> ratedCoos);
-	/**
-	 * heuristic value of certain grid
-	 * @param g
-	 * @return
-	 */
-	protected abstract double getGridsHeuristicValue(Grid g);
 	
 	@Override
 	public Move nextMove(Grid g) {
@@ -84,7 +73,7 @@ public abstract class AbstractDepthAIPlayer extends AbstractAIPlayer {
 			
 			if(mvAndDepth.getDepth() == depth - 1 && !Rules.endOfGame(g, streakLength)) {
 				// evaluating where move leads to depth
-				double moveHeuristicValue = getGridsHeuristicValue(g);
+				double moveHeuristicValue = this.gridHeurisric.getGridsHeuristicValue(g, getPlayer(mvAndDepth.depth), streakLength);
 				if(bestMoveValue < moveHeuristicValue) {
 					bestMove = proceededMoves.get(0);
 					bestMoveValue = moveHeuristicValue;
@@ -106,7 +95,7 @@ public abstract class AbstractDepthAIPlayer extends AbstractAIPlayer {
 			
 			// determining and adding next moves
 			if(mvAndDepth.getDepth() + 1 < depth) {
-				List<MoveAndDepth> nextMd = nextMovesAndDepth(g, nextPlayer(mvAndDepth.getDepth() + 1), mvAndDepth.getDepth() + 1);
+				List<MoveAndDepth> nextMd = nextMovesAndDepth(g, getPlayer(mvAndDepth.getDepth() + 1), mvAndDepth.getDepth() + 1);
 				addToBeginingOfList(md, nextMd);
 			}
 		}
@@ -119,7 +108,7 @@ public abstract class AbstractDepthAIPlayer extends AbstractAIPlayer {
 		}
 	}
 	
-	private SVal nextPlayer(int depth) {
+	private SVal getPlayer(int depth) {
 		if(depth % 2 == 0) {
 			return this.getSVal();
 		} else {
@@ -136,7 +125,7 @@ public abstract class AbstractDepthAIPlayer extends AbstractAIPlayer {
 	
 	private List<MoveAndDepth> nextMovesAndDepth(Grid g, SVal val, int depth) {
 		AbstractCooValFromStreakEstimator cooEstimator = new PoweredLengthCooValEstimator(2);
-		List<RatedCoordinate> firstMoveRatedCoos = filterRatedCoosForSearch(this.heuristic.getRatedCoos(val, g, streakLength, cooEstimator));
+		List<RatedCoordinate> firstMoveRatedCoos = this.ratedCoosFilter.filterRatedCoos(this.squareHeuristic.getRatedCoos(val, g, streakLength, cooEstimator));
 		List<MoveAndDepth> md = mdfromRatedCoosList(firstMoveRatedCoos, val, depth);
 		return md;
 		// option when only best option count for simulated opponent

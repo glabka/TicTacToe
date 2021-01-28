@@ -13,13 +13,20 @@ import grid_computations.PotentialStreak;
 import players.Player;
 import players.ai_players.MergeAIPlayer;
 import players.ai_players.AbstractAIPlayer;
+import players.ai_players.DepthAIPlayer;
 import players.ai_players.DumbAIPlayer;
 import players.ai_players.DumbAIPlayer2;
-import players.ai_players.FewBestDepthAIPlayer;
 import players.ai_players.OneStepAIPlayer;
-import players.ai_players.heuristics.AttackBlockHeuristic;
-import players.ai_players.heuristics.AttackHeuristic;
-import players.ai_players.heuristics.MergedHeuristic;
+import players.ai_players.heuristics.SquareBlockAttackHeuristic;
+import players.ai_players.heuristics.AbstractGridHeuristic;
+import players.ai_players.heuristics.AbstractSquareHeuristic;
+import players.ai_players.heuristics.GridDiffHeuristic;
+import players.ai_players.heuristics.SquareAttackHeuristic;
+import players.ai_players.heuristics.SquareMergedHeuristic;
+import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
+import players.ai_players.support_classes.AbstractRatedCoosFilter;
+import players.ai_players.support_classes.FewBestRatedCoosFilter;
+import players.ai_players.support_classes.PoweredLengthCooValEstimator;
 import players.ui_players.UIPlayer;
 
 import java.util.Collection;
@@ -219,6 +226,12 @@ public class Main {
   		Player p1 = null;
   		Player p2 = null;
   		
+  		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
+  		AbstractRatedCoosFilter fewBestFilter = new FewBestRatedCoosFilter(3);
+  		AbstractSquareHeuristic sqH = new SquareMergedHeuristic();
+  		AbstractGridHeuristic gH = new GridDiffHeuristic(sqH, estimator, fewBestFilter);
+  		
+  		
     	for(int[] size : gameSizeAndStreakSizes) {
   
     		Grid g = new Grid(size[0]);
@@ -234,8 +247,10 @@ public class Main {
 //    		p2 = new DumbAIPlayer2(SVal.CIRCLE, "dumb ai 2 player 2", streakLength);
 //    		p2 = new DumbAIPlayer(SVal.CIRCLE, "dumb ai player 2", streakLength);
 //    		p2 = new MergeAIPlayer(SVal.CIRCLE, "merge ai player 2", streakLength);
-    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "Few Best Depth ai 2", streakLength, new MergedHeuristic(), 3, 3);
+//    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "Few Best Depth ai 2", streakLength, new SquareMergedHeuristic(), 3, 3);
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "AB Depth ai 2", streakLength, new AttackBlockHeuristic(), 3, 3);
+    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
+    		
     		
     		Game game = new Game(p1, p2, g, streakLength);
     		System.out.println("\n\n\n\n" + game);

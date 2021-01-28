@@ -14,7 +14,7 @@ import grid_computations.PotentialStreak;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
-public class AttackBlockHeuristic extends AttackHeuristic {
+public class SquareBlockAttackHeuristic extends SquareAttackHeuristic {
 
 	@Override
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength, AbstractCooValFromStreakEstimator cooEstimator) {
