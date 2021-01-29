@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import game_components.Grid;
 import game_components.Move;
 import game_components.Square.SVal;
+import game_mechanics.Rules;
 import players.ai_players.heuristics.AbstractGridHeuristic;
 import players.ai_players.heuristics.AbstractSquareHeuristic;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
@@ -51,7 +52,7 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		double biggestNum = Double.NEGATIVE_INFINITY;
 		Move bestMove = null;
 		for(SortedTreeNode<RatedCoordinate> node : tree.getSortedChildren(tree.getRoot())) {
-			if(node.getNodeEvaluationNumber() > biggestNum) {
+			if(node.getNodeEvaluationNumber() >= biggestNum) {
 				bestMove = new Move(node.getVal(), this.getSVal());
 			}
 		}
@@ -69,7 +70,7 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		IntegerWrapper currentDepth = new IntegerWrapper(maxLeafDepth);
 		while(!nodesForEvaluation.isEmpty()) {
 			System.out.println("currentDepth = " + currentDepth.getVal());
-			System.out.println("nodesForEvaluation: " + nodesForEvaluation); // debug
+//			System.out.println("nodesForEvaluation: " + nodesForEvaluation); // debug
 			List<SortedTreeNode<RatedCoordinate>> currentDepthNodes = nodesForEvaluation.stream().filter(n -> n.getDepth() == currentDepth.getVal()).collect(Collectors.toList());
 			System.out.println("currentDepthNodes: " + currentDepthNodes);
 			List<SortedTreeNode<RatedCoordinate>> parents = getParents(currentDepthNodes);
@@ -144,17 +145,17 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 			lastMoveDepth = mvAndDepth.getDepth();
 			
 			g.insert(mvAndDepth.getMove());
-			System.out.println("debug: move depth = " + mvAndDepth.getDepth()); // debug
-			System.out.println("tried move" + mvAndDepth.getMove()); // debug
-			g.printGridDebug();// debug
+//			System.out.println("debug: move depth = " + mvAndDepth.getDepth()); // debug
+//			System.out.println("tried move" + mvAndDepth.getMove()); // debug
+//			g.printGridDebug();// debug
 			proceededMoves.add(mvAndDepth.getMove());
 			
 			double gridHeuristicVal = this.gridHeurisric.getGridsHeuristicValue(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth(), this.getSVal()), this.streakLength);		
 			SortedTreeNode<RatedCoordinate> child = tree.addChild(parrentNode, new RatedCoordinate(mvAndDepth.getMove(), gridHeuristicVal));
 			
 			
-//			if(mvAndDepth.getDepth() + 1 < this.depth) {
-			if(mvAndDepth.getDepth() + 2 < this.depth && child.getVal().getValue() != Double.NEGATIVE_INFINITY && child.getVal().getValue() != Double.POSITIVE_INFINITY) { // + 1 because of next step + 1 because of no step root of tree
+			if(mvAndDepth.getDepth() + 2 < this.depth && child.getVal().getValue() != Double.NEGATIVE_INFINITY
+					&& child.getVal().getValue() != Double.POSITIVE_INFINITY && !Rules.endOfGame(g, streakLength)) { // + 1 because of next step + 1 because of no step root of tree
 				List<MoveAndDepth> nextMd = nextMovesAndDepth(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth() + 1, this.getSVal()), mvAndDepth.getDepth() + 1);
 				AIPlayersCommon.addToBeginingOfList(md, nextMd);
 				parrentNode = child;

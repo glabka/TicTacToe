@@ -280,7 +280,8 @@ public class Main {
   
     		Grid g = new Grid(size[0]);
     		int streakLength = size[1];
-    		p1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
+//    		p1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
+    		p1 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
 //    		p1 = new DumbAIPlayer2(SVal.CROSS, "dumb ai player 1", streakLength);
 //    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with ABheuristic", streakLength, new AttackBlockHeuristic());
 //    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with Attackheuristic", streakLength, new AttackHeuristic());
