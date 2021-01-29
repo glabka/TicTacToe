@@ -21,7 +21,9 @@ import players.ai_players.TreeEvaluationAIPlayer;
 import players.ai_players.heuristics.SquareNaiveBlockAttackHeuristic;
 import players.ai_players.heuristics.AbstractGridHeuristic;
 import players.ai_players.heuristics.AbstractSquareHeuristic;
+import players.ai_players.heuristics.SquareBlockAttackHeuristic;
 import players.ai_players.heuristics.GridDiffHeuristic;
+import players.ai_players.heuristics.GridDiffRatedValuesHeuristic;
 import players.ai_players.heuristics.SquareNaiveAttackHeuristic;
 import players.ai_players.heuristics.SquareMergedHeuristic;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
@@ -257,8 +259,10 @@ public class Main {
     	
     	Grid g = new Grid(5);
         int streakLength = 3;
-//        Player aiPlayer = new BlockAttackNaiveAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
-        Player aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
+        Player aiPlayer;
+//        aiPlayer = new BlockAttackNaiveAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
+        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // even better
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
         
         Game aiGame = new Game(aiPlayer, uiPlayer, g, streakLength);
@@ -268,11 +272,12 @@ public class Main {
     private static AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
     private static AbstractRatedCoosFilter fewBestAIFilter = new FewBestRatedCoosFilter(3);
     private static AbstractSquareHeuristic sqMergeH = new SquareMergedHeuristic(estimator);
-    private static AbstractSquareHeuristic sqBAH = new SquareNaiveBlockAttackHeuristic(estimator);
+    private static AbstractSquareHeuristic sqNaiveBAH = new SquareNaiveBlockAttackHeuristic(estimator);
     private static AbstractRatedCoosFilter fewBestHeuristicFilter = new FewBestRatedCoosFilter(7);
-    private static AbstractGridHeuristic gMergeH = new GridDiffHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
-    private static AbstractGridHeuristic gBAH = new GridDiffHeuristic(sqBAH, estimator, fewBestHeuristicFilter);
-		
+    private static AbstractGridHeuristic gMergeH = new GridDiffRatedValuesHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
+    private static AbstractGridHeuristic gNaiveBAH = new GridDiffRatedValuesHeuristic(sqNaiveBAH, estimator, fewBestHeuristicFilter);
+	private static AbstractSquareHeuristic sqBAH = new SquareBlockAttackHeuristic(estimator);
+    private static AbstractGridHeuristic gDiffH = new GridDiffHeuristic(estimator);
     
     private static void testAIs() {
 //    	int[][] gameSizeAndStreakSizes = new int[][] {{8,4}};
@@ -290,8 +295,9 @@ public class Main {
   
     		Grid g = new Grid(size[0]);
     		int streakLength = size[1];
-    		p1 = new NaiveBlockAttackAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
-//    		p2 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 3);
+    		p1 = new NaiveBlockAttackAIPlayer(SVal.CROSS, "NaiveBlockAttackAIPlayer", streakLength);
+//    		p1 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 3);
+//    		p1 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqBAH, gDiffH, fewBestAIFilter, 3); // even better
 //    		p1 = new DumbAIPlayer2(SVal.CROSS, "dumb ai player 1", streakLength);
 //    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with ABheuristic", streakLength, new AttackBlockHeuristic());
 //    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with Attackheuristic", streakLength, new AttackHeuristic());
@@ -305,7 +311,11 @@ public class Main {
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "Few Best Depth ai 2", streakLength, new SquareMergedHeuristic(), 3, 3);
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "AB Depth ai 2", streakLength, new AttackBlockHeuristic(), 3, 3);
 //    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
-    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMergeH", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2); // good
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good
+    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // even better
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMerge DiffH", streakLength, sqMergeH, gDiffH, fewBestAIFilter, 2); 
+//    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqBAH, gDiffH, fewBestAIFilter, 3);
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval ai player", streakLength, sqBAH, gBAH, fewBestAIFilter, 2);
     		
     		

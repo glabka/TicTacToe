@@ -11,6 +11,10 @@ public abstract class AbstractGridHeuristic {
 	protected AbstractCooValFromStreakEstimator estimator;
 	protected AbstractRatedCoosFilter ratedCoosFilter;
 	
+	public AbstractGridHeuristic(AbstractCooValFromStreakEstimator estimator) {
+		this.estimator = estimator;
+	}
+	
 	public AbstractGridHeuristic(AbstractSquareHeuristic squareHeuristic, AbstractCooValFromStreakEstimator estimator, AbstractRatedCoosFilter ratedCoosFilter) {
 		this.squareHeuristic = squareHeuristic;
 		this.estimator = estimator;

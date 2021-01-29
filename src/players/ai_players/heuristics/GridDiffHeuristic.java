@@ -4,34 +4,49 @@ import java.util.List;
 
 import game_components.Grid;
 import game_components.Square.SVal;
-import game_mechanics.Rules;
+import grid_computations.Computations;
+import grid_computations.PotentialStreak;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
+import players.ai_players.support_classes.PoweredLengthCooValEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
 public class GridDiffHeuristic extends AbstractGridHeuristic {
 
-
-	public GridDiffHeuristic(AbstractSquareHeuristic squareHeuristic, AbstractCooValFromStreakEstimator estimator,
-			AbstractRatedCoosFilter ratedCoosFilter) {
-		super(squareHeuristic, estimator, ratedCoosFilter);
+	public GridDiffHeuristic(AbstractCooValFromStreakEstimator estimator) {
+		super(estimator);
 	}
+
+
 
 	@Override
 	public double getGridsHeuristicValue(Grid g, SVal currentPlayer, int streakLength) {
-		Double d = HeuristicCommon.getInfinityIfWinner(g, currentPlayer, streakLength);
-		if(d != null) {
-			return (double) d;
-		}
+		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(currentPlayer), streakLength);
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, currentPlayer, streakLength);
+		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
 		
-		List<RatedCoordinate> potentialCoos = this.squareHeuristic.getRatedCoos(currentPlayer, g, streakLength);
-		List<RatedCoordinate> filtredPotCoos = this.ratedCoosFilter.filterRatedCoos(potentialCoos);
+		List<RatedCoordinate> coosForDefending = defend(opponentsPotStreaks, estimator);
+		List<RatedCoordinate> coosForAttack = attack(g, potStreaks, estimator);
 		
-		List<RatedCoordinate> opponentsCoos = this.squareHeuristic.getRatedCoos(SVal.getOpposite(currentPlayer), g, streakLength);
-		List<RatedCoordinate> filtredOpponentsCoos = this.ratedCoosFilter.filterRatedCoos(opponentsCoos);
-		
-		return HeuristicCommon.addAllRatedCoos(filtredPotCoos) - HeuristicCommon.addAllRatedCoos(filtredOpponentsCoos);
+		return HeuristicCommon.addAllRatedCoos(coosForAttack) - HeuristicCommon.addAllRatedCoos(coosForDefending);
 	}
 	
+
 	
+	private List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
+		if(potStreaks == null || potStreaks.isEmpty()) {
+			return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
+		}
+		
+		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);
+		List<RatedCoordinate> combinedCoos = HeuristicCommon.combineAllEqualRatedCoos(allRatedCoos);
+		return combinedCoos;
+	}
+	
+	private List<RatedCoordinate> defend(List<PotentialStreak> opponentsPotStreaks, AbstractCooValFromStreakEstimator estimator){
+		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(opponentsPotStreaks, estimator);
+		List<RatedCoordinate> combinedCoos = HeuristicCommon.combineAllEqualRatedCoos(allRatedCoos);
+		return combinedCoos;
+	}
+
 }
