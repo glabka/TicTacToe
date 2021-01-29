@@ -69,7 +69,7 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 				list.add(new RatedCoordinate(row - 1, column - 1, value));
 				return list;
 			} else {
-				list.add(new RatedCoordinate(DumbAIPlayer.firtEmptySquare(g), value));
+				list.add(new RatedCoordinate(BlockAttackNaiveAIPlayer.firtEmptySquare(g), value));
 				return list;
 			}
 		}

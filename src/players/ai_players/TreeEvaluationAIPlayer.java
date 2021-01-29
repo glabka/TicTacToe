@@ -70,10 +70,10 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		
 		IntegerWrapper currentDepth = new IntegerWrapper(maxLeafDepth);
 		while(!nodesForEvaluation.isEmpty()) {
-			System.out.println("currentDepth = " + currentDepth.getVal());
+//			System.out.println("currentDepth = " + currentDepth.getVal()); // debug
 //			System.out.println("nodesForEvaluation: " + nodesForEvaluation); // debug
 			List<SortedTreeNode<RatedCoordinate>> currentDepthNodes = nodesForEvaluation.stream().filter(n -> n.getDepth() == currentDepth.getVal()).collect(Collectors.toList());
-			System.out.println("currentDepthNodes: " + currentDepthNodes);
+//			System.out.println("currentDepthNodes: " + currentDepthNodes); // debug
 			List<SortedTreeNode<RatedCoordinate>> parents = getParents(currentDepthNodes);
 			nodesForEvaluation.removeAll(currentDepthNodes);
 			nodesForEvaluation.addAll(parents);
@@ -196,13 +196,13 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		return md;
 	}
 	
-	public void test(Grid g) {
-		SortedNodesTree<RatedCoordinate> tree = getSortedNodesTree(g);
-		System.out.println(tree);
-		evaluateTree(tree);
-		System.out.println("evaluated tree: ");
-		System.out.println(tree);
-	}
+//	public void test(Grid g) {
+//		SortedNodesTree<RatedCoordinate> tree = getSortedNodesTree(g);
+//		System.out.println(tree);
+//		evaluateTree(tree);
+//		System.out.println("evaluated tree: ");
+//		System.out.println(tree);
+//	}
 	
 	// because only constants or effectively constants can be used in lambda expression
 	class IntegerWrapper {

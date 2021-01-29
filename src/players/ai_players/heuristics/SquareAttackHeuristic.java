@@ -9,7 +9,7 @@ import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
-import players.ai_players.DumbAIPlayer;
+import players.ai_players.BlockAttackNaiveAIPlayer;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 

@@ -8,7 +8,7 @@ import game_components.Grid;
 import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.PotentialStreak;
-import players.ai_players.DumbAIPlayer;
+import players.ai_players.BlockAttackNaiveAIPlayer;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.PoweredLengthCooValEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
@@ -46,7 +46,7 @@ public class SquareMergedHeuristic extends AbstractSquareHeuristic{
 				return list;
 			} else {
 				
-				list.add(new RatedCoordinate(DumbAIPlayer.firtEmptySquare(g), value));
+				list.add(new RatedCoordinate(BlockAttackNaiveAIPlayer.firtEmptySquare(g), value));
 				return list;
 			}
 		}
