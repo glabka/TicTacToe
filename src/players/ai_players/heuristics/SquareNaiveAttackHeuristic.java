@@ -9,13 +9,13 @@ import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
-import players.ai_players.BlockAttackNaiveAIPlayer;
+import players.ai_players.NaiveBlockAttackAIPlayer;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
-public class SquareAttackHeuristic extends AbstractSquareHeuristic {
+public class SquareNaiveAttackHeuristic extends AbstractSquareHeuristic {
 
-	public SquareAttackHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
+	public SquareNaiveAttackHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
 		super(cooEstimator);
 	}
 

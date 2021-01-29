@@ -14,9 +14,9 @@ import grid_computations.PotentialStreak;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
-public class SquareBlockAttackHeuristic extends SquareAttackHeuristic {
+public class SquareNaiveBlockAttackHeuristic extends SquareNaiveAttackHeuristic {
 
-	public SquareBlockAttackHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
+	public SquareNaiveBlockAttackHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
 		super(cooEstimator);
 	}
 

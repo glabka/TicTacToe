@@ -12,7 +12,7 @@ import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
 import players.Player;
 
-public class BlockAttackNaiveAIPlayer extends AbstractAIPlayer {
+public class NaiveBlockAttackAIPlayer extends AbstractAIPlayer {
 
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class BlockAttackNaiveAIPlayer extends AbstractAIPlayer {
 	 * @param name
 	 * @param streakLength winning streak length
 	 */
-	public BlockAttackNaiveAIPlayer(SVal playersSVal, String name, int streakLength) {
+	public NaiveBlockAttackAIPlayer(SVal playersSVal, String name, int streakLength) {
 		super(playersSVal, name, streakLength);
 	}
 

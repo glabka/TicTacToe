@@ -9,7 +9,7 @@ import grid_computations.Computations;
 import grid_computations.PotentialStreak;
 import players.Player;
 
-public class AttackNaiveAIPlayer extends AbstractAIPlayer {
+public class NaiveAttackAIPlayer extends AbstractAIPlayer {
 
 	/**
 	 * 
@@ -17,7 +17,7 @@ public class AttackNaiveAIPlayer extends AbstractAIPlayer {
 	 * @param name
 	 * @param streakLength winning streak length
 	 */
-	public AttackNaiveAIPlayer(SVal playersSVal, String name, int streakLength) {
+	public NaiveAttackAIPlayer(SVal playersSVal, String name, int streakLength) {
 		super(playersSVal, name, streakLength);
 	}
 	
@@ -25,7 +25,7 @@ public class AttackNaiveAIPlayer extends AbstractAIPlayer {
 	public Move nextMove(Grid g) {
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength);
 		
-		return new Move(BlockAttackNaiveAIPlayer.attack(potStreaks, g), this.getSVal());
+		return new Move(NaiveBlockAttackAIPlayer.attack(potStreaks, g), this.getSVal());
 	}
 	
 }

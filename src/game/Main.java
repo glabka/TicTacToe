@@ -14,15 +14,15 @@ import players.Player;
 import players.ai_players.MergeAIPlayer;
 import players.ai_players.AbstractAIPlayer;
 import players.ai_players.DepthAIPlayer;
-import players.ai_players.BlockAttackNaiveAIPlayer;
-import players.ai_players.AttackNaiveAIPlayer;
+import players.ai_players.NaiveBlockAttackAIPlayer;
+import players.ai_players.NaiveAttackAIPlayer;
 import players.ai_players.OneStepAIPlayer;
 import players.ai_players.TreeEvaluationAIPlayer;
-import players.ai_players.heuristics.SquareBlockAttackHeuristic;
+import players.ai_players.heuristics.SquareNaiveBlockAttackHeuristic;
 import players.ai_players.heuristics.AbstractGridHeuristic;
 import players.ai_players.heuristics.AbstractSquareHeuristic;
 import players.ai_players.heuristics.GridDiffHeuristic;
-import players.ai_players.heuristics.SquareAttackHeuristic;
+import players.ai_players.heuristics.SquareNaiveAttackHeuristic;
 import players.ai_players.heuristics.SquareMergedHeuristic;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
@@ -268,7 +268,7 @@ public class Main {
     private static AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
     private static AbstractRatedCoosFilter fewBestAIFilter = new FewBestRatedCoosFilter(3);
     private static AbstractSquareHeuristic sqMergeH = new SquareMergedHeuristic(estimator);
-    private static AbstractSquareHeuristic sqBAH = new SquareBlockAttackHeuristic(estimator);
+    private static AbstractSquareHeuristic sqBAH = new SquareNaiveBlockAttackHeuristic(estimator);
     private static AbstractRatedCoosFilter fewBestHeuristicFilter = new FewBestRatedCoosFilter(7);
     private static AbstractGridHeuristic gMergeH = new GridDiffHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
     private static AbstractGridHeuristic gBAH = new GridDiffHeuristic(sqBAH, estimator, fewBestHeuristicFilter);
@@ -290,7 +290,7 @@ public class Main {
   
     		Grid g = new Grid(size[0]);
     		int streakLength = size[1];
-    		p1 = new BlockAttackNaiveAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
+    		p1 = new NaiveBlockAttackAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
 //    		p2 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 3);
 //    		p1 = new DumbAIPlayer2(SVal.CROSS, "dumb ai player 1", streakLength);
 //    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with ABheuristic", streakLength, new AttackBlockHeuristic());
