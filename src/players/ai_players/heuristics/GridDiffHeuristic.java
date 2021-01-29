@@ -30,9 +30,6 @@ public class GridDiffHeuristic extends AbstractGridHeuristic {
 		List<RatedCoordinate> opponentsCoos = this.squareHeuristic.getRatedCoos(SVal.getOpposite(currentPlayer), g, streakLength);
 		List<RatedCoordinate> filtredOpponentsCoos = this.ratedCoosFilter.filterRatedCoos(opponentsCoos);
 		
-		double potCoosVal = HeuristicCommon.addAllRatedCoos(filtredPotCoos); // debug
-		double opponentsVal = HeuristicCommon.addAllRatedCoos(filtredOpponentsCoos); // debug
-		
 		return HeuristicCommon.addAllRatedCoos(filtredPotCoos) - HeuristicCommon.addAllRatedCoos(filtredOpponentsCoos);
 	}
 	

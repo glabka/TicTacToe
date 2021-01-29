@@ -53,6 +53,7 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		Move bestMove = null;
 		for(SortedTreeNode<RatedCoordinate> node : tree.getSortedChildren(tree.getRoot())) {
 			if(node.getNodeEvaluationNumber() >= biggestNum) {
+				biggestNum = node.getNodeEvaluationNumber();
 				bestMove = new Move(node.getVal(), this.getSVal());
 			}
 		}

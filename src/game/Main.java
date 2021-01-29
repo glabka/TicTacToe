@@ -271,9 +271,10 @@ public class Main {
   		Player p2 = null;
   		
   		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
-  		AbstractRatedCoosFilter fewBestFilter = new FewBestRatedCoosFilter(3);
+  		AbstractRatedCoosFilter fewBestAIFilter = new FewBestRatedCoosFilter(3);
   		AbstractSquareHeuristic sqH = new SquareMergedHeuristic(estimator);
-  		AbstractGridHeuristic gH = new GridDiffHeuristic(sqH, estimator, fewBestFilter);
+  		AbstractRatedCoosFilter fewBestHeuristicFilter = new FewBestRatedCoosFilter(7);
+  		AbstractGridHeuristic gH = new GridDiffHeuristic(sqH, estimator, fewBestHeuristicFilter);
   		
   		
     	for(int[] size : gameSizeAndStreakSizes) {
@@ -281,7 +282,7 @@ public class Main {
     		Grid g = new Grid(size[0]);
     		int streakLength = size[1];
 //    		p1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
-    		p1 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
+    		p1 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqH, gH, fewBestAIFilter, 3);
 //    		p1 = new DumbAIPlayer2(SVal.CROSS, "dumb ai player 1", streakLength);
 //    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with ABheuristic", streakLength, new AttackBlockHeuristic());
 //    		p1 = new OneStepAIPlayer(SVal.CROSS, "one step with Attackheuristic", streakLength, new AttackHeuristic());
@@ -295,7 +296,7 @@ public class Main {
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "Few Best Depth ai 2", streakLength, new SquareMergedHeuristic(), 3, 3);
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "AB Depth ai 2", streakLength, new AttackBlockHeuristic(), 3, 3);
 //    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
-    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval ai player", streakLength, sqH, gH, fewBestFilter, 2);
+    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval ai player", streakLength, sqH, gH, fewBestAIFilter, 2);
     		
     		Game game = new Game(p1, p2, g, streakLength);
     		System.out.println("\n\n\n\n" + game);
