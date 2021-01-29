@@ -17,6 +17,7 @@ import players.ai_players.DepthAIPlayer;
 import players.ai_players.DumbAIPlayer;
 import players.ai_players.DumbAIPlayer2;
 import players.ai_players.OneStepAIPlayer;
+import players.ai_players.TreeEvaluationAIPlayer;
 import players.ai_players.heuristics.SquareBlockAttackHeuristic;
 import players.ai_players.heuristics.AbstractGridHeuristic;
 import players.ai_players.heuristics.AbstractSquareHeuristic;
@@ -133,22 +134,41 @@ public class Main {
 		////////////////////////////////////////////////////////////////////////////
 		//-------------------------some things in development-----------------------
 		////////////////////////////////////////////////////////////////////////////
-        SortedNodesTree<Integer> tree = new SortedNodesTree<Integer>(0, new IntegerComparator());
+//        SortedNodesTree<Integer> tree = new SortedNodesTree<Integer>(0, new IntegerComparator());
+//        
+//        SortedTreeNode<Integer> child1 = tree.addChild(tree.getRoot(), Integer.valueOf(5));
+//        SortedTreeNode<Integer> child2 = tree.addChild(tree.getRoot(), Integer.valueOf(6));
+//        SortedTreeNode<Integer> child3 = tree.addChild(tree.getRoot(), Integer.valueOf(1));
+//        
+//        
+//        SortedTreeNode<Integer> child11 = tree.addChild(child1, Integer.valueOf(10));
+//        SortedTreeNode<Integer> child12 = tree.addChild(child1, Integer.valueOf(12));
+//        
+//        SortedTreeNode<Integer> child21 = tree.addChild(child2, Integer.valueOf(10));
+//        SortedTreeNode<Integer> child22 = tree.addChild(child2, Integer.valueOf(11));
+//        
+//        SortedTreeNode<Integer> child211 = tree.addChild(child21, Integer.valueOf(100));
+//        
+//        System.out.println(tree);
+//        System.out.println("leafs " + tree.getLeafs());
         
-        SortedTreeNode<Integer> child1 = tree.addChild(tree.getRoot(), Integer.valueOf(5));
-        SortedTreeNode<Integer> child2 = tree.addChild(tree.getRoot(), Integer.valueOf(6));
-        SortedTreeNode<Integer> child3 = tree.addChild(tree.getRoot(), Integer.valueOf(1));
         
+        // test
         
-        SortedTreeNode<Integer> child11 = tree.addChild(child1, Integer.valueOf(10));
-        SortedTreeNode<Integer> child12 = tree.addChild(child1, Integer.valueOf(12));
+//        int streakLength0 = 3;
+//        AbstractCooValFromStreakEstimator cooEstimator = new PoweredLengthCooValEstimator(2);
+//        AbstractSquareHeuristic sqH = new SquareMergedHeuristic(cooEstimator);
+//        AbstractRatedCoosFilter AIFilter = new FewBestRatedCoosFilter(2);
+//        AbstractRatedCoosFilter heuristicFilter = new FewBestRatedCoosFilter(5);
+//        AbstractGridHeuristic gH = new GridDiffHeuristic(sqH, cooEstimator, heuristicFilter);
+//        int depth = 2;
+//        TreeEvaluationAIPlayer treeSAIPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree search ai", streakLength0, sqH,
+//        		gH, AIFilter, depth);
+//        g = new Grid(7);
+//        g.insert(3, 3, SVal.CROSS);
+//        g.insert(2, 2, SVal.CIRCLE);
+//        treeSAIPlayer.test(g);
         
-        SortedTreeNode<Integer> child21 = tree.addChild(child2, Integer.valueOf(10));
-        SortedTreeNode<Integer> child22 = tree.addChild(child2, Integer.valueOf(11));
-        
-        SortedTreeNode<Integer> child211 = tree.addChild(child21, Integer.valueOf(100));
-        
-        System.out.println(tree);
         
 		////////////////////////////////////////////////////////////////////////////
 		//---------------------------------AI GAME----------------------------------
@@ -161,7 +181,7 @@ public class Main {
 //      Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
 //      aiGame.play();
 
-//        testAIs();
+        testAIs();
         
 
         
@@ -273,8 +293,8 @@ public class Main {
 //    		p2 = new MergeAIPlayer(SVal.CIRCLE, "merge ai player 2", streakLength);
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "Few Best Depth ai 2", streakLength, new SquareMergedHeuristic(), 3, 3);
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "AB Depth ai 2", streakLength, new AttackBlockHeuristic(), 3, 3);
-    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
-    		
+//    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
+    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval ai player", streakLength, sqH, gH, fewBestFilter, 2);
     		
     		Game game = new Game(p1, p2, g, streakLength);
     		System.out.println("\n\n\n\n" + game);

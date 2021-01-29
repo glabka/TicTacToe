@@ -29,6 +29,10 @@ public class AIPlayersCommon {
 		}
 	}
 	
+	public static boolean opponentsTurn(int depth, SVal sValOf0thDepth) {
+		return getPlayer(depth, sValOf0thDepth) == sValOf0thDepth ? false : true;
+	}
+	
 	public static <T> void addToBeginingOfList(List<T> listForAddingTo, List<T> listToBeAdded) {
 		Collections.reverse(listToBeAdded);
 		for(T t : listToBeAdded) {

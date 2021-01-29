@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import game_components.Grid;
+import game_components.Square.SVal;
+import game_mechanics.Rules;
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
 import grid_computations.ValuedCoordinate;
@@ -63,5 +65,19 @@ public class HeuristicCommon {
 		}
 		
 		return val;
+	}
+	
+	public static Double getInfinityIfWinner(Grid g, SVal currentPlayer, int streakLength) {
+		SVal winner = Rules.findWinner(g, streakLength);
+		if (winner == currentPlayer) {
+			return Double.POSITIVE_INFINITY;
+		} else if (winner == SVal.getOpposite(currentPlayer)) {
+			return Double.NEGATIVE_INFINITY;
+		} else if (Rules.endOfGame(g, streakLength)){
+			// tie
+			return Double.valueOf(0);
+		} else {
+			return null;
+		}
 	}
 }

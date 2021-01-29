@@ -51,22 +51,44 @@ public class SortedNodesTree<T> {
 		node.setNodeEvaluationNumber(evalNumber);
 	}
 	
-	public String toString() {
-//		breadth search 
-		StringBuilder strB = new StringBuilder();
-		
-		List<SortedTreeNode> queue = new LinkedList<SortedTreeNode>();
+	public List<SortedTreeNode<T>> getLeafs() {
+//		breadth search	
+		List<SortedTreeNode<T>> leafs = new LinkedList<>();
+		List<SortedTreeNode<T>> queue = new LinkedList<>();
 		queue.add(root);
 		
 		int lastDepth = -1;
 		while(!queue.isEmpty()) {
-			SortedTreeNode treeNode = queue.get(0);
+			SortedTreeNode<T> treeNode = queue.get(0);
 			queue.remove(0);
-			strB.append(treeNode);
+			
+			if(treeNode.isLeaf()) {
+				leafs.add(treeNode);
+			}
+			
+			queue.addAll(treeNode.getChildren());
+		}
+		
+		return leafs;
+	}
+	
+	public String toString() {
+//		breadth search 
+		StringBuilder strB = new StringBuilder();
+		
+		List<SortedTreeNode<T>> queue = new LinkedList<>();
+		queue.add(root);
+		
+		int lastDepth = -1;
+		while(!queue.isEmpty()) {
+			SortedTreeNode<T> treeNode = queue.get(0);
+			queue.remove(0);
 			
 			if(lastDepth != treeNode.getDepth()) {
 				strB.append("\n");
 			}
+			
+			strB.append(treeNode);
 			
 			lastDepth = treeNode.getDepth();
 			

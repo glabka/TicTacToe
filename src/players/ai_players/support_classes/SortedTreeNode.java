@@ -24,10 +24,10 @@ public class SortedTreeNode <T> implements Comparable<SortedTreeNode<T>>{
 	
 	public void addChild(SortedTreeNode<T> child) {
 		children.add(child);
-//		Collections.sort(children, Collections.reverseOrder());
-		
-		Collections.sort(children);
-		Collections.reverse(children);
+		Collections.sort(children, Collections.reverseOrder());
+//		
+//		Collections.sort(children);
+//		Collections.reverse(children);
 	}
 	
 	public T getVal() {
@@ -59,6 +59,10 @@ public class SortedTreeNode <T> implements Comparable<SortedTreeNode<T>>{
 		return depth;
 	}
 	
+	public boolean isLeaf() {
+		return this.children.isEmpty();
+	}
+	
 	public String superToString() {
 		return "" + hashCode();
 	}
@@ -66,7 +70,7 @@ public class SortedTreeNode <T> implements Comparable<SortedTreeNode<T>>{
 	public String toString() {
 		
 		String str = "{ this: " + superToString() + " parent: " + (parent != null ? parent.superToString() : null) + " depth: " + depth;
-		if (nodeEvaluationNumber == null) {
+		if (nodeEvaluationNumber != null) {
 			str += " evalNum: " + nodeEvaluationNumber;
 		}
 		str += " cVal: " + containedValue + "}";
