@@ -21,6 +21,7 @@ import players.ai_players.TreeEvaluationAIPlayer;
 import players.ai_players.heuristics.SquareNaiveBlockAttackHeuristic;
 import players.ai_players.heuristics.AbstractGridHeuristic;
 import players.ai_players.heuristics.AbstractSquareHeuristic;
+import players.ai_players.heuristics.GirdMergeHeuristic;
 import players.ai_players.heuristics.SquareBlockAttackHeuristic;
 import players.ai_players.heuristics.SquareDecideAttackBlockHeuristic;
 import players.ai_players.heuristics.GridDiffHeuristic;
@@ -184,7 +185,7 @@ public class Main {
 //      Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
 //      aiGame.play();
 
-        testAIs();
+//        testAIs();
         
 
         
@@ -193,7 +194,7 @@ public class Main {
 		////////////////////////////////////////////////////////////////////////////
         
         
-//        uiVSai();
+        uiVSai();
         
         
 		////////////////////////////////////////////////////////////////////////////
@@ -258,16 +259,17 @@ public class Main {
     
     private static void uiVSai() {
     	
-    	Grid g = new Grid(5);
+    	Grid g = new Grid(3);
         int streakLength = 3;
         Player aiPlayer;
 //        aiPlayer = new BlockAttackNaiveAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // even better
-        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
+        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // even better
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
         
-        Game aiGame = new Game(aiPlayer, uiPlayer, g, streakLength);
+        Game aiGame = new Game(uiPlayer, aiPlayer, g, streakLength);
         aiGame.play();
     }
     
@@ -276,11 +278,12 @@ public class Main {
     private static AbstractSquareHeuristic sqMergeH = new SquareMergedHeuristic(estimator);
     private static AbstractSquareHeuristic sqNaiveBAH = new SquareNaiveBlockAttackHeuristic(estimator);
     private static AbstractRatedCoosFilter fewBestHeuristicFilter = new FewBestRatedCoosFilter(7);
-    private static AbstractGridHeuristic gMergeH = new GridDiffRatedValuesHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
+    private static AbstractGridHeuristic gDiffMergeH = new GridDiffRatedValuesHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
     private static AbstractGridHeuristic gNaiveBAH = new GridDiffRatedValuesHeuristic(sqNaiveBAH, estimator, fewBestHeuristicFilter);
 	private static AbstractSquareHeuristic sqBAH = new SquareBlockAttackHeuristic(estimator);
     private static AbstractGridHeuristic gDiffH = new GridDiffHeuristic(estimator);
     private static AbstractSquareHeuristic sqDABH = new SquareDecideAttackBlockHeuristic(estimator);
+    private static AbstractGridHeuristic gMergeH = new GirdMergeHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
     
     private static void testAIs() {
 //    	int[][] gameSizeAndStreakSizes = new int[][] {{3,3}};
@@ -315,9 +318,10 @@ public class Main {
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "Few Best Depth ai 2", streakLength, new SquareMergedHeuristic(), 3, 3);
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "AB Depth ai 2", streakLength, new AttackBlockHeuristic(), 3, 3);
 //    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMergeH", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2); // good
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good
-    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // even better
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMergeH", streakLength, sqMergeH, gDiffMergeH, fewBestAIFilter, 2); // good
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH", streakLength, sqBAH, gDiffMergeH, fewBestAIFilter, 2); // good
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // even better
+    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // even better
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMerge DiffH", streakLength, sqMergeH, gDiffH, fewBestAIFilter, 2); 
 //    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqBAH, gDiffH, fewBestAIFilter, 3);

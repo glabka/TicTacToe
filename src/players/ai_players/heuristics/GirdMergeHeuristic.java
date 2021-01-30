@@ -4,20 +4,13 @@ import java.util.List;
 
 import game_components.Grid;
 import game_components.Square.SVal;
-import game_mechanics.Rules;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
 import players.ai_players.support_classes.RatedCoordinate;
 
-/**
- * probably quite bad idea this heuristic
- * @author glabk
- *
- */
-public class GridDiffRatedValuesHeuristic extends AbstractGridHeuristic {
+public class GirdMergeHeuristic extends AbstractGridHeuristic{
 
-
-	public GridDiffRatedValuesHeuristic(AbstractSquareHeuristic squareHeuristic, AbstractCooValFromStreakEstimator estimator,
+	public GirdMergeHeuristic(AbstractSquareHeuristic squareHeuristic, AbstractCooValFromStreakEstimator estimator,
 			AbstractRatedCoosFilter ratedCoosFilter) {
 		super(squareHeuristic, estimator, ratedCoosFilter);
 	}
@@ -31,12 +24,8 @@ public class GridDiffRatedValuesHeuristic extends AbstractGridHeuristic {
 		
 		List<RatedCoordinate> potentialCoos = this.squareHeuristic.getRatedCoos(currentPlayer, g, streakLength);
 		List<RatedCoordinate> filtredPotCoos = this.ratedCoosFilter.filterRatedCoos(potentialCoos);
-		
-		List<RatedCoordinate> opponentsCoos = this.squareHeuristic.getRatedCoos(SVal.getOpposite(currentPlayer), g, streakLength);
-		List<RatedCoordinate> filtredOpponentsCoos = this.ratedCoosFilter.filterRatedCoos(opponentsCoos);
-		
-		return HeuristicCommon.addAllRatedCoos(filtredPotCoos) - HeuristicCommon.addAllRatedCoos(filtredOpponentsCoos);
+
+		return HeuristicCommon.addAllRatedCoos(filtredPotCoos);
 	}
-	
-	
+
 }
