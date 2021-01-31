@@ -24,6 +24,7 @@ import players.ai_players.heuristics.AbstractSquareHeuristic;
 import players.ai_players.heuristics.GirdMergeHeuristic;
 import players.ai_players.heuristics.SquareBlockAttackHeuristic;
 import players.ai_players.heuristics.SquareDecidingAttackBlockHeuristic;
+import players.ai_players.heuristics.SquareDecidingMergeBlockAttackHeuristic;
 import players.ai_players.heuristics.SquareMergeBlockAttackHeuristic;
 import players.ai_players.heuristics.GridDiffHeuristic;
 import players.ai_players.heuristics.GridDiffRatedValuesHeuristic;
@@ -274,7 +275,8 @@ public class Main {
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good
-        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better
+        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
         
@@ -296,6 +298,8 @@ public class Main {
     private static AbstractRatedCoosFilter fewBestHeuristicFilter2 = new FewBestRatedCoosFilter(3);
     private static AbstractSquareHeuristic sqMBAH = new SquareMergeBlockAttackHeuristic(estimator);
     private static AbstractSquareHeuristic sqMBAHFiltred = new SquareMergeBlockAttackHeuristic(estimator, fewBestHeuristicFilter2);
+    private static AbstractSquareHeuristic sqDMBAH = new SquareDecidingMergeBlockAttackHeuristic(estimator);
+    
     
     private static String[] testAIs() {
     	return testAIs(false);
@@ -352,6 +356,8 @@ public class Main {
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (2, 7, 11) vs NaiveBlockAttackAIPlayer
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (1, 5, 14) vs NaiveBlockAttackAIPlayer
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 7, 13) vs NaiveBlockAttackAIPlayer
+    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer
+    				
     		
     		if(switchAI) {
     			Player p;
