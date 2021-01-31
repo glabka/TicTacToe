@@ -23,7 +23,6 @@ public class GridDiffHeuristic extends AbstractGridHeuristic {
 	public double getGridsHeuristicValue(Grid g, SVal currentPlayer, int streakLength) {
 		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(currentPlayer), streakLength);
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, currentPlayer, streakLength);
-		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
 		
 		List<RatedCoordinate> coosForDefending = defend(opponentsPotStreaks, estimator);
 		List<RatedCoordinate> coosForAttack = attack(g, potStreaks, estimator);
