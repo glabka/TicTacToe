@@ -15,6 +15,7 @@ import grid_computations.PotentialStreak;
 import grid_computations.ValuedCoordinate;
 import players.ai_players.NaiveBlockAttackAIPlayer;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
+import players.ai_players.support_classes.AbstractRatedCoosFilter;
 import players.ai_players.support_classes.RatedCoordinate;
 
 public class HeuristicCommon {
@@ -164,6 +165,10 @@ public class HeuristicCommon {
 	}
 	
 	public static List<RatedCoordinate> getRatedCoordinatesFromList(List<? extends Coordinate> whatCoos, List<RatedCoordinate> source){
+		if(whatCoos == null || whatCoos.isEmpty() || source == null || source.isEmpty()) {
+			return null;
+		}
+		
 		List<RatedCoordinate> result = new LinkedList<>();
 		for(Coordinate whatCoo: whatCoos) {
 			for(RatedCoordinate rCoo : source) {
@@ -177,13 +182,29 @@ public class HeuristicCommon {
 	}
 	
 	/**
-	 * Method that rates coordinates of potStreaksOfInterest according to allStreaks
+	 * Method that rates coordinates of potStreaksOfInterest according to filtered allStreaks coordinates
+	 * @param allStreaks
+	 * @param potStreaksOfInterest
+	 * @param cooEstimator
+	 * @param filter
+	 * @return
+	 */
+	public static List<RatedCoordinate> getBestCoosFromStreaksRatedFromAllStreaksFiltered(List<PotentialStreak> allStreaks, List<PotentialStreak> potStreaksOfInterest, AbstractCooValFromStreakEstimator cooEstimator, AbstractRatedCoosFilter filter){
+		List<RatedCoordinate> coosOfInterest = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaksOfInterest, cooEstimator);
+	
+		List<RatedCoordinate> filtredRatedCoosFromEverything = filter.filterRatedCoos(HeuristicCommon.combineAllEqualRatedCoos(HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(allStreaks, cooEstimator)));
+		
+		return HeuristicCommon.getRatedCoordinatesFromList(coosOfInterest, filtredRatedCoosFromEverything);
+	}
+	
+	/**
+	 * Method that rates coordinates of potStreaksOfInterest according to allStreaks coordinates
 	 * @param allStreaks
 	 * @param potStreaksOfInterest
 	 * @param cooEstimator
 	 * @return
 	 */
-	public static List<RatedCoordinate> getBestCoosFromStreaksForAttackingOrBlocking(List<PotentialStreak> allStreaks, List<PotentialStreak> potStreaksOfInterest, AbstractCooValFromStreakEstimator cooEstimator){
+	public static List<RatedCoordinate> getBestCoosFromStreaksRatedFromAllStreaks(List<PotentialStreak> allStreaks, List<PotentialStreak> potStreaksOfInterest, AbstractCooValFromStreakEstimator cooEstimator){
 		List<RatedCoordinate> coosOfInterest = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaksOfInterest, cooEstimator);
 	
 		List<RatedCoordinate> ratedCoosFromEverything = HeuristicCommon.combineAllEqualRatedCoos(HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(allStreaks, cooEstimator));

@@ -12,9 +12,9 @@ import grid_computations.PotentialStreak;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
 
-public class SquareDecideAttackBlockHeuristic extends AbstractSquareHeuristic {
+public class SquareDecidingAttackBlockHeuristic extends AbstractSquareHeuristic {
 
-	public SquareDecideAttackBlockHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
+	public SquareDecidingAttackBlockHeuristic(AbstractCooValFromStreakEstimator cooEstimator) {
 		super(cooEstimator);
 	}
 
@@ -39,10 +39,10 @@ public class SquareDecideAttackBlockHeuristic extends AbstractSquareHeuristic {
 		}
 		
 		if(maxAttackingLength > maxAttackingLength) {
-			return HeuristicCommon.getBestCoosFromStreaksForAttackingOrBlocking(opponentsPotStreaks, threateningStreaks, cooEstimator);
+			return HeuristicCommon.getBestCoosFromStreaksRatedFromAllStreaks(opponentsPotStreaks, threateningStreaks, cooEstimator);
 		} else {
 			if(!potStreaks.isEmpty()) {
-				return HeuristicCommon.getBestCoosFromStreaksForAttackingOrBlocking(potStreaks, streaksForAtacking, cooEstimator);
+				return HeuristicCommon.getBestCoosFromStreaksRatedFromAllStreaks(potStreaks, streaksForAtacking, cooEstimator);
 			} else {
 				return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
 			}

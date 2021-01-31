@@ -23,7 +23,8 @@ import players.ai_players.heuristics.AbstractGridHeuristic;
 import players.ai_players.heuristics.AbstractSquareHeuristic;
 import players.ai_players.heuristics.GirdMergeHeuristic;
 import players.ai_players.heuristics.SquareBlockAttackHeuristic;
-import players.ai_players.heuristics.SquareDecideAttackBlockHeuristic;
+import players.ai_players.heuristics.SquareDecidingAttackBlockHeuristic;
+import players.ai_players.heuristics.SquareMergeBlockAttackHeuristic;
 import players.ai_players.heuristics.GridDiffHeuristic;
 import players.ai_players.heuristics.GridDiffRatedValuesHeuristic;
 import players.ai_players.heuristics.SquareNaiveAttackHeuristic;
@@ -58,29 +59,29 @@ public class Main {
     public static void main(String[] args) {
         // TODO compare with https://www.quora.com/What-are-some-good-project-ideas-for-an-undergraduate-object-oriented-programming-course-using-Java
         
-        Grid g = new Grid(5);
-        g.insert(1, 0, Square.SVal.CIRCLE);
-        g.insert(1, 1, Square.SVal.CIRCLE);
-        g.insert(1, 2, Square.SVal.CIRCLE);
-        g.insert(1, 3, Square.SVal.CIRCLE);
-        
-        g.insert(0, 1, Square.SVal.CIRCLE);
-        g.insert(0, 2, Square.SVal.CIRCLE);
-        g.insert(0, 4, Square.SVal.CIRCLE);
-        
-//        g.insert(3,2, SVal.CIRCLE);
-        
-        g.insert(2, 4, Square.SVal.CROSS);
-        g.insert(3, 4, Square.SVal.CROSS);
-        g.insert(4, 4, Square.SVal.CROSS);
-        
-        g.insert(2, 2, Square.SVal.CROSS);
-        g.insert(3, 3, Square.SVal.CROSS);
-        
-//        g.insert(4,0, SVal.CROSS);
-        g.printGrid();
-//        Rules.test(g);
-        System.out.println(Rules.findWinner(g, 4));
+//        Grid g = new Grid(5);
+//        g.insert(1, 0, Square.SVal.CIRCLE);
+//        g.insert(1, 1, Square.SVal.CIRCLE);
+//        g.insert(1, 2, Square.SVal.CIRCLE);
+//        g.insert(1, 3, Square.SVal.CIRCLE);
+//        
+//        g.insert(0, 1, Square.SVal.CIRCLE);
+//        g.insert(0, 2, Square.SVal.CIRCLE);
+//        g.insert(0, 4, Square.SVal.CIRCLE);
+//        
+////        g.insert(3,2, SVal.CIRCLE);
+//        
+//        g.insert(2, 4, Square.SVal.CROSS);
+//        g.insert(3, 4, Square.SVal.CROSS);
+//        g.insert(4, 4, Square.SVal.CROSS);
+//        
+//        g.insert(2, 2, Square.SVal.CROSS);
+//        g.insert(3, 3, Square.SVal.CROSS);
+//        
+////        g.insert(4,0, SVal.CROSS);
+//        g.printGrid();
+////        Rules.test(g);
+//        System.out.println(Rules.findWinner(g, 4));
         
 		////////////////////////////////////////////////////////////////////////////
 		//-------------------------------Streak testing-----------------------------
@@ -98,41 +99,41 @@ public class Main {
 //			System.out.println(streak);
 //		}
 //      
-        Collection<FullStreak> allCirclesStreaks = Computations.getAllFullStreaks(g, SVal.CIRCLE);
-        System.out.println("all circle streaks");
-        for (FullStreak streak : allCirclesStreaks) {
-        	System.out.println(streak);
-        }	
-      
-        Collection<FullStreak> allCrossStreaks = Computations.getAllFullStreaks(g, SVal.CROSS);
-        System.out.println("all cross streaks");
-        for (FullStreak streak : allCrossStreaks) {
-        	System.out.println(streak);
-        }
-        
-        // Potential streaks
-        
-        Collection<PotentialStreak> allPotStreaksCircle = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
-        System.out.println("all potential CIRCLE streaks");
-        for (PotentialStreak streak : allPotStreaksCircle) {
-        	System.out.println(streak);
-        }
-        
-        Collection<PotentialStreak> allPotStreaksCross = Computations.getAllPotentialStreaks(g, SVal.CROSS, 3);
-        System.out.println("all potential CROSS streaks");
-        for (PotentialStreak streak : allPotStreaksCross) {
-        	System.out.println(streak);
-        }
-        
-		////////////////////////////////////////////////////////////////////////////
-		//----------------------PotentialStreak's Comparators-----------------------
-		////////////////////////////////////////////////////////////////////////////
-        List<PotentialStreak> allPotStreaksCircle0 = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
-        Collections.sort(allPotStreaksCircle0, new PotStreakFilledLengthComparator());
-        System.out.println("PotStreakFilledLengthComparator");
-        for (PotentialStreak streak : allPotStreaksCircle0) {
-        	System.out.println(streak);
-        }
+//        Collection<FullStreak> allCirclesStreaks = Computations.getAllFullStreaks(g, SVal.CIRCLE);
+//        System.out.println("all circle streaks");
+//        for (FullStreak streak : allCirclesStreaks) {
+//        	System.out.println(streak);
+//        }	
+//      
+//        Collection<FullStreak> allCrossStreaks = Computations.getAllFullStreaks(g, SVal.CROSS);
+//        System.out.println("all cross streaks");
+//        for (FullStreak streak : allCrossStreaks) {
+//        	System.out.println(streak);
+//        }
+//        
+//        // Potential streaks
+//        
+//        Collection<PotentialStreak> allPotStreaksCircle = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
+//        System.out.println("all potential CIRCLE streaks");
+//        for (PotentialStreak streak : allPotStreaksCircle) {
+//        	System.out.println(streak);
+//        }
+//        
+//        Collection<PotentialStreak> allPotStreaksCross = Computations.getAllPotentialStreaks(g, SVal.CROSS, 3);
+//        System.out.println("all potential CROSS streaks");
+//        for (PotentialStreak streak : allPotStreaksCross) {
+//        	System.out.println(streak);
+//        }
+//        
+//		////////////////////////////////////////////////////////////////////////////
+//		//----------------------PotentialStreak's Comparators-----------------------
+//		////////////////////////////////////////////////////////////////////////////
+//        List<PotentialStreak> allPotStreaksCircle0 = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
+//        Collections.sort(allPotStreaksCircle0, new PotStreakFilledLengthComparator());
+//        System.out.println("PotStreakFilledLengthComparator");
+//        for (PotentialStreak streak : allPotStreaksCircle0) {
+//        	System.out.println(streak);
+//        }
         
         
 		////////////////////////////////////////////////////////////////////////////
@@ -177,16 +178,19 @@ public class Main {
 		////////////////////////////////////////////////////////////////////////////
 		//---------------------------------AI GAME----------------------------------
 		////////////////////////////////////////////////////////////////////////////
-//        g = new Grid(5);
-//        int reqStreakLength = 3;
-//        AbstractAIPlayer aiPlayer1 = new DumbAIPlayer(SVal.CROSS, "dumb ai player 1", reqStreakLength);
-//        AbstractAIPlayer aiPlayer2 = new AIPlayer(SVal.CIRCLE, "ai player", reqStreakLength);
-////        Player aiPlayer2 = new DumbAIPlayer2(SVal.CIRCLE, "dumb ai 2 player 2", reqStreakLength);
-//      Game aiGame = new Game(aiPlayer1, aiPlayer2, g, reqStreakLength);
-//      aiGame.play();
 
-//        testAIs();
-        
+//        String[] results1 = testAIs();
+//        String[] results2 = testAIs(true);
+//        System.out.println(results1[0]);
+//        System.out.println("\n" + results2[0]);
+//        
+//        int p1Wins = Integer.valueOf(results1[1]) + Integer.valueOf(results2[1]);
+//        int p2Wins = Integer.valueOf(results1[2]) + Integer.valueOf(results2[2]);
+//        int ties = Integer.valueOf(results1[3]) + Integer.valueOf(results2[3]);
+//        
+//        System.out.println(results1[4] + " = " + p1Wins);
+//        System.out.println(results1[5] + " = " + p2Wins);
+//        System.out.println("ties = " + ties);
 
         
 		////////////////////////////////////////////////////////////////////////////
@@ -208,7 +212,15 @@ public class Main {
         //----------------------------------GAME------------------------------------
         ////////////////////////////////////////////////////////////////////////////
         
-        System.out.println("What should be a size of grid?");
+//        uiGame();
+        
+        // closing the standard stream for whole program
+        Scanner in = new Scanner(System.in);
+        in.close();
+    }
+    
+    private static void uiGame() {
+    	System.out.println("What should be a size of grid?");
         int size;
         while (true) {
             size = readInt();
@@ -218,7 +230,7 @@ public class Main {
                 break;
             }
         }
-        g = new Grid(size);
+        Grid g = new Grid(size);
 
         
         int streakLength;
@@ -237,10 +249,6 @@ public class Main {
         Player p2 = new UIPlayer(SVal.CIRCLE, "player 2");
         Game game = new Game(p1, p2, g, streakLength);
         game.play();
-        
-        // closing the standard stream for whole program
-        Scanner in = new Scanner(System.in);
-        in.close();
     }
     
     private static int readInt() {
@@ -259,17 +267,18 @@ public class Main {
     
     private static void uiVSai() {
     	
-    	Grid g = new Grid(3);
-        int streakLength = 3;
+    	Grid g = new Grid(10);
+        int streakLength = 5;
         Player aiPlayer;
 //        aiPlayer = new BlockAttackNaiveAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // even better
-        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // even better
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good
+        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
         
-        Game aiGame = new Game(uiPlayer, aiPlayer, g, streakLength);
+        Game aiGame = new Game(aiPlayer, uiPlayer, g, streakLength);
         aiGame.play();
     }
     
@@ -282,10 +291,22 @@ public class Main {
     private static AbstractGridHeuristic gNaiveBAH = new GridDiffRatedValuesHeuristic(sqNaiveBAH, estimator, fewBestHeuristicFilter);
 	private static AbstractSquareHeuristic sqBAH = new SquareBlockAttackHeuristic(estimator);
     private static AbstractGridHeuristic gDiffH = new GridDiffHeuristic(estimator);
-    private static AbstractSquareHeuristic sqDABH = new SquareDecideAttackBlockHeuristic(estimator);
+    private static AbstractSquareHeuristic sqDABH = new SquareDecidingAttackBlockHeuristic(estimator);
     private static AbstractGridHeuristic gMergeH = new GirdMergeHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
+    private static AbstractRatedCoosFilter fewBestHeuristicFilter2 = new FewBestRatedCoosFilter(3);
+    private static AbstractSquareHeuristic sqMBAH = new SquareMergeBlockAttackHeuristic(estimator);
+    private static AbstractSquareHeuristic sqMBAHFiltred = new SquareMergeBlockAttackHeuristic(estimator, fewBestHeuristicFilter2);
     
-    private static void testAIs() {
+    private static String[] testAIs() {
+    	return testAIs(false);
+    }
+    
+    /**
+     * 
+     * @param switchAI
+     * @return
+     */
+    private static String[] testAIs(boolean switchAI) {
 //    	int[][] gameSizeAndStreakSizes = new int[][] {{3,3}};
 //    	int[][] gameSizeAndStreakSizes = new int[][] {{8,4}};
 //    	int[][] gameSizeAndStreakSizes = new int[][] {{5,3}};
@@ -298,6 +319,8 @@ public class Main {
   		Player p1 = null;
   		Player p2 = null;
   		
+  		
+  		boolean firstRunOfLoop = true;
     	for(int[] size : gameSizeAndStreakSizes) {
   
     		Grid g = new Grid(size[0]);
@@ -318,35 +341,68 @@ public class Main {
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "Few Best Depth ai 2", streakLength, new SquareMergedHeuristic(), 3, 3);
 //    		p2 = new FewBestDepthAIPlayer(SVal.CIRCLE, "AB Depth ai 2", streakLength, new AttackBlockHeuristic(), 3, 3);
 //    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqH, gH, fewBestFilter, 3);
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMergeH", streakLength, sqMergeH, gDiffMergeH, fewBestAIFilter, 2); // good
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH", streakLength, sqBAH, gDiffMergeH, fewBestAIFilter, 2); // good
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // even better
-    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // even better
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqMBAHFiltred, gMergeH, fewBestAIFilter, 2);    		
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqDBAH gMergeH", streakLength, sqDABH, gMergeH, fewBestAIFilter, 2);
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMerge DiffH", streakLength, sqMergeH, gDiffH, fewBestAIFilter, 2); 
 //    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqBAH, gDiffH, fewBestAIFilter, 3);
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval ai player", streakLength, sqBAH, gBAH, fewBestAIFilter, 2);
+
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMergeH", streakLength, sqMergeH, gDiffMergeH, fewBestAIFilter, 2); // good start
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH", streakLength, sqBAH, gDiffMergeH, fewBestAIFilter, 2); // good (3, 6, 11) vs NaiveBlockAttackAIPlayer
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (2, 7, 11) vs NaiveBlockAttackAIPlayer
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (1, 5, 14) vs NaiveBlockAttackAIPlayer
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 7, 13) vs NaiveBlockAttackAIPlayer
     		
+    		if(switchAI) {
+    			Player p;
+    			p = p2;
+    			p2 = p1;
+    			p1 = p;
+    		}
+    		
+    		if(firstRunOfLoop) {
+    			firstRunOfLoop = false;
+    			strB.append("p1 = " + p1.getName() + "\n");
+    			strB.append("p2 = " + p2.getName() + "\n");
+    		}
     		
     		Game game = new Game(p1, p2, g, streakLength);
     		System.out.println("\n\n\n\n" + game);
     		SVal winner = game.play();
     		
+        	// switch back for evaluation
+        	if(switchAI) {
+    			Player p;
+    			p = p2;
+    			p2 = p1;
+    			p1 = p;
+    		}
+        	
     		strB.append("{" + size[0] +"}" + "{" + size[1] + "}" + " the winner is ");
     		if(winner == p1.getSVal()) {
-    			strB.append(p1.getSVal() + "\n");
+    			strB.append(p1.getName() + "\n");
     			p1Wins++;
     		} else if(winner == p2.getSVal()) {
-    			strB.append(p2.getSVal() + "\n");
+    			strB.append(p2.getName() + "\n");
     			p2Wins++;
     		} else {
     			strB.append("noone \n");
     			ties++;
     		}
     	}
+
     	
-    	System.out.println(strB.toString());
-    	System.out.println("p1Wins = " + p1.getName() + " = " + p1Wins + "\np2Wins = " + p2.getName() +" = " + p2Wins + "\nties = " + ties);
+//    	strB.append("p1Wins = " + p1.getName() + " = " + p1Wins + "\np2Wins = " + p2.getName() +" = " + p2Wins + "\nties = " + ties);
+
+    	
+    	String[] results = new String[6];
+    	results[0] = strB.toString();
+    	results[1] = String.valueOf(p1Wins);
+    	results[2] = String.valueOf(p2Wins);
+    	results[3] = String.valueOf(ties);
+    	results[4] = p1.getName();
+    	results[5] = p2.getName();
+    	return results;
     }
     
     

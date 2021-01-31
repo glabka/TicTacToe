@@ -26,11 +26,11 @@ public class SquareBlockAttackHeuristic extends AbstractSquareHeuristic {
 		
 		
 		if(!threateningStreaks.isEmpty()) {
-			return HeuristicCommon.getBestCoosFromStreaksForAttackingOrBlocking(opponentsPotStreaks, threateningStreaks, cooEstimator);
+			return HeuristicCommon.getBestCoosFromStreaksRatedFromAllStreaks(opponentsPotStreaks, threateningStreaks, cooEstimator);
 		} else {
 			if(!potStreaks.isEmpty()) {
 				List<PotentialStreak> streaksForAtacking = HeuristicCommon.getAllMostFilledStreaks(potStreaks);
-				return HeuristicCommon.getBestCoosFromStreaksForAttackingOrBlocking(potStreaks, streaksForAtacking, cooEstimator);
+				return HeuristicCommon.getBestCoosFromStreaksRatedFromAllStreaks(potStreaks, streaksForAtacking, cooEstimator);
 			} else {
 				return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
 			}

@@ -23,10 +23,9 @@ public class SquareMergedHeuristic extends AbstractSquareHeuristic{
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength) {
 		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(playersSVal), streakLength);
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playersSVal, streakLength);
-		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
 		
-		List<RatedCoordinate> coosForDefending = defend(opponentsPotStreaks, estimator);
-		List<RatedCoordinate> coosForAttack = attack(g, potStreaks, estimator);
+		List<RatedCoordinate> coosForDefending = defend(opponentsPotStreaks, cooEstimator);
+		List<RatedCoordinate> coosForAttack = attack(g, potStreaks, cooEstimator);
 		
 		List<RatedCoordinate> combinedCoos = HeuristicCommon.combineTwoEqualRatedCoosFromTwoLists(coosForDefending, coosForAttack);
 		return combinedCoos;

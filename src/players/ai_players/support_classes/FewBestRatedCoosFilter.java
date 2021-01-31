@@ -13,6 +13,10 @@ public class FewBestRatedCoosFilter extends AbstractRatedCoosFilter {
 	
 	@Override
 	public List<RatedCoordinate> filterRatedCoos(List<RatedCoordinate> coos) {
+		if(coos == null) {
+			return null;
+		}
+		
 		Collections.sort(coos, new RatedCoordinatesValueComparator());
 		Collections.reverse(coos);
 		
