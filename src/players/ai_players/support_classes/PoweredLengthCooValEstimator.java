@@ -5,9 +5,9 @@ import grid_computations.PotentialStreak;
 
 public class PoweredLengthCooValEstimator extends AbstractCooValFromStreakEstimator {
 
-	private int power;
+	private double power;
 	
-	public PoweredLengthCooValEstimator(int power) {
+	public PoweredLengthCooValEstimator(double power) {
 		this.power = power;
 	}
 	

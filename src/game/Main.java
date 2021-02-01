@@ -27,20 +27,24 @@ import players.ai_players.heuristics.SquareDecidingAttackBlockHeuristic;
 import players.ai_players.heuristics.SquareDecidingMergeBlockAttackHeuristic;
 import players.ai_players.heuristics.SquareMergeBlockAttackHeuristic;
 import players.ai_players.heuristics.GridDiffHeuristic;
+import players.ai_players.heuristics.GridDiffPoweredHeuristic;
 import players.ai_players.heuristics.GridDiffRatedValuesHeuristic;
 import players.ai_players.heuristics.SquareNaiveAttackHeuristic;
 import players.ai_players.heuristics.SquareMergedHeuristic;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
 import players.ai_players.support_classes.FewBestRatedCoosFilter;
+import players.ai_players.support_classes.LengthCooValEstimator;
 import players.ai_players.support_classes.PoweredLengthCooValEstimator;
 import players.ai_players.support_classes.SortedNodesTree;
 import players.ai_players.support_classes.SortedTreeNode;
 import players.ui_players.UIPlayer;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -180,26 +184,15 @@ public class Main {
 		//---------------------------------AI GAME----------------------------------
 		////////////////////////////////////////////////////////////////////////////
 
-//        String[] results1 = testAIs();
-//        String[] results2 = testAIs(true);
-//        System.out.println(results1[0]);
-//        System.out.println("\n" + results2[0]);
-//        
-//        int p1Wins = Integer.valueOf(results1[1]) + Integer.valueOf(results2[1]);
-//        int p2Wins = Integer.valueOf(results1[2]) + Integer.valueOf(results2[2]);
-//        int ties = Integer.valueOf(results1[3]) + Integer.valueOf(results2[3]);
-//        
-//        System.out.println(results1[4] + " = " + p1Wins);
-//        System.out.println(results1[5] + " = " + p2Wins);
-//        System.out.println("ties = " + ties);
-
+//    	testAI();
+    	findBestAITest();
         
 		////////////////////////////////////////////////////////////////////////////
 		//----------------------------AI vs Person Game ----------------------------
 		////////////////////////////////////////////////////////////////////////////
         
         
-        uiVSai();
+//        uiVSai();
         
         
 		////////////////////////////////////////////////////////////////////////////
@@ -276,7 +269,9 @@ public class Main {
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better
-        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer
+        aiPlayer= new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer  
+//        aiPlayer= new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2);
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
         
@@ -299,10 +294,230 @@ public class Main {
     private static AbstractSquareHeuristic sqMBAH = new SquareMergeBlockAttackHeuristic(estimator);
     private static AbstractSquareHeuristic sqMBAHFiltred = new SquareMergeBlockAttackHeuristic(estimator, fewBestHeuristicFilter2);
     private static AbstractSquareHeuristic sqDMBAH = new SquareDecidingMergeBlockAttackHeuristic(estimator);
+    private static AbstractGridHeuristic gDiffPH = new GridDiffPoweredHeuristic(estimator, 2);
     
     
-    private static String[] testAIs() {
-    	return testAIs(false);
+    public static void findBestAITest() {
+    	SVal referenceAIVal = SVal.CROSS;
+    	SVal testedAIVal = SVal.CIRCLE;
+    	
+    	AbstractRatedCoosFilter[] aiFilters = new AbstractRatedCoosFilter[7];
+    	for (int i = 0; i < aiFilters.length; i++) {
+			aiFilters[i] = new FewBestRatedCoosFilter(i);
+		}
+    	
+    	AbstractCooValFromStreakEstimator[] estimators = new AbstractCooValFromStreakEstimator[4];
+    	estimators[0] = new LengthCooValEstimator();
+    	estimators[1] = new PoweredLengthCooValEstimator(1.5);
+    	estimators[2] = new PoweredLengthCooValEstimator(2);
+    	estimators[3] = new PoweredLengthCooValEstimator(3);
+    	
+    	AbstractSquareHeuristic[] squareHeuristics = new AbstractSquareHeuristic[24];
+    	squareHeuristics[0] = new SquareMergedHeuristic(estimators[0]);
+    	squareHeuristics[1] = new SquareMergedHeuristic(estimators[1]);
+    	squareHeuristics[2] = new SquareMergedHeuristic(estimators[2]);
+    	squareHeuristics[3] = new SquareMergedHeuristic(estimators[3]);
+    	squareHeuristics[4] = new SquareNaiveBlockAttackHeuristic(estimators[0]);
+    	squareHeuristics[5] = new SquareNaiveBlockAttackHeuristic(estimators[1]);
+    	squareHeuristics[6] = new SquareNaiveBlockAttackHeuristic(estimators[2]);
+    	squareHeuristics[7] = new SquareNaiveBlockAttackHeuristic(estimators[3]);
+    	squareHeuristics[8] = new SquareBlockAttackHeuristic(estimators[0]);
+    	squareHeuristics[9] = new SquareBlockAttackHeuristic(estimators[1]);
+    	squareHeuristics[10] = new SquareBlockAttackHeuristic(estimators[2]);
+    	squareHeuristics[11] = new SquareBlockAttackHeuristic(estimators[3]);
+    	squareHeuristics[12] = new SquareDecidingAttackBlockHeuristic(estimators[0]);
+    	squareHeuristics[13] = new SquareDecidingAttackBlockHeuristic(estimators[1]);
+    	squareHeuristics[14] = new SquareDecidingAttackBlockHeuristic(estimators[2]);
+    	squareHeuristics[15] = new SquareDecidingAttackBlockHeuristic(estimators[3]);
+    	squareHeuristics[16] = new SquareMergeBlockAttackHeuristic(estimators[0]);
+    	squareHeuristics[17] = new SquareMergeBlockAttackHeuristic(estimators[1]);
+    	squareHeuristics[18] = new SquareMergeBlockAttackHeuristic(estimators[2]);
+    	squareHeuristics[19] = new SquareMergeBlockAttackHeuristic(estimators[3]);
+    	squareHeuristics[16] = new SquareMergeBlockAttackHeuristic(estimators[0], aiFilters[6]);
+    	squareHeuristics[17] = new SquareMergeBlockAttackHeuristic(estimators[1], aiFilters[6]);
+    	squareHeuristics[18] = new SquareMergeBlockAttackHeuristic(estimators[2], aiFilters[6]);
+    	squareHeuristics[19] = new SquareMergeBlockAttackHeuristic(estimators[3], aiFilters[6]);
+    	squareHeuristics[20] = new SquareDecidingMergeBlockAttackHeuristic(estimators[0]);
+    	squareHeuristics[21] = new SquareDecidingMergeBlockAttackHeuristic(estimators[1]);
+    	squareHeuristics[22] = new SquareDecidingMergeBlockAttackHeuristic(estimators[2]);
+    	squareHeuristics[23] = new SquareDecidingMergeBlockAttackHeuristic(estimators[3]);
+    	
+    	AbstractGridHeuristic[] gridHeuristics = new AbstractGridHeuristic[1];
+    	gridHeuristics[0] = new GirdMergeHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
+    	gridHeuristics[1] = new GridDiffPoweredHeuristic(estimator, 2);
+    	
+    	
+    	int[][] gameSizeAndStreakSizes = new int[][] {{5,3}, {5,4}, {6,4}, {7,4}, {8,4}, {8,5}, {8,6}, {9,6}, {10,5}, {10,6}};
+    	List<Result> results = new LinkedList<>();
+    	
+    	int filersIndex;
+    	int estimatorsIndex;
+    	int squareHeuristicsIndex;
+    	int gridHeuristicsIndex;
+    	AbstractAIPlayer p1;
+    	AbstractAIPlayer p2;
+    	
+    	for (AbstractRatedCoosFilter filter : aiFilters) {
+    		filersIndex = Arrays.asList(aiFilters).indexOf(filter);
+			for(AbstractCooValFromStreakEstimator estimator : estimators) {
+				estimatorsIndex = Arrays.asList(estimators).indexOf(estimator);
+				for(AbstractSquareHeuristic squareHeuristic : squareHeuristics) {
+					squareHeuristicsIndex = Arrays.asList(squareHeuristics).indexOf(squareHeuristic);
+					for(AbstractGridHeuristic gridHeuristic : gridHeuristics) {
+						gridHeuristicsIndex = Arrays.asList(gridHeuristics).indexOf(gridHeuristic);
+						
+						System.out.println("filersIndex = "  + filersIndex + ", estimatorsIndex = " + estimatorsIndex + ", squareHeuristicsIndex = " + squareHeuristicsIndex + ", gridHeuristicsIndex = " + gridHeuristicsIndex);
+						String combination = "filersIndex = "  + filersIndex + ", estimatorsIndex = " + estimatorsIndex + ", squareHeuristicsIndex = " + squareHeuristicsIndex + ", gridHeuristicsIndex = " + gridHeuristicsIndex;
+								
+						int p2Losses = 0;
+						int p2Wins = 0;
+						int ties = 0 ;
+						
+						System.out.println("DepthAIPlayer");
+						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
+							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
+							int streakLength = gameSizeAndStreakSizes[i][1];
+							
+							p1 = new NaiveBlockAttackAIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
+							p2 = new DepthAIPlayer(testedAIVal, "DepthAIPlayer", streakLength, squareHeuristic, gridHeuristic, filter, 3);
+							SVal winner = aiGame(g, streakLength, p1, p2);
+							
+							if(winner == testedAIVal) {
+								p2Wins++;
+							} else if (winner == referenceAIVal) {
+								p2Losses++;
+							} else {
+								ties++;
+							}
+							
+							// switched start
+							winner = aiGame(g, streakLength, p2, p1);
+							
+							if(winner == testedAIVal) {
+								p2Wins++;
+							} else if (winner == referenceAIVal) {
+								p2Losses++;
+							} else {
+								ties++;
+							}
+							
+							String combinationFull = p2.getName() + combination;
+							
+							results.add(new Result(combinationFull, p2Wins, p2Losses, ties));
+						}
+						
+						
+						// second AI
+						p2Losses = 0;
+						p2Wins = 0;
+						ties = 0 ;
+						
+						System.out.println("OneStepAIPlayer");
+						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
+							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
+							int streakLength = gameSizeAndStreakSizes[i][1];
+							
+							p1 = new NaiveBlockAttackAIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
+							p2 = new OneStepAIPlayer(testedAIVal, "OneStepAIPlayer", streakLength, squareHeuristic);
+							SVal winner = aiGame(g, streakLength, p1, p2);
+							
+							if(winner == testedAIVal) {
+								p2Wins++;
+							} else if (winner == referenceAIVal) {
+								p2Losses++;
+							} else {
+								ties++;
+							}
+							
+							// switched start
+							winner = aiGame(g, streakLength, p2, p1);
+							
+							if(winner == testedAIVal) {
+								p2Wins++;
+							} else if (winner == referenceAIVal) {
+								p2Losses++;
+							} else {
+								ties++;
+							}
+							
+							String combinationFull = p2.getName() + combination;
+							
+							results.add(new Result(combinationFull, p2Wins, p2Losses, ties));
+						}
+						
+						
+						// third AI player
+						p2Losses = 0;
+						p2Wins = 0;
+						ties = 0 ;
+						
+						System.out.println("TreeEvaluationAIPlayer");
+						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
+							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
+							int streakLength = gameSizeAndStreakSizes[i][1];
+							
+							p1 = new NaiveBlockAttackAIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
+							p2 = new TreeEvaluationAIPlayer(testedAIVal, "TreeEvaluationAIPlayer", streakLength, squareHeuristic, gridHeuristic, filter, 2);
+							SVal winner = aiGame(g, streakLength, p1, p2);
+							
+							if(winner == testedAIVal) {
+								p2Wins++;
+							} else if (winner == referenceAIVal) {
+								p2Losses++;
+							} else {
+								ties++;
+							}
+							
+							// switched start
+							winner = aiGame(g, streakLength, p2, p1);
+							
+							if(winner == testedAIVal) {
+								p2Wins++;
+							} else if (winner == referenceAIVal) {
+								p2Losses++;
+							} else {
+								ties++;
+							}
+							
+							String combinationFull = p2.getName() + combination;
+							
+							results.add(new Result(combinationFull, p2Wins, p2Losses, ties));
+						}
+						
+					
+					}
+				}
+			}
+		}
+    	
+    	Collections.sort(results);
+    	for(Result result : results) {
+    		System.out.println(result);
+    	}
+    }
+    
+    private static SVal aiGame(Grid g, int streakLength, AbstractAIPlayer p1, AbstractAIPlayer p2) {  		
+		Game game = new Game(p1, p2, g, streakLength);
+		return game.play(false);
+    }
+    
+    public static void testAI() {
+    	String[] results1 = aiGame();
+        String[] results2 = aiGame(true);
+        System.out.println(results1[0]);
+        System.out.println("\n" + results2[0]);
+        
+        int p1Wins = Integer.valueOf(results1[1]) + Integer.valueOf(results2[1]);
+        int p2Wins = Integer.valueOf(results1[2]) + Integer.valueOf(results2[2]);
+        int ties = Integer.valueOf(results1[3]) + Integer.valueOf(results2[3]);
+        
+        System.out.println(results1[4] + " = " + p1Wins);
+        System.out.println(results1[5] + " = " + p2Wins);
+        System.out.println("ties = " + ties);
+    }
+    
+    private static String[] aiGame() {
+    	return aiGame(false);
     }
     
     /**
@@ -310,7 +525,7 @@ public class Main {
      * @param switchAI
      * @return
      */
-    private static String[] testAIs(boolean switchAI) {
+    private static String[] aiGame(boolean switchAI) {
 //    	int[][] gameSizeAndStreakSizes = new int[][] {{3,3}};
 //    	int[][] gameSizeAndStreakSizes = new int[][] {{8,4}};
 //    	int[][] gameSizeAndStreakSizes = new int[][] {{5,3}};
@@ -356,7 +571,9 @@ public class Main {
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (2, 7, 11) vs NaiveBlockAttackAIPlayer
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (1, 5, 14) vs NaiveBlockAttackAIPlayer
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 7, 13) vs NaiveBlockAttackAIPlayer
-    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer
+    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 1); // even better (0, 12, 8) vs NaiveBlockAttackAIPlayer
     				
     		
     		if(switchAI) {

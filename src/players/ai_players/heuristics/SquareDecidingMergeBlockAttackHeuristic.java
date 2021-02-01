@@ -47,31 +47,31 @@ public class SquareDecidingMergeBlockAttackHeuristic extends AbstractSquareHeuri
 		if(maxThreteningLenght > maxAttackingLength) {
 			if(threateningStreaks.size() > 1) {
 				// best defense values form point of view of defending
-				System.out.println("Best defense according to defense"); // debug
+//				System.out.println("Best defense according to defense"); // debug
 				ratedCoos = filter == null ? HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaks(opponentsPotStreaks, threateningStreaks, cooEstimator) :
 					HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaksFiltered(opponentsPotStreaks, threateningStreaks, cooEstimator, filter);
 			} else if (threateningStreaks.size() == 1) {
 				// best defense values from point of view of offense
-				System.out.println("Best defense according to offense"); // debug
+//				System.out.println("Best defense according to offense"); // debug
 				ratedCoos = filter == null ? HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaks(potStreaks, threateningStreaks, cooEstimator) :
 					HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaksFiltered(potStreaks, threateningStreaks, cooEstimator, filter);
 				
 				if(ratedCoos == null || ratedCoos.isEmpty()) {
 					// best values form point of view of defending
-					System.out.println("Best defense according to defense"); // debug
+//					System.out.println("Best defense according to defense"); // debug
 					ratedCoos = filter == null ? HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaks(opponentsPotStreaks, threateningStreaks, cooEstimator) :
 						HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaksFiltered(opponentsPotStreaks, threateningStreaks, cooEstimator, filter);
 				}
 			}
 		} else {
 			// best values from point of view of attacking
-			System.out.println("attack"); // debug
+//			System.out.println("attack"); // debug
 			ratedCoos = filter == null ? HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaks(potStreaks, streaksForAttack, cooEstimator) :
 			HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaksFiltered(potStreaks, streaksForAttack, cooEstimator, filter);
 		}
 		
 		if(ratedCoos == null || ratedCoos.isEmpty()) {
-			System.out.println("ratedCoos == null || ratedCoos.isEmpty()"); // debug
+//			System.out.println("ratedCoos == null || ratedCoos.isEmpty()"); // debug
 			return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
 		} else {		
 			return ratedCoos;

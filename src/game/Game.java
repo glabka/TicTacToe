@@ -52,11 +52,17 @@ public class Game {
     }
 
     public SVal play() {
+    	return play(true);
+    }
+    
+    public SVal play(boolean verbous) {
     	int moveNumberDebug = 0; // debug
         while (!Rules.endOfGame(g, streakLength)) {
-            System.out.println("\n\n\n\n");
-//            g.printGrid();
-            g.printGridDebug();
+        	if(verbous) {
+	            System.out.println("\n\n\n\n");
+//	            g.printGrid();
+	            g.printGridDebug();
+        	}
             Move nextMove = currentPlayer.nextMove(g);
             System.out.println("nextMove = " + nextMove);
             if(insertVal(nextMove)) {
@@ -66,11 +72,15 @@ public class Game {
             }
         }
 
-        System.out.println("\n\n\n\n");
-//        g.printGrid();
-        g.printGridDebug();
+        if(verbous) {
+	        System.out.println("\n\n\n\n");
+//	        g.printGrid();
+	        g.printGridDebug();
+        }
         SVal winner = Rules.findWinner(g, streakLength);
-        printOutWinner(winner);
+        if(verbous) {
+        	printOutWinner(winner);
+        }
         return winner;
     }
     

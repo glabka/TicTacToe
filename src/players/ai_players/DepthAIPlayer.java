@@ -104,7 +104,7 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 		if(bestMove != null) {
 			return bestMove;
 		} else {
-			System.out.println("FIRST EMPTY SQUARE MOVE"); // debug
+//			System.out.println("FIRST EMPTY SQUARE MOVE"); // debug
 			return new Move(HeuristicCommon.firtEmptySquare(gOrig), this.getSVal());
 		}
 	}

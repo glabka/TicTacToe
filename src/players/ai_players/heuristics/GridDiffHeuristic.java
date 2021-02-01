@@ -32,7 +32,7 @@ public class GridDiffHeuristic extends AbstractGridHeuristic {
 	
 
 	
-	private List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
+	public static List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
 		if(potStreaks == null || potStreaks.isEmpty()) {
 			return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
 		}
@@ -42,7 +42,7 @@ public class GridDiffHeuristic extends AbstractGridHeuristic {
 		return combinedCoos;
 	}
 	
-	private List<RatedCoordinate> defend(List<PotentialStreak> opponentsPotStreaks, AbstractCooValFromStreakEstimator estimator){
+	public static List<RatedCoordinate> defend(List<PotentialStreak> opponentsPotStreaks, AbstractCooValFromStreakEstimator estimator){
 		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(opponentsPotStreaks, estimator);
 		List<RatedCoordinate> combinedCoos = HeuristicCommon.combineAllEqualRatedCoos(allRatedCoos);
 		return combinedCoos;

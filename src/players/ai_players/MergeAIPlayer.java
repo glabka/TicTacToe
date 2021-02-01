@@ -39,13 +39,13 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 //			Collections.sort(coosForDefending, new RatedCoordinatesValueComparator()); // debug
 //			Collections.reverse(coosForDefending); // debug	
 //		}
-		System.out.println(coosForDefending); // debug
+//		System.out.println(coosForDefending); // debug
 		List<RatedCoordinate> coosForAttack = attack(g, potStreaks, estimator);
 //		if(coosForAttack != null) {
 //			Collections.sort(coosForAttack, new RatedCoordinatesValueComparator()); // debug
 //			Collections.reverse(coosForAttack); // debug
 //		}
-		System.out.println(coosForAttack); // debug
+//		System.out.println(coosForAttack); // debug
 		
 		List<RatedCoordinate> combinedCoos = combineTwoEqualRatedCoosFromTwoLists(coosForDefending, coosForAttack);
 //		Collections.sort(combinedCoos, new RatedCoordinatesValueComparator()); // debug
