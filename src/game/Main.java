@@ -301,9 +301,9 @@ public class Main {
     	SVal referenceAIVal = SVal.CROSS;
     	SVal testedAIVal = SVal.CIRCLE;
     	
-    	AbstractRatedCoosFilter[] aiFilters = new AbstractRatedCoosFilter[7];
+    	AbstractRatedCoosFilter[] aiFilters = new AbstractRatedCoosFilter[4];
     	for (int i = 0; i < aiFilters.length; i++) {
-			aiFilters[i] = new FewBestRatedCoosFilter(i);
+			aiFilters[i] = new FewBestRatedCoosFilter(i + 1);
 		}
     	
     	AbstractCooValFromStreakEstimator[] estimators = new AbstractCooValFromStreakEstimator[4];
@@ -333,16 +333,16 @@ public class Main {
     	squareHeuristics[17] = new SquareMergeBlockAttackHeuristic(estimators[1]);
     	squareHeuristics[18] = new SquareMergeBlockAttackHeuristic(estimators[2]);
     	squareHeuristics[19] = new SquareMergeBlockAttackHeuristic(estimators[3]);
-    	squareHeuristics[16] = new SquareMergeBlockAttackHeuristic(estimators[0], aiFilters[6]);
-    	squareHeuristics[17] = new SquareMergeBlockAttackHeuristic(estimators[1], aiFilters[6]);
-    	squareHeuristics[18] = new SquareMergeBlockAttackHeuristic(estimators[2], aiFilters[6]);
-    	squareHeuristics[19] = new SquareMergeBlockAttackHeuristic(estimators[3], aiFilters[6]);
+    	squareHeuristics[16] = new SquareMergeBlockAttackHeuristic(estimators[0], new FewBestRatedCoosFilter(7));
+    	squareHeuristics[17] = new SquareMergeBlockAttackHeuristic(estimators[1], new FewBestRatedCoosFilter(7));
+    	squareHeuristics[18] = new SquareMergeBlockAttackHeuristic(estimators[2], new FewBestRatedCoosFilter(7));
+    	squareHeuristics[19] = new SquareMergeBlockAttackHeuristic(estimators[3], new FewBestRatedCoosFilter(7));
     	squareHeuristics[20] = new SquareDecidingMergeBlockAttackHeuristic(estimators[0]);
     	squareHeuristics[21] = new SquareDecidingMergeBlockAttackHeuristic(estimators[1]);
     	squareHeuristics[22] = new SquareDecidingMergeBlockAttackHeuristic(estimators[2]);
     	squareHeuristics[23] = new SquareDecidingMergeBlockAttackHeuristic(estimators[3]);
     	
-    	AbstractGridHeuristic[] gridHeuristics = new AbstractGridHeuristic[1];
+    	AbstractGridHeuristic[] gridHeuristics = new AbstractGridHeuristic[2];
     	gridHeuristics[0] = new GirdMergeHeuristic(sqMergeH, estimator, fewBestHeuristicFilter);
     	gridHeuristics[1] = new GridDiffPoweredHeuristic(estimator, 2);
     	
@@ -375,6 +375,7 @@ public class Main {
 						
 						System.out.println("DepthAIPlayer");
 						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
+							System.out.println("g.size = " + gameSizeAndStreakSizes[i][0] + ", streakLength = " + gameSizeAndStreakSizes[i][1]);
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
@@ -414,6 +415,7 @@ public class Main {
 						
 						System.out.println("OneStepAIPlayer");
 						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
+							System.out.println("g.size = " + gameSizeAndStreakSizes[i][0] + ", streakLength = " + gameSizeAndStreakSizes[i][1]);
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
@@ -453,6 +455,7 @@ public class Main {
 						
 						System.out.println("TreeEvaluationAIPlayer");
 						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
+							System.out.println("g.size = " + gameSizeAndStreakSizes[i][0] + ", streakLength = " + gameSizeAndStreakSizes[i][1]);
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
