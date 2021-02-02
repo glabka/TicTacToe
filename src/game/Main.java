@@ -373,14 +373,15 @@ public class Main {
 						int p2Wins = 0;
 						int ties = 0 ;
 						
-						System.out.println("DepthAIPlayer");
+						String aiPlayerName = "DepthAIPlayer";
+						System.out.println(aiPlayerName);
 						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
 							System.out.println("g.size = " + gameSizeAndStreakSizes[i][0] + ", streakLength = " + gameSizeAndStreakSizes[i][1]);
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
 							p1 = new NaiveBlockAttackAIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
-							p2 = new DepthAIPlayer(testedAIVal, "DepthAIPlayer", streakLength, squareHeuristic, gridHeuristic, filter, 3);
+							p2 = new DepthAIPlayer(testedAIVal, aiPlayerName, streakLength, squareHeuristic, gridHeuristic, filter, 3);
 							SVal winner = aiGame(g, streakLength, p1, p2);
 							
 							if(winner == testedAIVal) {
@@ -402,25 +403,25 @@ public class Main {
 								ties++;
 							}
 							
-							String combinationFull = p2.getName() + combination;
-							
-							results.add(new Result(combinationFull, p2Wins, p2Losses, ties));
 						}
-						
+						Result res = new Result(aiPlayerName + ", " + combination, p2Wins, p2Losses, ties);
+						results.add(res);
+						System.out.println(res);
 						
 						// second AI
 						p2Losses = 0;
 						p2Wins = 0;
 						ties = 0 ;
 						
-						System.out.println("OneStepAIPlayer");
+						aiPlayerName = "OneStepAIPlayer";
+						System.out.println(aiPlayerName);
 						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
 							System.out.println("g.size = " + gameSizeAndStreakSizes[i][0] + ", streakLength = " + gameSizeAndStreakSizes[i][1]);
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
 							p1 = new NaiveBlockAttackAIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
-							p2 = new OneStepAIPlayer(testedAIVal, "OneStepAIPlayer", streakLength, squareHeuristic);
+							p2 = new OneStepAIPlayer(testedAIVal, aiPlayerName, streakLength, squareHeuristic);
 							SVal winner = aiGame(g, streakLength, p1, p2);
 							
 							if(winner == testedAIVal) {
@@ -441,26 +442,25 @@ public class Main {
 							} else {
 								ties++;
 							}
-							
-							String combinationFull = p2.getName() + combination;
-							
-							results.add(new Result(combinationFull, p2Wins, p2Losses, ties));
 						}
-						
+						res = new Result(aiPlayerName + ", " + combination, p2Wins, p2Losses, ties);
+						results.add(res);
+						System.out.println(res);
 						
 						// third AI player
 						p2Losses = 0;
 						p2Wins = 0;
 						ties = 0 ;
 						
-						System.out.println("TreeEvaluationAIPlayer");
+						aiPlayerName = "TreeEvaluationAIPlayer";
+						System.out.println(aiPlayerName);
 						for (int i = 0; i < gameSizeAndStreakSizes.length; i++) {
 							System.out.println("g.size = " + gameSizeAndStreakSizes[i][0] + ", streakLength = " + gameSizeAndStreakSizes[i][1]);
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
 							p1 = new NaiveBlockAttackAIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
-							p2 = new TreeEvaluationAIPlayer(testedAIVal, "TreeEvaluationAIPlayer", streakLength, squareHeuristic, gridHeuristic, filter, 2);
+							p2 = new TreeEvaluationAIPlayer(testedAIVal, aiPlayerName, streakLength, squareHeuristic, gridHeuristic, filter, 2);
 							SVal winner = aiGame(g, streakLength, p1, p2);
 							
 							if(winner == testedAIVal) {
@@ -481,12 +481,10 @@ public class Main {
 							} else {
 								ties++;
 							}
-							
-							String combinationFull = p2.getName() + combination;
-							
-							results.add(new Result(combinationFull, p2Wins, p2Losses, ties));
 						}
-						
+						res = new Result(aiPlayerName + ", " + combination, p2Wins, p2Losses, ties);
+						results.add(res);
+						System.out.println(res);
 					
 					}
 				}

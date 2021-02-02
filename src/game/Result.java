@@ -51,6 +51,6 @@ public class Result implements Comparable<Result>{
 	}
 	
 	public String toString() {
-		return " , w: " + this.getNumOfWins() + ", l: " + this.getNumOfLosses() + " , t: " + this.getNumOfTies() + ", " +this.getCombination();
+		return "w: " + this.getNumOfWins() + ", l: " + this.getNumOfLosses() + " , t: " + this.getNumOfTies() + ", " +this.getCombination();
 	}
 }
