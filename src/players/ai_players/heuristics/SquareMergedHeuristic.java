@@ -26,15 +26,15 @@ public class SquareMergedHeuristic extends AbstractSquareHeuristic{
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playersSVal, streakLength, minNumOfFilledCoos);
 		
 		List<RatedCoordinate> coosForDefending = defend(opponentsPotStreaks, cooEstimator);
-		List<RatedCoordinate> coosForAttack = attack(g, potStreaks, cooEstimator);
+		List<RatedCoordinate> coosForAttack = attack(g, playersSVal, streakLength, potStreaks, cooEstimator);
 		
 		List<RatedCoordinate> combinedCoos = HeuristicCommon.combineTwoEqualRatedCoosFromTwoLists(coosForDefending, coosForAttack);
 		return combinedCoos;
 	}
 	
-	private List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
+	private List<RatedCoordinate> attack(Grid g, SVal playersSVal, int streakLength, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
 		if(potStreaks == null || potStreaks.isEmpty()) {
-			return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
+			return HeuristicCommon.getRatedCoosBasedOnNumOfPotStreaksTheyAreIn(g, playersSVal, streakLength);
 		}
 		
 		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);

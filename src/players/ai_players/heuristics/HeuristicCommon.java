@@ -1,6 +1,7 @@
 package players.ai_players.heuristics;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,13 +11,16 @@ import java.util.stream.Stream;
 import game_components.Grid;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
+import grid_computations.Computations;
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
 import grid_computations.ValuedCoordinate;
 import players.ai_players.NaiveBlockAttackAIPlayer;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
+import players.ai_players.support_classes.OneValueEstimator;
 import players.ai_players.support_classes.RatedCoordinate;
+import players.ai_players.support_classes.RatedCoordinatesValueComparator;
 
 public class HeuristicCommon {
 
@@ -143,7 +147,6 @@ public class HeuristicCommon {
 			if(combinedCoos.contains(coo))
 				continue;
 
-			RatedCoordinate newCoo = coo;
 			int cooIndex = ratedCoos.indexOf(coo);
 //			List<RatedCoordinate> toBeRemoved = new LinkedList<>();
 //			toBeRemoved.add(coo);
@@ -258,5 +261,30 @@ public class HeuristicCommon {
 			}
 			return list;
 		}
+	}
+	
+	public static List<RatedCoordinate> getRatedCoosBasedOnNumOfPotStreaksTheyAreIn(Grid g,  SVal currentPlayer, int streakLength) {
+		OneValueEstimator estimator = new OneValueEstimator(1);
+		int minNumOfFilledCoos = 0;
+		
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, currentPlayer, streakLength, minNumOfFilledCoos);
+		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);
+		List<RatedCoordinate> combinedCoos = HeuristicCommon.combineAllEqualRatedCoos(allRatedCoos);
+	
+		if(combinedCoos == null || combinedCoos.isEmpty()) {
+			List<RatedCoordinate> list = new ArrayList<>();
+			int value = 5; // kind of random positive value
+			Coordinate coo = NaiveBlockAttackAIPlayer.firtEmptySquare(g);
+			
+			if(coo != null) {
+				list.add(new RatedCoordinate(coo, value));
+			}
+			
+			return list;
+		}
+		Collections.sort(combinedCoos, new RatedCoordinatesValueComparator());
+		Collections.reverse(combinedCoos);
+		
+		return combinedCoos;
 	}
 }

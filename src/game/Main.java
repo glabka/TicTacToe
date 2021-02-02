@@ -29,6 +29,7 @@ import players.ai_players.heuristics.SquareMergeBlockAttackHeuristic;
 import players.ai_players.heuristics.GridDiffHeuristic;
 import players.ai_players.heuristics.GridDiffPoweredHeuristic;
 import players.ai_players.heuristics.GridDiffRatedValuesHeuristic;
+import players.ai_players.heuristics.HeuristicCommon;
 import players.ai_players.heuristics.SquareNaiveAttackHeuristic;
 import players.ai_players.heuristics.SquareMergedHeuristic;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
@@ -84,7 +85,7 @@ public class Main {
 //        g.insert(3, 3, Square.SVal.CROSS);
 //        
 ////        g.insert(4,0, SVal.CROSS);
-//        g.printGridDebug();
+        g.printGridDebug();
 ////        Rules.test(g);
 //        System.out.println(Rules.findWinner(g, 4));
 //        
@@ -179,6 +180,10 @@ public class Main {
 //        g.insert(2, 2, SVal.CIRCLE);
 //        treeSAIPlayer.test(g);
         
+        // getRatedCoosBasedOnNumOfPotStreaksTheyAreIn
+        
+        System.out.println(HeuristicCommon.getRatedCoosBasedOnNumOfPotStreaksTheyAreIn(g, SVal.CIRCLE, 3));
+        
         
 		////////////////////////////////////////////////////////////////////////////
 		//---------------------------------AI GAME----------------------------------
@@ -266,11 +271,11 @@ public class Main {
         Player aiPlayer;
 //        aiPlayer = new BlockAttackNaiveAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer
-        aiPlayer= new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer  
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+        aiPlayer= new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
 //        aiPlayer= new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2);
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
@@ -567,14 +572,14 @@ public class Main {
 //    		p2 = new DepthAIPlayer(SVal.CIRCLE, "depth ai player", streakLength, sqBAH, gDiffH, fewBestAIFilter, 3);
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval ai player", streakLength, sqBAH, gBAH, fewBestAIFilter, 2);
 
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMergeH", streakLength, sqMergeH, gDiffMergeH, fewBestAIFilter, 2); // good start
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH", streakLength, sqBAH, gDiffMergeH, fewBestAIFilter, 2); // good (3, 6, 11) vs NaiveBlockAttackAIPlayer
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (2, 7, 11) vs NaiveBlockAttackAIPlayer
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (1, 5, 14) vs NaiveBlockAttackAIPlayer
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 7, 13) vs NaiveBlockAttackAIPlayer
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer
-//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer
-    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 1); // even better (0, 12, 8) vs NaiveBlockAttackAIPlayer
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMergeH", streakLength, sqMergeH, gDiffMergeH, fewBestAIFilter, 2); // good start (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH", streakLength, sqBAH, gDiffMergeH, fewBestAIFilter, 2); // good (3, 6, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (2, 7, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (1, 5, 14) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 7, 13) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 1); // even better (0, 12, 8) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
     				
     		
     		if(switchAI) {

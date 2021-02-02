@@ -35,7 +35,7 @@ public class GridDiffHeuristic extends AbstractGridHeuristic {
 	
 	public static List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
 		if(potStreaks == null || potStreaks.isEmpty()) {
-			return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
+			return null;
 		}
 		
 		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);

@@ -45,7 +45,7 @@ public class SquareDecidingAttackBlockHeuristic extends AbstractSquareHeuristic 
 			if(!potStreaks.isEmpty()) {
 				return HeuristicCommon.getBestCoosFromStreaksRatedAccordingToAllStreaks(potStreaks, streaksForAtacking, cooEstimator);
 			} else {
-				return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
+				return HeuristicCommon.getRatedCoosBasedOnNumOfPotStreaksTheyAreIn(g, playersSVal, streakLength);
 			}
 		}
 	}

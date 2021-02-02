@@ -61,7 +61,7 @@ public class SquareMergeBlockAttackHeuristic extends AbstractSquareHeuristic {
 		
 		if(ratedCoos == null || ratedCoos.isEmpty()) {
 //			System.out.println("ratedCoos == null || ratedCoos.isEmpty()"); // debug
-			return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
+			return HeuristicCommon.getRatedCoosBasedOnNumOfPotStreaksTheyAreIn(g, playersSVal, streakLength);
 		} else {		
 			return ratedCoos;
 		}
