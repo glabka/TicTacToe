@@ -30,8 +30,9 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 
 	@Override
 	public Move nextMove(Grid g) {
-		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength);
-		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength);
+		int minNumOfFilledCoos = 1;
+		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength, minNumOfFilledCoos);
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength, minNumOfFilledCoos);
 		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
 		
 		List<RatedCoordinate> coosForDefending = defend(opponentsPotStreaks, estimator);

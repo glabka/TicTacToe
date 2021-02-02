@@ -223,26 +223,26 @@ public class Computations {
 	
 	//--------------------Potential Streaks--------------------
 	
-	public static List<PotentialStreak> getAllPotentialStreaks(Grid g, SVal val, int streakLength) {
-		return getPotentialStreaksFromStripes(getAllStripes(g), val, streakLength);
+	public static List<PotentialStreak> getAllPotentialStreaks(Grid g, SVal val, int streakLength, int minNumOfFilledCoos) {
+		return getPotentialStreaksFromStripes(getAllStripes(g), val, streakLength, minNumOfFilledCoos);
 	}
 	
-	public static List<PotentialStreak> getPotentialStreaksFromStripes(List<Stripe> stripes, SVal val, int streakLength) {
-		Stream<PotentialStreak> streaksFromStripesStream = getPotentialStreaksFromStripe(stripes.get(0), val, streakLength).stream();
+	public static List<PotentialStreak> getPotentialStreaksFromStripes(List<Stripe> stripes, SVal val, int streakLength, int minNumOfFilledCoos) {
+		Stream<PotentialStreak> streaksFromStripesStream = getPotentialStreaksFromStripe(stripes.get(0), val, streakLength, minNumOfFilledCoos).stream();
 		stripes = stripes.subList(1, stripes.size());
 		
 		for (Stripe stripe : stripes) {			
-			streaksFromStripesStream = Stream.concat(streaksFromStripesStream, getPotentialStreaksFromStripe(stripe, val, streakLength).stream());
+			streaksFromStripesStream = Stream.concat(streaksFromStripesStream, getPotentialStreaksFromStripe(stripe, val, streakLength, minNumOfFilledCoos).stream());
         }
 		
 		return streaksFromStripesStream.collect(Collectors.toList());
 	}
 	
-	public static List<PotentialStreak> getPotentialStreaksFromStripe(Stripe stripe, SVal val, int streakLength) {
+	public static List<PotentialStreak> getPotentialStreaksFromStripe(Stripe stripe, SVal val, int streakLength, int minNumOfFilledCoos) {
 		List<PotentialStreak> streaks = new ArrayList<PotentialStreak>();
 		
 		for(int i = 0; i < stripe.size(); i++) {
-			if(checkForPotentialStreak(stripe, val, streakLength, i)) {
+			if(checkForPotentialStreak(stripe, val, streakLength, i, minNumOfFilledCoos)) {
 				streaks.add(createPotStreak(stripe, val, streakLength, i));
 			}
 		}
@@ -250,7 +250,7 @@ public class Computations {
 		return streaks;
 	}
 	
-	public static boolean checkForPotentialStreak(Stripe stripe, SVal val, int streakLength, int startCooIndex) {
+	public static boolean checkForPotentialStreak(Stripe stripe, SVal val, int streakLength, int startCooIndex, int minNumOfFilledCoos) {
 		if (startCooIndex + streakLength > stripe.size()) {
 			return false;
 		}
@@ -265,7 +265,7 @@ public class Computations {
 		}
 		
 		// counter < streakLength because there can be already a FullStreak
-		return (counter > 0 ) && (counter < streakLength) ? true : false;
+		return (counter >= minNumOfFilledCoos ) && (counter < streakLength) ? true : false;
 	}
 	
 	private static PotentialStreak createPotStreak(Stripe stripe, SVal val, int streakLength, int startIndex) {

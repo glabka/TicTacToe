@@ -64,7 +64,7 @@ public class Main {
     public static void main(String[] args) {
         // TODO compare with https://www.quora.com/What-are-some-good-project-ideas-for-an-undergraduate-object-oriented-programming-course-using-Java
         
-//        Grid g = new Grid(5);
+        Grid g = new Grid(5);
 //        g.insert(1, 0, Square.SVal.CIRCLE);
 //        g.insert(1, 1, Square.SVal.CIRCLE);
 //        g.insert(1, 2, Square.SVal.CIRCLE);
@@ -84,10 +84,10 @@ public class Main {
 //        g.insert(3, 3, Square.SVal.CROSS);
 //        
 ////        g.insert(4,0, SVal.CROSS);
-//        g.printGrid();
+//        g.printGridDebug();
 ////        Rules.test(g);
 //        System.out.println(Rules.findWinner(g, 4));
-        
+//        
 		////////////////////////////////////////////////////////////////////////////
 		//-------------------------------Streak testing-----------------------------
 		////////////////////////////////////////////////////////////////////////////
@@ -118,13 +118,13 @@ public class Main {
 //        
 //        // Potential streaks
 //        
-//        Collection<PotentialStreak> allPotStreaksCircle = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
+//        Collection<PotentialStreak> allPotStreaksCircle = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3, 0);
 //        System.out.println("all potential CIRCLE streaks");
 //        for (PotentialStreak streak : allPotStreaksCircle) {
 //        	System.out.println(streak);
 //        }
 //        
-//        Collection<PotentialStreak> allPotStreaksCross = Computations.getAllPotentialStreaks(g, SVal.CROSS, 3);
+//        Collection<PotentialStreak> allPotStreaksCross = Computations.getAllPotentialStreaks(g, SVal.CROSS, 3, 0);
 //        System.out.println("all potential CROSS streaks");
 //        for (PotentialStreak streak : allPotStreaksCross) {
 //        	System.out.println(streak);
@@ -184,8 +184,8 @@ public class Main {
 		//---------------------------------AI GAME----------------------------------
 		////////////////////////////////////////////////////////////////////////////
 
-//    	testAI();
-    	findBestAITest();
+    	testAI();
+//    	findBestAITest();
         
 		////////////////////////////////////////////////////////////////////////////
 		//----------------------------AI vs Person Game ----------------------------

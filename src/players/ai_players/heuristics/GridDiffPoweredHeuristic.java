@@ -20,8 +20,9 @@ public class GridDiffPoweredHeuristic extends AbstractGridHeuristic {
 
 	@Override
 	public double getGridsHeuristicValue(Grid g, SVal currentPlayer, int streakLength) {
-		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(currentPlayer), streakLength);
-		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, currentPlayer, streakLength);
+		int minNumOfFilledCoos = 1;
+		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(currentPlayer), streakLength, minNumOfFilledCoos);
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, currentPlayer, streakLength, minNumOfFilledCoos);
 		
 		List<RatedCoordinate> coosForDefending = GridDiffHeuristic.defend(opponentsPotStreaks, estimator);
 		List<RatedCoordinate> coosForAttack = GridDiffHeuristic.attack(g, potStreaks, estimator);

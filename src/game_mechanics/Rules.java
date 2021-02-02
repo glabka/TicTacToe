@@ -6,12 +6,14 @@
 package game_mechanics;
 
 import java.util.Collection;
+import java.util.List;
 
 import custom_exceptions.IllegalSetOfArgumentsException;
 import game_components.Grid;
 import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.FullStreak;
+import grid_computations.PotentialStreak;
 
 /**
  *
@@ -45,8 +47,20 @@ public class Rules {
     		return true;
     	} else if (g.isGridFull()) {
     		return true;
+    	} else if(!anyPotentialStreaks(g, streakLength, SVal.CIRCLE) && !anyPotentialStreaks(g, streakLength, SVal.CROSS)) {
+    		return true;
     	} else {
     		return false;
+    	}
+    }
+    
+    public static boolean anyPotentialStreaks(Grid g, int streakLength, SVal playerOfNextTurn) {
+    	List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playerOfNextTurn, streakLength, 0);
+    	System.out.println("potStreaks = " + potStreaks);// debug
+    	if(potStreaks == null || potStreaks.isEmpty()) {
+    		return false;
+    	} else {
+    		return true;
     	}
     }
 

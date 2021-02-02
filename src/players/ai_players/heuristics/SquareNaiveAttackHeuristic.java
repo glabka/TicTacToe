@@ -22,7 +22,8 @@ public class SquareNaiveAttackHeuristic extends AbstractSquareHeuristic {
 	@Override
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength) {
 		
-		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playersSVal, streakLength);
+		int minNumOfFilledCoos = 1;
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playersSVal, streakLength, minNumOfFilledCoos);
 		
 		return attack(potStreaks, g, cooEstimator);
 	}

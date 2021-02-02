@@ -64,9 +64,9 @@ public class Game {
 	            g.printGridDebug();
         	}
             Move nextMove = currentPlayer.nextMove(g);
-//            System.out.println("nextMove = " + nextMove);
             if(insertVal(nextMove)) {
             	if(verbous) {
+            		System.out.println("nextMove = " + nextMove);
             		System.out.println("game grid size: " + g.size() + ", streakLength: "+ streakLength + ", move number = " + moveNumberDebug); // debug
             	}
             	moveNumberDebug++; // debug

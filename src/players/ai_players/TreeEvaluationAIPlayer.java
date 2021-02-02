@@ -155,9 +155,10 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 			SortedTreeNode<RatedCoordinate> child = tree.addChild(parrentNode, new RatedCoordinate(mvAndDepth.getMove(), gridHeuristicVal));
 			
 			
+			SVal nextPlayer = AIPlayersCommon.getPlayer(mvAndDepth.getDepth() + 1, this.getSVal());
 			if(mvAndDepth.getDepth() + 2 < this.depth && child.getVal().getValue() != Double.NEGATIVE_INFINITY
 					&& child.getVal().getValue() != Double.POSITIVE_INFINITY && !Rules.endOfGame(g, streakLength)) { // + 1 because of next step + 1 because of no step root of tree
-				List<MoveAndDepth> nextMd = nextMovesAndDepth(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth() + 1, this.getSVal()), mvAndDepth.getDepth() + 1);
+				List<MoveAndDepth> nextMd = nextMovesAndDepth(g, nextPlayer, mvAndDepth.getDepth() + 1);
 				AIPlayersCommon.addToBeginingOfList(md, nextMd);
 				parrentNode = child;
 			}

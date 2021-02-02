@@ -23,7 +23,8 @@ public class NaiveAttackAIPlayer extends AbstractAIPlayer {
 	
 	@Override
 	public Move nextMove(Grid g) {
-		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength);
+		int minNumOfFilledCoos = 1;
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength, minNumOfFilledCoos);
 		
 		return new Move(NaiveBlockAttackAIPlayer.attack(potStreaks, g), this.getSVal());
 	}
