@@ -193,7 +193,7 @@ public class HeuristicCommon {
 	 * @return
 	 */
 	public static List<RatedCoordinate> getBestCoosFromStreaksRatedAccordingToAllStreaksFiltered(List<PotentialStreak> allStreaks, List<PotentialStreak> potStreaksOfInterest, AbstractCooValFromStreakEstimator cooEstimator, AbstractRatedCoosFilter filter){
-		List<RatedCoordinate> coosOfInterest = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaksOfInterest, cooEstimator);
+		List<RatedCoordinate> coosOfInterest = HeuristicCommon.combineAllEqualRatedCoos(HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaksOfInterest, cooEstimator));
 	
 		List<RatedCoordinate> filtredRatedCoosFromEverything = filter.filterRatedCoos(HeuristicCommon.combineAllEqualRatedCoos(HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(allStreaks, cooEstimator)));
 		
@@ -208,11 +208,12 @@ public class HeuristicCommon {
 	 * @return
 	 */
 	public static List<RatedCoordinate> getBestCoosFromStreaksRatedAccordingToAllStreaks(List<PotentialStreak> allStreaks, List<PotentialStreak> potStreaksOfInterest, AbstractCooValFromStreakEstimator cooEstimator){
-		List<RatedCoordinate> coosOfInterest = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaksOfInterest, cooEstimator);
+		List<RatedCoordinate> coosOfInterest = HeuristicCommon.combineAllEqualRatedCoos(HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaksOfInterest, cooEstimator));
 	
 		List<RatedCoordinate> ratedCoosFromEverything = HeuristicCommon.combineAllEqualRatedCoos(HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(allStreaks, cooEstimator));
 		
 		return HeuristicCommon.getRatedCoordinatesFromList(coosOfInterest, ratedCoosFromEverything);
+//		return combineAllEqualRatedCoos(HeuristicCommon.getRatedCoordinatesFromList(coosOfInterest, ratedCoosFromEverything));
 	}
 	
 	/**

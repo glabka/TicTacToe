@@ -4,7 +4,7 @@ import grid_computations.Coordinate;
 
 public class RatedCoordinate extends Coordinate{
 
-	private final double value;
+	private double value;
 	
 	public RatedCoordinate(Coordinate coo, double value) {
 		super(coo);
@@ -18,6 +18,10 @@ public class RatedCoordinate extends Coordinate{
 	
 	public double getValue() {
 		return this.value;
+	}
+	
+	public void setValue(double val) {
+		this.value = val;
 	}
 	
 	public static RatedCoordinate addSameCoordinates(RatedCoordinate coo1, RatedCoordinate coo2) {

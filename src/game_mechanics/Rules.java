@@ -56,7 +56,7 @@ public class Rules {
     
     public static boolean anyPotentialStreaks(Grid g, int streakLength, SVal playerOfNextTurn) {
     	List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, playerOfNextTurn, streakLength, 0);
-    	System.out.println("potStreaks = " + potStreaks);// debug
+//    	System.out.println("potStreaks = " + potStreaks);// debug
     	if(potStreaks == null || potStreaks.isEmpty()) {
     		return false;
     	} else {

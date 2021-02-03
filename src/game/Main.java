@@ -32,6 +32,7 @@ import players.ai_players.heuristics.GridDiffRatedValuesHeuristic;
 import players.ai_players.heuristics.HeuristicCommon;
 import players.ai_players.heuristics.SquareNaiveAttackHeuristic;
 import players.ai_players.heuristics.SquareMergedHeuristic;
+import players.ai_players.heuristics.SquareMixedHeuristic;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
 import players.ai_players.support_classes.FewBestRatedCoosFilter;
@@ -182,8 +183,10 @@ public class Main {
         
         // getRatedCoosBasedOnNumOfPotStreaksTheyAreIn
         
-        System.out.println(HeuristicCommon.getRatedCoosBasedOnNumOfPotStreaksTheyAreIn(g, SVal.CIRCLE, 3));
+//        System.out.println(HeuristicCommon.getRatedCoosBasedOnNumOfPotStreaksTheyAreIn(g, SVal.CIRCLE, 3));
         
+        // SquareMixedHeuristic
+//        SquareMixedHeuristic.test();
         
 		////////////////////////////////////////////////////////////////////////////
 		//---------------------------------AI GAME----------------------------------
@@ -286,6 +289,7 @@ public class Main {
     
     private static AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
     private static AbstractRatedCoosFilter fewBestAIFilter = new FewBestRatedCoosFilter(3);
+    private static AbstractRatedCoosFilter fewBestAIFilter4 = new FewBestRatedCoosFilter(4);
     private static AbstractSquareHeuristic sqMergeH = new SquareMergedHeuristic(estimator);
     private static AbstractSquareHeuristic sqNaiveBAH = new SquareNaiveBlockAttackHeuristic(estimator);
     private static AbstractRatedCoosFilter fewBestHeuristicFilter = new FewBestRatedCoosFilter(7);
@@ -300,7 +304,7 @@ public class Main {
     private static AbstractSquareHeuristic sqMBAHFiltred = new SquareMergeBlockAttackHeuristic(estimator, fewBestHeuristicFilter2);
     private static AbstractSquareHeuristic sqDMBAH = new SquareDecidingMergeBlockAttackHeuristic(estimator);
     private static AbstractGridHeuristic gDiffPH = new GridDiffPoweredHeuristic(estimator, 2);
-    
+    private static AbstractSquareHeuristic sqMixedH = new SquareMixedHeuristic(estimator);
     
     public static void findBestAITest() {
     	SVal referenceAIVal = SVal.CROSS;
@@ -579,8 +583,9 @@ public class Main {
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 7, 13) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 1); // even better (0, 12, 8) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-    				
+//    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 1); // even better (0, 12, 8) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqMixedH, gDiffPH, fewBestAIFilter4, 2); 
+    		
     		
     		if(switchAI) {
     			Player p;
