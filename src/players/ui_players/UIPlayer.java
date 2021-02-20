@@ -22,22 +22,30 @@ public class UIPlayer extends Player {
 	public Move nextMove(Grid g) {		
 		char readChar;
 		
-		while((readChar = readChar()) != 'i') {
-			if(readChar == 'w') {
-				CursorController.moveUp(g);
-			} else if (readChar == 's') {
-				CursorController.moveDown(g);
-			} else if (readChar == 'a') {
-				CursorController.moveLeft(g);
-			} else if (readChar == 'd') {
-				CursorController.moveRight(g);
-			} else {
-				System.out.println(inputMessage);
+		while (true) {
+			while((readChar = readChar()) != 'i') {
+				if(readChar == 'w') {
+					CursorController.moveUp(g);
+				} else if (readChar == 's') {
+					CursorController.moveDown(g);
+				} else if (readChar == 'a') {
+					CursorController.moveLeft(g);
+				} else if (readChar == 'd') {
+					CursorController.moveRight(g);
+				} else {
+					System.out.println(inputMessage);
+				}
+				g.printGrid();
 			}
-			g.printGrid();
+			
+			if(g.getVal(g.getCursorRow(), g.getCursorColumn()) == null) {
+				return new Move(g.getCursorRow(), g.getCursorColumn(), this.playersSVal);
+			} else {
+				System.out.println("On given coordinates there is already a filled up square. Please choose different coordinates.");
+			}
 		}
 		
-		return new Move(g.getCursorRow(), g.getCursorColumn(), this.playersSVal);
+		
 	}
 
 	
