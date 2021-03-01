@@ -16,7 +16,7 @@ import javax.websocket.Session;
 import com.google.gson.Gson;
 
 import web.GameState;
-import web.GameMessage;
+import web.Message;
 
 @ClientEndpoint
 public class TicTacToeClientEndpoint {
@@ -33,9 +33,7 @@ public class TicTacToeClientEndpoint {
 		logger.info("Connected:");
 
 		Gson gson = new Gson();
-		GameMessage message = new GameMessage();
-		message.setGameState(GameState.START);
-		message.setGameName("game 5x3");
+		Message message = Message.createMessage("test game", GameState.START);
 		String jsonMessage = gson.toJson(message);
 		
 		try {

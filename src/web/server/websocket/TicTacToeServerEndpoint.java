@@ -22,9 +22,9 @@ import com.google.gson.Gson;
 
 import custom_exceptions.FullOpponentsException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
-import web.GameMessage;
+import web.Message;
 import web.GameState;
-import web.server.AddressedGameMessage;
+import web.server.AddressedMessage;
 import web.server.WebServerLogic;
 
 @ServerEndpoint(value = "/tictactoe")
@@ -44,17 +44,21 @@ public class TicTacToeServerEndpoint {
 	public void onMessage(String message, Session session) throws IOException {
 		synchronized(wsl) {
 			
-			System.out.println("message from " + session.getId() + " received: " + message);
-			GameMessage decodedMessage = gson.fromJson(message, GameMessage.class);
-			AddressedGameMessage addressedMessage = new AddressedGameMessage(session.getId(), decodedMessage);
-			List<AddressedGameMessage> responses = wsl.getResponse(addressedMessage);
+			// decoding message
+			System.out.println("message from " + session.getId() + " message: " + message);
+			Message decodedMessage = gson.fromJson(message, Message.class);
+			// getting server response
+			AddressedMessage addressedMessage = new AddressedMessage(session.getId(), decodedMessage);
+			List<AddressedMessage> responses = wsl.getResponse(addressedMessage);
 			
-			for(AddressedGameMessage response : responses) {
+			// sending responses
+			for(AddressedMessage response : responses) {
 				Session sessionForResponse = sessions.get(response.getWebPlayerID());
 				
-				GameMessage responsMessage = response.getGameMessage();
+				Message responsMessage = response.getGameMessage();
 				String strResponse = gson.toJson(responsMessage);
 				
+				System.out.println("message to " + response.getWebPlayerID() + " message:" + strResponse);
 				sessionForResponse.getBasicRemote().sendText(strResponse);
 			}
 		}
@@ -64,6 +68,7 @@ public class TicTacToeServerEndpoint {
 	public void onClose(Session session, CloseReason closeReason) {
 		sessions.remove(session.getId());
 		logger.info("Session " + session.getId() + " closed");
+		wsl.quit(session.getId());
 	}
 	
 }

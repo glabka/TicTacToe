@@ -1,15 +1,17 @@
 package web.server;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.websocket.Session;
+import java.util.Random;
 
 import custom_exceptions.FullOpponentsException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
-import web.GameMessage;
+import web.CommunicationError;
+import web.Message;
 import web.GameState;
 
 public class WebServerLogic {
@@ -17,30 +19,56 @@ public class WebServerLogic {
 	private Map<String, WebPlayer> players = Collections.synchronizedMap(new HashMap<String, WebPlayer>());
 	private Map<String, OnlineGame> games = Collections.synchronizedMap(new HashMap<String, OnlineGame>()); // game name -> Players
 	
-	public List<AddressedGameMessage> getResponse(AddressedGameMessage addressedGameMessage) {
+	public List<AddressedMessage> getResponse(AddressedMessage addressedGameMessage) {
+		List<AddressedMessage> responses = new LinkedList<>();
+		
 		String senderID = addressedGameMessage.getWebPlayerID();
 		WebPlayer senderWebPlayer = players.get(senderID);
-		GameMessage gameMessage = addressedGameMessage.getGameMessage();
+		Message receivedMessage = addressedGameMessage.getGameMessage();
+		Message responseMessage;
+		AddressedMessage response;
 		
 		// new player
 		if (senderWebPlayer == null) {
-			WebPlayer newWebPlayer = new WebPlayer(senderID);
-			players.put(senderID, newWebPlayer);
-			
-			String gameName = gameMessage.getGameName();
-			if(!games.containsKey(gameName)) {
-				games.put(gameName, new OnlineGame());
-			}
-			OnlineGame opponents = games.get(gameName);
-			if(!opponents.hasOpponents()) {
-				opponents.addOpponent(newWebPlayer);
-			} else {
-				// send error - game with specified name already has two players
-				GameMessage response = new GameMessage();
-				
-			}
+			senderWebPlayer = new WebPlayer(senderID);
+			players.put(senderID, senderWebPlayer);
+		}
+		
+		String gameName = receivedMessage.getGameName();
+		// new game
+		if (!games.containsKey(gameName)) {
+			games.put(gameName, new OnlineGame());
+		}
+		
+		// adding players to game
+		OnlineGame game = games.get(gameName);
+		if (!game.hasOpponents()) {
+			game.addOpponent(senderWebPlayer);
 		} else {
+			// send error - game with specified name already has two players
+			responseMessage = Message.createMessage(gameName, GameState.GENRAL_ERROR);
+			responseMessage.setCommunicationError(CommunicationError.GAME_ALREADY_FULL);
+			response = new AddressedMessage(senderID, responseMessage);
+			responses.add(response);
+			return responses;
+		}
+		
+		// beginning of game
+		if (receivedMessage.getGameState() == GameState.START && game.hasOpponents()) {
+			// choosing random player to start
+			WebPlayer[] players = game.getPlayers();
+			WebPlayer beginningPlayer;
 			
+			if (new Random().nextBoolean()) {
+				beginningPlayer = players[0];
+			} else {
+				beginningPlayer = players[1];
+			}
+			
+			responseMessage = Message.createMessage(gameName, GameState.START);
+			response = new AddressedMessage(beginningPlayer.getId(), responseMessage);
+			responses.add(response);
+			return responses;
 		}
 		
 		return null; // TODO
@@ -48,21 +76,30 @@ public class WebServerLogic {
 	
 
 	/**
-	 * 
+	 * Ends games when player prematurely ends communication and returns responses for opponents. Also removes player from server.
 	 * @param playersID
-	 * @return AddressedGameMessage related to end of game in case the end of game is premature
+	 * @return List<AddressedGameMessage> related to prematurely ended games
 	 */
-	public AddressedGameMessage endGame(String playersID) {
+	public List<AddressedMessage> quit(String playersID) {
+		List<AddressedMessage> responses = new LinkedList<>();
 		WebPlayer player = players.get(playersID);
+		
 		for(String gameName : games.keySet()) {
 			if(games.get(gameName).contains(player)) {
-				OnlineGame game = games.get(gameName); 
+				OnlineGame game = games.get(gameName);
+				
+				// response for opponent
 				if(game.getGameState() == GameState.START && game.getGameState() == GameState.IN_GAME) {
-					
-					return new AddressedGameMessage(game.getOpponent(player), gMessage);
+					Message endGameMessage = Message.createMessage(gameName, GameState.PREMATURE_END_ERROR);
+					responses.add(new AddressedMessage(game.getOpponent(player).getId(), endGameMessage));
 				}
+			
+				games.remove(gameName);
 			}
 		}
+		
+		players.remove(playersID);
+		return responses;
 	}
 	
 	private class OnlineGame {
@@ -112,6 +149,10 @@ public class WebServerLogic {
 			} else {
 				return false;
 			}
+		}
+		
+		public WebPlayer[] getPlayers() {
+			return Arrays.copyOf(opponents, opponents.length);
 		}
 	}
 }
