@@ -1,8 +1,12 @@
 package web.server;
 
+import custom_exceptions.WebPlayerNotInitialized;
+import game_components.Square.SVal;
+
 public class WebPlayer {
 	
 	private String id;
+	private SVal sVal;
 	
 	public WebPlayer(String id) {
 		this.id = id;
@@ -34,6 +38,17 @@ public class WebPlayer {
 		    hash = hash*31 + id.charAt(i);
 		}
 		return hash;
+	}
+	
+	public void setSVal(SVal sVal) {
+		this.sVal = sVal;
+	}
+	
+	public SVal getSVal() {
+		if(sVal == null) {
+			throw new WebPlayerNotInitialized();
+		}
+		return sVal;
 	}
 	
 }

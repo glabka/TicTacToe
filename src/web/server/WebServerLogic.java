@@ -7,20 +7,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import custom_exceptions.FullOpponentsException;
+import custom_exceptions.IllegalPlayerException;
+import custom_exceptions.OnlineGameNotInitialized;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
-import web.CommunicationError;
+import game_components.Grid;
+import web.CommunicationSignal;
 import web.Message;
+import web.Move;
 import web.GameState;
 
 public class WebServerLogic {
 
 	private Map<String, WebPlayer> players = Collections.synchronizedMap(new HashMap<String, WebPlayer>());
-	private Map<String, OnlineGame> games = Collections.synchronizedMap(new HashMap<String, OnlineGame>()); // game name -> Players
+	private Map<String, OnlineGame> games = Collections.synchronizedMap(new HashMap<String, OnlineGame>());
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	public List<AddressedMessage> getResponse(AddressedMessage addressedGameMessage) {
 		List<AddressedMessage> responses = new LinkedList<>();
+		CommunicationSignal error = null;
 		
 		String senderID = addressedGameMessage.getWebPlayerID();
 		WebPlayer senderWebPlayer = players.get(senderID);
@@ -37,7 +44,23 @@ public class WebServerLogic {
 		String gameName = receivedMessage.getGameName();
 		// new game
 		if (!games.containsKey(gameName)) {
-			games.put(gameName, new OnlineGame());
+			if(receivedMessage.getGridSize() < 3) {
+				error = CommunicationSignal.GRID_SIZE_TOO_SMALL;
+			} else if (receivedMessage.getStreakLength() > receivedMessage.getGridSize()) {
+				error = CommunicationSignal.STREAK_LENGTH_BIGGER_THAN_GRID;
+			} else if (receivedMessage.getStreakLength() < 3) {
+				error = CommunicationSignal.STREAK_LENGTH_TOO_SMALL;
+			} else if (receivedMessage.getGridSize() > 100) {
+				error = CommunicationSignal.GRID_SIZE_TOO_BIG;
+			}
+			
+			if (error != null) {
+				responseMessage = Message.createMessage(gameName, error);
+				responses.add(new AddressedMessage(senderWebPlayer.getId(), responseMessage));
+				return responses;
+			}
+			
+			games.put(gameName, new OnlineGame(receivedMessage.getGridSize(), receivedMessage.getStreakLength()));
 		}
 		
 		// adding players to game
@@ -46,15 +69,29 @@ public class WebServerLogic {
 			game.addOpponent(senderWebPlayer);
 		} else {
 			// send error - game with specified name already has two players
-			responseMessage = Message.createMessage(gameName, GameState.GENRAL_ERROR);
-			responseMessage.setCommunicationError(CommunicationError.GAME_ALREADY_FULL);
+			responseMessage = Message.createMessage(gameName, CommunicationSignal.GAME_ALREADY_FULL);
 			response = new AddressedMessage(senderID, responseMessage);
 			responses.add(response);
 			return responses;
 		}
 		
 		// beginning of game
-		if (receivedMessage.getGameState() == GameState.START && game.hasOpponents()) {
+		if (receivedMessage.getCommunicationSignal() == CommunicationSignal.START && game.hasOpponents()
+				&& game.getGameState() == GameState.START) {
+			// verifying player has right grid size and streak length
+			
+			if (game.getGridSize() != receivedMessage.getGridSize()) {
+				error = CommunicationSignal.WRONG_GRID_SIZE;
+			} else if (game.getStreakLength() == receivedMessage.getStreakLength()) {
+				error = CommunicationSignal.WRONG_STREAK_LENGTH;
+			}
+			
+			if (error != null) {
+				responseMessage = Message.createMessage(gameName, error);
+				responses.add(new AddressedMessage(senderWebPlayer.getId(), responseMessage));
+				return responses;
+			}
+			
 			// choosing random player to start
 			WebPlayer[] players = game.getPlayers();
 			WebPlayer beginningPlayer;
@@ -64,11 +101,28 @@ public class WebServerLogic {
 			} else {
 				beginningPlayer = players[1];
 			}
+			game.setStartingPlayer(beginningPlayer);
 			
-			responseMessage = Message.createMessage(gameName, GameState.START);
+			responseMessage = Message.createMessage(gameName, CommunicationSignal.START);
+			responseMessage.setGameState(GameState.START);
 			response = new AddressedMessage(beginningPlayer.getId(), responseMessage);
 			responses.add(response);
+			game.setGameState(GameState.IN_GAME);
 			return responses;
+		}
+		
+		// process move
+		
+		
+		return null; // TODO
+	}
+	
+	
+	private AddressedMessage processMove(WebPlayer wPlayer, OnlineGame game, Move mv) {
+		if(game.getTurn() == wPlayer && game.getGameState() == GameState.IN_GAME) {
+			
+		} else if (game.getTurn() != wPlayer) {
+			
 		}
 		
 		return null; // TODO
@@ -90,7 +144,7 @@ public class WebServerLogic {
 				
 				// response for opponent
 				if(game.getGameState() == GameState.START && game.getGameState() == GameState.IN_GAME) {
-					Message endGameMessage = Message.createMessage(gameName, GameState.PREMATURE_END_ERROR);
+					Message endGameMessage = Message.createMessage(gameName, CommunicationSignal.PREMATURE_END_ERROR);
 					responses.add(new AddressedMessage(game.getOpponent(player).getId(), endGameMessage));
 				}
 			
@@ -106,9 +160,21 @@ public class WebServerLogic {
 		
 		private GameState gameState = GameState.START;
 		private WebPlayer[] opponents = new WebPlayer[2];
+		private WebPlayer turn;
+		private Grid grid;
+		private int streakLength;
+		
+		public OnlineGame(int gridSize, int streakLength) {
+			this.grid = new Grid(gridSize);
+			this.streakLength = streakLength;
+		}
 		
 		public GameState getGameState() {
 			return gameState;
+		}
+		
+		public void setGameState(GameState gameState) {
+			this.gameState = gameState;
 		}
 		
 		public void addOpponent(WebPlayer wPlayer) {
@@ -154,5 +220,45 @@ public class WebServerLogic {
 		public WebPlayer[] getPlayers() {
 			return Arrays.copyOf(opponents, opponents.length);
 		}
+		
+		public void nextTurn() {
+			if(!isInitialized()) {
+				throw new OnlineGameNotInitialized();
+			}
+			turn = getOpponent(this.turn);
+		}
+		
+		public WebPlayer getTurn() {
+			if(!isInitialized()) {
+				throw new OnlineGameNotInitialized();
+			}
+			return turn;
+		}
+		
+		public void setStartingPlayer(WebPlayer webPlayer) {
+			if (opponents[0] != webPlayer && opponents[1] != webPlayer) {
+				throw new IllegalPlayerException();
+			}
+		}
+		
+		private boolean isInitialized() {
+			if(turn == null) {
+				return false;
+			} else if (opponents[0] == null) {
+				return false;
+			} else if (opponents[1] == null) {
+				return false;
+			}
+			return true;
+		}
+
+		public int getStreakLength() {
+			return streakLength;
+		}
+		
+		public int getGridSize() {
+			return grid.size();
+		}
+		
 	}
 }

@@ -45,7 +45,7 @@ public class TicTacToeServerEndpoint {
 		synchronized(wsl) {
 			
 			// decoding message
-			System.out.println("message from " + session.getId() + " message: " + message);
+			logger.info("message from " + session.getId() + " message: " + message);
 			Message decodedMessage = gson.fromJson(message, Message.class);
 			// getting server response
 			AddressedMessage addressedMessage = new AddressedMessage(session.getId(), decodedMessage);
@@ -58,7 +58,7 @@ public class TicTacToeServerEndpoint {
 				Message responsMessage = response.getGameMessage();
 				String strResponse = gson.toJson(responsMessage);
 				
-				System.out.println("message to " + response.getWebPlayerID() + " message:" + strResponse);
+				logger.info("message to " + response.getWebPlayerID() + " message:" + strResponse);
 				sessionForResponse.getBasicRemote().sendText(strResponse);
 			}
 		}

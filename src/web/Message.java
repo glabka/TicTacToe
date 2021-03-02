@@ -4,12 +4,15 @@ public class Message {
 
 	private GameState gameState;
 	private String gameName;
-	private CommunicationError communicationError;
+	private CommunicationSignal communicationSignal;
+	private int gridSize;
+	private int streakLength;
+	private Move move;
 	
-	public static Message createMessage(String gameName, GameState gameState) {
+	public static Message createMessage(String gameName,  CommunicationSignal communicationSignal) {
 		Message gameMessage = new Message();
 		gameMessage.setGameName(gameName);
-		gameMessage.setGameState(gameState);
+		gameMessage.setCommunicationSignal(communicationSignal);
 		return gameMessage;
 	}
 	
@@ -29,12 +32,35 @@ public class Message {
 		return gameName;
 	}
 	
-	public void setCommunicationError(CommunicationError communicationError) {
-		this.communicationError = communicationError;
+	public void setCommunicationSignal(CommunicationSignal communicationSignal) {
+		this.communicationSignal = communicationSignal;
 	}
 	
-	public CommunicationError getCommunicationError() {
-		return communicationError;
+	public CommunicationSignal getCommunicationSignal() {
+		return communicationSignal;
 	}
-	
+
+	public int getGridSize() {
+		return gridSize;
+	}
+
+	public void setGridSize(int gridSize) {
+		this.gridSize = gridSize;
+	}
+
+	public int getStreakLength() {
+		return streakLength;
+	}
+
+	public void setStreakLength(int streakLength) {
+		this.streakLength = streakLength;
+	}
+
+	public Move getMove() {
+		return move;
+	}
+
+	public void setMove(Move move) {
+		this.move = move;
+	}
 }
