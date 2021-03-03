@@ -11,9 +11,13 @@ import java.util.logging.Logger;
 
 import custom_exceptions.FullOpponentsException;
 import custom_exceptions.IllegalPlayerException;
+import custom_exceptions.IndexesOutOfRangeException;
 import custom_exceptions.OnlineGameNotInitialized;
+import custom_exceptions.PlayersWithSameSValException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
 import game_components.Grid;
+import game_components.Square.SVal;
+import game_mechanics.Rules;
 import web.CommunicationSignal;
 import web.Message;
 import web.Move;
@@ -60,7 +64,7 @@ public class WebServerLogic {
 				return responses;
 			}
 			
-			games.put(gameName, new OnlineGame(receivedMessage.getGridSize(), receivedMessage.getStreakLength()));
+			games.put(gameName, new OnlineGame(gameName, receivedMessage.getGridSize(), receivedMessage.getStreakLength()));
 		}
 		
 		// adding players to game
@@ -101,17 +105,22 @@ public class WebServerLogic {
 			} else {
 				beginningPlayer = players[1];
 			}
+			beginningPlayer.setSVal(SVal.CROSS);
+			game.getOpponent(beginningPlayer).setSVal(SVal.CIRCLE);
 			game.setStartingPlayer(beginningPlayer);
 			
 			responseMessage = Message.createMessage(gameName, CommunicationSignal.START);
-			responseMessage.setGameState(GameState.START);
+			responseMessage.setGameState(game.getGameState());
 			response = new AddressedMessage(beginningPlayer.getId(), responseMessage);
 			responses.add(response);
-			game.setGameState(GameState.IN_GAME);
 			return responses;
 		}
 		
-		// process move
+		// process other CommunicationSignals from client then
+		
+		
+		// process moves
+		Move mv = receivedMessage.getMove();
 		
 		
 		return null; // TODO
@@ -119,11 +128,24 @@ public class WebServerLogic {
 	
 	
 	private AddressedMessage processMove(WebPlayer wPlayer, OnlineGame game, Move mv) {
-		if(game.getTurn() == wPlayer && game.getGameState() == GameState.IN_GAME) {
-			
+		Message message = null;
+		CommunicationSignal error = null;
+		if (game.getTurn() == wPlayer && (game.getGameState() == GameState.IN_GAME ||
+				game.getGameState() == GameState.START)) {
+			if (game.areCoosInRange(mv.getRow(), mv.getColumn())) {
+				if(game.isSquareEmpty(mv.getRow(), mv.getColumn())) {
+					game.insert(mv.getRow(), mv.getColumn(), wPlayer.getSVal());
+					message = Message.createMessage(game.getGameName(), CommunicationSignal.OPPONENTS_MOVE);
+					message.setMove(mv);
+				} else {
+					error = CommunicationSignal.ALREADY_FILLED_UP_SQUARE;
+				}
+			} else {
+				error = CommunicationSignal.MOVE_OUT_OF_RANGE;
+			}
 		} else if (game.getTurn() != wPlayer) {
-			
-		}
+			error = CommunicationSignal.NOT_YOUR_TURN;
+		} else if ()
 		
 		return null; // TODO
 	}
@@ -158,29 +180,67 @@ public class WebServerLogic {
 	
 	private class OnlineGame {
 		
+		private String gameName;
 		private GameState gameState = GameState.START;
 		private WebPlayer[] opponents = new WebPlayer[2];
 		private WebPlayer turn;
 		private Grid grid;
 		private int streakLength;
 		
-		public OnlineGame(int gridSize, int streakLength) {
+		public OnlineGame(String gameName, int gridSize, int streakLength) {
+			this.gameName = gameName;
 			this.grid = new Grid(gridSize);
 			this.streakLength = streakLength;
+		}
+		
+		public void insert(int row, int column, SVal val) {
+			grid.insert(row, column, val);
+			if (gameState == GameState.START) {
+				gameState = GameState.IN_GAME;
+			} else if (gameState == GameState.IN_GAME && (Rules.endOfGame(grid, streakLength))) {
+				gameState = GameState.GAME_OVER;
+			}
+		}
+		
+		public WebPlayer getWinner() {
+			SVal winnerVal = Rules.findWinner(grid, streakLength);
+			if(winnerVal == opponents[0].getSVal()) {
+				return opponents[0];
+			} else if (winnerVal == opponents[1].getSVal()){
+				return opponents[1];
+			} else {
+				return null;
+			}
+		}
+		
+		public boolean areCoosInRange(int row, int column) {
+			if(row >= 0 && row < grid.size() && column >= 0 && column < grid.size()) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		public boolean isSquareEmpty(int row, int column) {
+			if(areCoosInRange(row, column)) {
+				return grid.isSquareEmpty(row, column);
+			} else {
+				throw new IndexesOutOfRangeException("row: " + row + ", column: " + column + "but should be 0 <= and < grid.size(): " + grid.size());
+			}
 		}
 		
 		public GameState getGameState() {
 			return gameState;
 		}
-		
-		public void setGameState(GameState gameState) {
-			this.gameState = gameState;
-		}
+
 		
 		public void addOpponent(WebPlayer wPlayer) {
 			if(opponents[0] == null) {
 				opponents[0] = wPlayer;
 			} else if (opponents[1] == null) {
+				if (opponents[0].getSVal() == wPlayer.getSVal()) {
+					throw new PlayersWithSameSValException();
+				}
 				opponents[1] = wPlayer;
 			} else {
 				throw new FullOpponentsException();
@@ -217,6 +277,10 @@ public class WebServerLogic {
 			}
 		}
 		
+		public String getGameName() {
+			return gameName;
+		}
+
 		public WebPlayer[] getPlayers() {
 			return Arrays.copyOf(opponents, opponents.length);
 		}
