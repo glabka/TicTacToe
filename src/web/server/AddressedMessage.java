@@ -1,6 +1,6 @@
 package web.server;
 
-import web.Message;
+import game.communication.Message;
 
 public class AddressedMessage {
 	

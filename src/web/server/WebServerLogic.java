@@ -15,17 +15,18 @@ import custom_exceptions.IndexesOutOfRangeException;
 import custom_exceptions.OnlineGameNotInitialized;
 import custom_exceptions.PlayersWithSameSValException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
+import game.GameState;
+import game.communication.Message;
+import game.communication.InnerPlayerRepresentation;
 import game_components.Grid;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
 import web.CommunicationSignal;
-import web.Message;
 import web.Move;
-import web.GameState;
 
 public class WebServerLogic {
 
-	private Map<String, WebPlayer> players = Collections.synchronizedMap(new HashMap<String, WebPlayer>());
+	private Map<String, InnerPlayerRepresentation> players = Collections.synchronizedMap(new HashMap<String, InnerPlayerRepresentation>());
 	private Map<String, OnlineGame> games = Collections.synchronizedMap(new HashMap<String, OnlineGame>());
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	
@@ -34,14 +35,14 @@ public class WebServerLogic {
 		CommunicationSignal error = null;
 		
 		String senderID = addressedGameMessage.getWebPlayerID();
-		WebPlayer senderWebPlayer = players.get(senderID);
+		InnerPlayerRepresentation senderWebPlayer = players.get(senderID);
 		Message receivedMessage = addressedGameMessage.getGameMessage();
 		Message responseMessage;
 		AddressedMessage response;
 		
 		// new player
 		if (senderWebPlayer == null) {
-			senderWebPlayer = new WebPlayer(senderID);
+			senderWebPlayer = new InnerPlayerRepresentation(senderID);
 			players.put(senderID, senderWebPlayer);
 		}
 		
@@ -64,7 +65,7 @@ public class WebServerLogic {
 				return responses;
 			}
 			
-			games.put(gameName, new OnlineGame(gameName, receivedMessage.getGridSize(), receivedMessage.getStreakLength()));
+			games.put(gameName, new OnlineGame(gameName, receivedMessage.getGameMataData()));
 		}
 		
 		// adding players to game
@@ -81,7 +82,7 @@ public class WebServerLogic {
 		
 		// beginning of game
 		if (receivedMessage.getCommunicationSignal() == CommunicationSignal.START && game.hasOpponents()
-				&& game.getGameState() == GameState.START) {
+				&& game.getGameState() == GameState.BEGINNING) {
 			// verifying player has right grid size and streak length
 			
 			if (game.getGridSize() != receivedMessage.getGridSize()) {
@@ -97,8 +98,8 @@ public class WebServerLogic {
 			}
 			
 			// choosing random player to start
-			WebPlayer[] players = game.getPlayers();
-			WebPlayer beginningPlayer;
+			InnerPlayerRepresentation[] players = game.getPlayers();
+			InnerPlayerRepresentation beginningPlayer;
 			
 			if (new Random().nextBoolean()) {
 				beginningPlayer = players[0];
@@ -127,7 +128,7 @@ public class WebServerLogic {
 	}
 	
 	
-	private AddressedMessage processMove(WebPlayer wPlayer, OnlineGame game, Move mv) {
+	private AddressedMessage processMove(InnerPlayerRepresentation wPlayer, OnlineGame game, Move mv) {
 		Message message = null;
 		CommunicationSignal error = null;
 		if (game.getTurn() == wPlayer && (game.getGameState() == GameState.IN_GAME ||
@@ -145,7 +146,7 @@ public class WebServerLogic {
 			}
 		} else if (game.getTurn() != wPlayer) {
 			error = CommunicationSignal.NOT_YOUR_TURN;
-		} else if ()
+		} 
 		
 		return null; // TODO
 	}
@@ -158,7 +159,7 @@ public class WebServerLogic {
 	 */
 	public List<AddressedMessage> quit(String playersID) {
 		List<AddressedMessage> responses = new LinkedList<>();
-		WebPlayer player = players.get(playersID);
+		InnerPlayerRepresentation player = players.get(playersID);
 		
 		for(String gameName : games.keySet()) {
 			if(games.get(gameName).contains(player)) {
@@ -178,151 +179,4 @@ public class WebServerLogic {
 		return responses;
 	}
 	
-	private class OnlineGame {
-		
-		private String gameName;
-		private GameState gameState = GameState.START;
-		private WebPlayer[] opponents = new WebPlayer[2];
-		private WebPlayer turn;
-		private Grid grid;
-		private int streakLength;
-		
-		public OnlineGame(String gameName, int gridSize, int streakLength) {
-			this.gameName = gameName;
-			this.grid = new Grid(gridSize);
-			this.streakLength = streakLength;
-		}
-		
-		public void insert(int row, int column, SVal val) {
-			grid.insert(row, column, val);
-			if (gameState == GameState.START) {
-				gameState = GameState.IN_GAME;
-			} else if (gameState == GameState.IN_GAME && (Rules.endOfGame(grid, streakLength))) {
-				gameState = GameState.GAME_OVER;
-			}
-		}
-		
-		public WebPlayer getWinner() {
-			SVal winnerVal = Rules.findWinner(grid, streakLength);
-			if(winnerVal == opponents[0].getSVal()) {
-				return opponents[0];
-			} else if (winnerVal == opponents[1].getSVal()){
-				return opponents[1];
-			} else {
-				return null;
-			}
-		}
-		
-		public boolean areCoosInRange(int row, int column) {
-			if(row >= 0 && row < grid.size() && column >= 0 && column < grid.size()) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		
-		public boolean isSquareEmpty(int row, int column) {
-			if(areCoosInRange(row, column)) {
-				return grid.isSquareEmpty(row, column);
-			} else {
-				throw new IndexesOutOfRangeException("row: " + row + ", column: " + column + "but should be 0 <= and < grid.size(): " + grid.size());
-			}
-		}
-		
-		public GameState getGameState() {
-			return gameState;
-		}
-
-		
-		public void addOpponent(WebPlayer wPlayer) {
-			if(opponents[0] == null) {
-				opponents[0] = wPlayer;
-			} else if (opponents[1] == null) {
-				if (opponents[0].getSVal() == wPlayer.getSVal()) {
-					throw new PlayersWithSameSValException();
-				}
-				opponents[1] = wPlayer;
-			} else {
-				throw new FullOpponentsException();
-			}
-		}
-		
-		public WebPlayer getOpponent(WebPlayer wPlayer) {
-			if(opponents[0].equals(wPlayer)) {
-				return opponents[1];
-			} else if (opponents[1].equals(wPlayer)) {
-				return opponents[0];
-			} else {
-				throw new SessionIsNotAmongThisOpponentsInstance();
-			}
-		}
-		
-		public boolean hasOpponents() {
-			return opponents[0] != null && opponents[1] != null;
-		}
-		
-		public boolean contains(WebPlayer webPlayer) {
-			return opponents[0].equals(webPlayer) || opponents[1].equals(webPlayer);
-		}
-		
-		public boolean removePlayer(WebPlayer webPlayer) {
-			if(opponents[0].equals(webPlayer)) {
-				opponents[0] = null;
-				return true;
-			} else if (opponents[1].equals(webPlayer)){
-				opponents[1] = null;
-				return true;
-			} else {
-				return false;
-			}
-		}
-		
-		public String getGameName() {
-			return gameName;
-		}
-
-		public WebPlayer[] getPlayers() {
-			return Arrays.copyOf(opponents, opponents.length);
-		}
-		
-		public void nextTurn() {
-			if(!isInitialized()) {
-				throw new OnlineGameNotInitialized();
-			}
-			turn = getOpponent(this.turn);
-		}
-		
-		public WebPlayer getTurn() {
-			if(!isInitialized()) {
-				throw new OnlineGameNotInitialized();
-			}
-			return turn;
-		}
-		
-		public void setStartingPlayer(WebPlayer webPlayer) {
-			if (opponents[0] != webPlayer && opponents[1] != webPlayer) {
-				throw new IllegalPlayerException();
-			}
-		}
-		
-		private boolean isInitialized() {
-			if(turn == null) {
-				return false;
-			} else if (opponents[0] == null) {
-				return false;
-			} else if (opponents[1] == null) {
-				return false;
-			}
-			return true;
-		}
-
-		public int getStreakLength() {
-			return streakLength;
-		}
-		
-		public int getGridSize() {
-			return grid.size();
-		}
-		
-	}
 }

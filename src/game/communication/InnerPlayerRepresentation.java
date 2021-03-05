@@ -1,14 +1,14 @@
-package web.server;
+package game.communication;
 
 import custom_exceptions.WebPlayerNotInitialized;
 import game_components.Square.SVal;
 
-public class WebPlayer {
+public class InnerPlayerRepresentation {
 	
 	private String id;
 	private SVal sVal;
 	
-	public WebPlayer(String id) {
+	public InnerPlayerRepresentation(String id) {
 		this.id = id;
 	}
 
@@ -20,10 +20,10 @@ public class WebPlayer {
 	public boolean equals(Object o) {
 		if(this == o) {
 			return true;
-		} else if (!(o instanceof WebPlayer)) {
+		} else if (!(o instanceof InnerPlayerRepresentation)) {
 			return false;
 		}
-		WebPlayer webPlayer = (WebPlayer) o;
+		InnerPlayerRepresentation webPlayer = (InnerPlayerRepresentation) o;
 		if (this.getId().equals(webPlayer.getId())) {
 			return true;
 		} else {

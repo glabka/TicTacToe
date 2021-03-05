@@ -1,0 +1,82 @@
+package game.communication;
+
+import game.GameMetaData;
+import game.GameState;
+import web.Move;
+
+public class Message {
+
+	private GameState gameState;
+	private String gameName;
+	private GameMetaData gameMataData;
+	private Move move;
+	private MoveResult moveResult;
+	private GameResult gameResult;
+	private CommunicationProtocolValue communicationProtocolValue;
+	
+	public static Message createMessage(String gameName,  CommunicationProtocolValue communicationProtocolValue) {
+		Message gameMessage = new Message();
+		gameMessage.setGameName(gameName);
+		gameMessage.setCommunicationProtocolValue(communicationProtocolValue);
+		return gameMessage;
+	}
+	
+	public CommunicationProtocolValue getCommunicationProtocolValue() {
+		return communicationProtocolValue;
+	}
+
+	public void setCommunicationProtocolValue(CommunicationProtocolValue communicationProtocolValue) {
+		this.communicationProtocolValue = communicationProtocolValue;
+	}
+
+
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
+	}
+	
+	public void setGameName(String gameName) {
+		this.gameName = gameName;
+	}
+	
+	public GameState getGameState() {
+		return gameState;
+	}
+	
+	public String getGameName() {
+		return gameName;
+	}
+
+	public GameMetaData getGameMataData() {
+		return gameMataData;
+	}
+
+	public void setGameMataData(GameMetaData gameMataData) {
+		this.gameMataData = gameMataData;
+	}
+
+	public Move getMove() {
+		return move;
+	}
+
+	public void setMove(Move move) {
+		this.move = move;
+	}
+
+	public MoveResult getMoveResult() {
+		return moveResult;
+	}
+
+	public void setMoveResult(MoveResult moveResult) {
+		this.moveResult = moveResult;
+	}
+
+	public GameResult getGameResult() {
+		return gameResult;
+	}
+
+	public void setGameResult(GameResult gameResult) {
+		this.gameResult = gameResult;
+	}
+	
+	
+}

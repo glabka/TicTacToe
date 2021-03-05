@@ -15,9 +15,9 @@ import javax.websocket.Session;
 
 import com.google.gson.Gson;
 
+import game.GameState;
+import game.communication.Message;
 import web.CommunicationSignal;
-import web.GameState;
-import web.Message;
 
 @ClientEndpoint
 public class TicTacToeClientEndpoint {

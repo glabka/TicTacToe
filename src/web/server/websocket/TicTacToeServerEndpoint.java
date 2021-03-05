@@ -22,8 +22,8 @@ import com.google.gson.Gson;
 
 import custom_exceptions.FullOpponentsException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
-import web.Message;
-import web.GameState;
+import game.GameState;
+import game.communication.Message;
 import web.server.AddressedMessage;
 import web.server.WebServerLogic;
 
@@ -36,12 +36,13 @@ public class TicTacToeServerEndpoint {
 	private Gson gson = new Gson();
 	
 	@OnOpen
-	public void onOpen(Session session) throws IOException {
+	public void onOpen(Session session) {
 		sessions.put(session.getId(), session);
 	}
 	
+	// TODO hande IOException
 	@OnMessage
-	public void onMessage(String message, Session session) throws IOException {
+	public void onMessage(String message, Session session) throws IOException  {
 		synchronized(wsl) {
 			
 			// decoding message
