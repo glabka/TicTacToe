@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import game.CursorController;
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import players.Player;
 
@@ -19,7 +19,7 @@ public class UIPlayer extends Player {
 
 
 	@Override
-	public Move nextMove(Grid g) {		
+	public ValuedMove nextMove(Grid g) {		
 		char readChar;
 		
 		while (true) {
@@ -39,7 +39,7 @@ public class UIPlayer extends Player {
 			}
 			
 			if(g.getVal(g.getCursorRow(), g.getCursorColumn()) == null) {
-				return new Move(g.getCursorRow(), g.getCursorColumn(), this.playersSVal);
+				return new ValuedMove(g.getCursorRow(), g.getCursorColumn(), this.playersSVal);
 			} else {
 				System.out.println("On given coordinates there is already a filled up square. Please choose different coordinates.");
 			}

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import players.ai_players.support_classes.MoveAndDepth;
 import players.ai_players.support_classes.RatedCoordinate;
@@ -15,7 +15,7 @@ public class AIPlayersCommon {
 		List<MoveAndDepth> list = new LinkedList<>();
 		
 		for(RatedCoordinate coo : ratedCoos) {
-			list.add(new MoveAndDepth(new Move(coo, val), depth));
+			list.add(new MoveAndDepth(new ValuedMove(coo, val), depth));
 		}
 		
 		return list;

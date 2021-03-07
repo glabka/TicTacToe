@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.Coordinate;
@@ -25,16 +25,16 @@ public class NaiveBlockAttackAIPlayer extends AbstractAIPlayer {
 	}
 
 	@Override
-	public Move nextMove(Grid g) {
+	public ValuedMove nextMove(Grid g) {
 		int minNumOfFilledCoos = 1;
 		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength, minNumOfFilledCoos);
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength, minNumOfFilledCoos);
 		
 		Coordinate cooForDefending = defend(opponentsPotStreaks, streakLength - 2);
 		if(cooForDefending != null) {
-			return new Move(cooForDefending, this.getSVal());
+			return new ValuedMove(cooForDefending, this.getSVal());
 		} else {
-			return new Move(attack(potStreaks, g), this.getSVal());
+			return new ValuedMove(attack(potStreaks, g), this.getSVal());
 		}
 	}
 	

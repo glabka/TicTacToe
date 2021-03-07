@@ -2,7 +2,10 @@ package game.communication;
 
 import game.GameMetaData;
 import game.GameState;
-import web.Move;
+import game.communication.enums.CommunicationError;
+import game.communication.enums.CommunicationProtocolValue;
+import game.communication.enums.GameResult;
+import game.communication.enums.MoveResult;
 
 public class Message {
 
@@ -10,13 +13,21 @@ public class Message {
 	private String gameName;
 	private GameMetaData gameMataData;
 	private Move move;
+	private CommunicationProtocolValue communicationProtocolValue;
 	private MoveResult moveResult;
 	private GameResult gameResult;
-	private CommunicationProtocolValue communicationProtocolValue;
+	private CommunicationError communicationError;
 	
-	public static Message createMessage(String gameName,  CommunicationProtocolValue communicationProtocolValue) {
+	
+	public static Message createMessage(String gameName, CommunicationProtocolValue communicationProtocolValue) {
 		Message gameMessage = new Message();
 		gameMessage.setGameName(gameName);
+		gameMessage.setCommunicationProtocolValue(communicationProtocolValue);
+		return gameMessage;
+	}
+	
+	public static Message createMessage(CommunicationProtocolValue communicationProtocolValue) {
+		Message gameMessage = new Message();
 		gameMessage.setCommunicationProtocolValue(communicationProtocolValue);
 		return gameMessage;
 	}
@@ -77,6 +88,12 @@ public class Message {
 	public void setGameResult(GameResult gameResult) {
 		this.gameResult = gameResult;
 	}
-	
-	
+
+	public CommunicationError getCommunicationError() {
+		return communicationError;
+	}
+
+	public void setCommunicationError(CommunicationError communicationError) {
+		this.communicationError = communicationError;
+	}
 }

@@ -1,4 +1,4 @@
-package web;
+package game.communication;
 
 public class Move {
 

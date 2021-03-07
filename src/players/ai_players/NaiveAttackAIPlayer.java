@@ -3,7 +3,7 @@ package players.ai_players;
 import java.util.List;
 
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.PotentialStreak;
@@ -22,11 +22,11 @@ public class NaiveAttackAIPlayer extends AbstractAIPlayer {
 	}
 	
 	@Override
-	public Move nextMove(Grid g) {
+	public ValuedMove nextMove(Grid g) {
 		int minNumOfFilledCoos = 1;
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength, minNumOfFilledCoos);
 		
-		return new Move(NaiveBlockAttackAIPlayer.attack(potStreaks, g), this.getSVal());
+		return new ValuedMove(NaiveBlockAttackAIPlayer.attack(potStreaks, g), this.getSVal());
 	}
 	
 }

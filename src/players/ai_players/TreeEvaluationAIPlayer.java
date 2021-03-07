@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
 import players.ai_players.heuristics.AbstractGridHeuristic;
@@ -45,16 +45,16 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 	}
 
 	@Override
-	public Move nextMove(Grid g) {
+	public ValuedMove nextMove(Grid g) {
 		SortedNodesTree<RatedCoordinate> tree = getSortedNodesTree(g);
 		evaluateTree(tree);
 		
 		double biggestNum = Double.NEGATIVE_INFINITY;
-		Move bestMove = null;
+		ValuedMove bestMove = null;
 		for(SortedTreeNode<RatedCoordinate> node : tree.getSortedChildren(tree.getRoot())) {
 			if(node.getNodeEvaluationNumber() >= biggestNum) {
 				biggestNum = node.getNodeEvaluationNumber();
-				bestMove = new Move(node.getVal(), this.getSVal());
+				bestMove = new ValuedMove(node.getVal(), this.getSVal());
 			}
 		}
 		
@@ -124,7 +124,7 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		List<MoveAndDepth> md = nextMovesAndDepth(g, getSVal(), 0);
 		SortedTreeNode<RatedCoordinate> parrentNode = tree.getRoot();
 		
-		List<Move> proceededMoves = new LinkedList<>();
+		List<ValuedMove> proceededMoves = new LinkedList<>();
 		
 		int lastMoveDepth = 0;
 		
@@ -138,7 +138,7 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 			int depthDifference = mvAndDepth.getDepth() - lastMoveDepth;
 			if(depthDifference <= 0 && proceededMoves.size() > 0) {
 				int firstProceededMove = proceededMoves.size() + depthDifference - 1;
-				List<Move> movesToBeUndone = proceededMoves.subList(firstProceededMove , proceededMoves.size());
+				List<ValuedMove> movesToBeUndone = proceededMoves.subList(firstProceededMove , proceededMoves.size());
 				proceededMoves = proceededMoves.subList(0, firstProceededMove);
 //							System.out.println("movesToBeUndone = " + movesToBeUndone); // debug
 				g.delete(movesToBeUndone);

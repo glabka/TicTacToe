@@ -1,18 +1,18 @@
 package players.ai_players.support_classes;
 
-import game_components.Move;
+import game_components.ValuedMove;
 
 public class MoveAndDepth {
 	
 	private int depth;
-	private Move mv;
+	private ValuedMove mv;
 	
-	public MoveAndDepth(Move mv, int depth) {
+	public MoveAndDepth(ValuedMove mv, int depth) {
 		this.mv = mv;
 		this.depth = depth;
 	}
 	
-	public Move getMove() {
+	public ValuedMove getMove() {
 		return mv;
 	}
 	

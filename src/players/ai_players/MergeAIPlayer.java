@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.Coordinate;
@@ -29,7 +29,7 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 	}
 
 	@Override
-	public Move nextMove(Grid g) {
+	public ValuedMove nextMove(Grid g) {
 		int minNumOfFilledCoos = 1;
 		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength, minNumOfFilledCoos);
 		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength, minNumOfFilledCoos);
@@ -54,7 +54,7 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 //		System.out.println(combinedCoos); // debug
 		RatedCoordinate coo = Collections.max(combinedCoos, new RatedCoordinatesValueComparator());
 		
-		return new Move(coo, playersSVal);
+		return new ValuedMove(coo, playersSVal);
 	}
 	
 	private List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {

@@ -5,10 +5,10 @@ import game_components.Square.SVal;
 
 public class InnerPlayerRepresentation {
 	
-	private String id;
+	private final int id;
 	private SVal sVal;
 	
-	public InnerPlayerRepresentation(String id) {
+	public InnerPlayerRepresentation(int id) {
 		this.id = id;
 	}
 
@@ -33,11 +33,7 @@ public class InnerPlayerRepresentation {
 	
 	@Override
 	public int hashCode() {
-		int hash = 7;
-		for (int i = 0; i < id.length(); i++) {
-		    hash = hash*31 + id.charAt(i);
-		}
-		return hash;
+		return id;
 	}
 	
 	public void setSVal(SVal sVal) {

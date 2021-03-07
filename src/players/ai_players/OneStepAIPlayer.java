@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import grid_computations.Coordinate;
 import players.ai_players.heuristics.AbstractSquareHeuristic;
@@ -21,7 +21,7 @@ public class OneStepAIPlayer extends AbstractAIPlayer {
 	}
 
 	@Override
-	public Move nextMove(Grid g) {
+	public ValuedMove nextMove(Grid g) {
 		List<RatedCoordinate> suggestedCoos = this.squareHeuristic.getRatedCoos(playersSVal, g, streakLength);
 //		if(suggestedCoos != null) { // debug
 //			Collections.sort(suggestedCoos, new RatedCoordinatesValueComparator()); // debug
@@ -29,7 +29,7 @@ public class OneStepAIPlayer extends AbstractAIPlayer {
 //			System.out.println(suggestedCoos);// debug
 //		} // debug
 		Coordinate bestCoo = Collections.max(suggestedCoos, new RatedCoordinatesValueComparator());
-		return new Move(bestCoo, this.getSVal());
+		return new ValuedMove(bestCoo, this.getSVal());
 	}
 
 }

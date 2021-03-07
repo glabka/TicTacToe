@@ -4,11 +4,7 @@ package web.server.websocket;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.websocket.CloseReason;
@@ -19,57 +15,58 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
-import custom_exceptions.FullOpponentsException;
-import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
-import game.GameState;
+import game.GameLogic;
 import game.communication.Message;
-import web.server.AddressedMessage;
-import web.server.WebServerLogic;
+import game.communication.PlayerIDAssigner;
+import game.communication.enums.CommunicationError;
+import game.communication.enums.CommunicationProtocolValue;
+import web.server.WebSocketPlayerCallback;
 
 @ServerEndpoint(value = "/tictactoe")
 public class TicTacToeServerEndpoint {
 	
-    private static WebServerLogic wsl = new WebServerLogic();
-    private static Map<String, Session> sessions = Collections.synchronizedMap(new HashMap<String, Session>());
+    private static GameLogic gameLogic = GameLogic.getGameLogic();
+    private static Map<Session, Integer> playersIDs = Collections.synchronizedMap(new HashMap<Session, Integer>());
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Gson gson = new Gson();
 	
 	@OnOpen
 	public void onOpen(Session session) {
-		sessions.put(session.getId(), session);
+		playersIDs.put(session, PlayerIDAssigner.getID());
+		gameLogic.registerPlayersCallback(playersIDs.get(session), new WebSocketPlayerCallback(session));
 	}
 	
-	// TODO hande IOException
 	@OnMessage
-	public void onMessage(String message, Session session) throws IOException  {
-		synchronized(wsl) {
+	public void onMessage(String message, Session session) {
+		
+		// decoding message
+		logger.info("message from " + session.getId() + " message: " + message);
+		Message decodedMessage = null;
+		try {
+			decodedMessage = gson.fromJson(message, Message.class);
+		} catch (JsonSyntaxException e) { 
+			Message response = Message.createMessage(CommunicationProtocolValue.ERROR);
+			response.setCommunicationError(CommunicationError.WRONG_MESSAGE_FORMAT);
 			
-			// decoding message
-			logger.info("message from " + session.getId() + " message: " + message);
-			Message decodedMessage = gson.fromJson(message, Message.class);
-			// getting server response
-			AddressedMessage addressedMessage = new AddressedMessage(session.getId(), decodedMessage);
-			List<AddressedMessage> responses = wsl.getResponse(addressedMessage);
-			
-			// sending responses
-			for(AddressedMessage response : responses) {
-				Session sessionForResponse = sessions.get(response.getWebPlayerID());
-				
-				Message responsMessage = response.getGameMessage();
-				String strResponse = gson.toJson(responsMessage);
-				
-				logger.info("message to " + response.getWebPlayerID() + " message:" + strResponse);
-				sessionForResponse.getBasicRemote().sendText(strResponse);
+			String responseStr = gson.toJson(response);
+			try {
+				session.getBasicRemote().sendText(responseStr);
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
+			return;
 		}
+		// sending to GameLogic
+		gameLogic.receiveMessage(playersIDs.get(session), decodedMessage);
 	}
 	
 	@OnClose
 	public void onClose(Session session, CloseReason closeReason) {
-		sessions.remove(session.getId());
+		playersIDs.remove(session);
 		logger.info("Session " + session.getId() + " closed");
-		wsl.quit(session.getId());
+//		gameLogic.quit();
 	}
 	
 }

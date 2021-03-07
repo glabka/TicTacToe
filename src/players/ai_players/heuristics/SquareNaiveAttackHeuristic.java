@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.Coordinate;

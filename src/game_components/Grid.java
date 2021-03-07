@@ -54,7 +54,7 @@ public class Grid {
         }
     }
     
-    public void insert(Move mv) {
+    public void insert(ValuedMove mv) {
         insert(mv.getRow(), mv.getColumn(), mv.getVal());
     }
     
@@ -62,8 +62,8 @@ public class Grid {
     	grid[row][column].setVal(null);
     }
     
-    public void delete(List<Move> moves) {
-    	for(Move move : moves) {
+    public void delete(List<ValuedMove> moves) {
+    	for(ValuedMove move : moves) {
     		grid[move.getRow()][move.getColumn()].setVal(null);
     	}
     }

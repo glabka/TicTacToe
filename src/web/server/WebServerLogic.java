@@ -17,12 +17,12 @@ import custom_exceptions.PlayersWithSameSValException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
 import game.GameState;
 import game.communication.Message;
+import game.communication.Move;
 import game.communication.InnerPlayerRepresentation;
 import game_components.Grid;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
 import web.CommunicationSignal;
-import web.Move;
 
 public class WebServerLogic {
 

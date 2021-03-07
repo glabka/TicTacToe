@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 import custom_exceptions.PlayersWithSameSValException;
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
@@ -63,7 +63,7 @@ public class Game {
 //	            g.printGrid();
 	            g.printGridDebug();
         	}
-            Move nextMove = currentPlayer.nextMove(g);
+            ValuedMove nextMove = currentPlayer.nextMove(g);
             if(insertVal(nextMove)) {
             	if(verbous) {
             		System.out.println("nextMove = " + nextMove);
@@ -86,7 +86,7 @@ public class Game {
         return winner;
     }
     
-    private boolean insertVal(Move mv) {
+    private boolean insertVal(ValuedMove mv) {
         if (g.isSquareEmpty(mv.getRow(), mv.getColumn())) {
             g.insert(mv);
             return true;

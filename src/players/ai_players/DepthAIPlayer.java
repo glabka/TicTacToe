@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import game_components.Grid;
-import game_components.Move;
+import game_components.ValuedMove;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
 import players.ai_players.heuristics.AbstractGridHeuristic;
@@ -27,16 +27,16 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 	}
 	
 	@Override
-	public Move nextMove(Grid g) {
+	public ValuedMove nextMove(Grid g) {
 		Grid gOrig = g;
 		g = g.gridsCopy();
 		
 		List<MoveAndDepth> md = nextMovesAndDepth(g, this.getSVal(), 0);
 		
-		List<Move> proceededMoves = new LinkedList<>();
+		List<ValuedMove> proceededMoves = new LinkedList<>();
 		
 		// variables for storage of best move information
-		Move bestMove = null;
+		ValuedMove bestMove = null;
 		int winningMoveDepth = -1; // depth of move lead by best move (or best move itself) that was a win
 		double bestMoveValue = Double.NEGATIVE_INFINITY; // it is winning move when this variable is positive infinity
 		// variables for storage of best move information - end
@@ -54,7 +54,7 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 			int depthDifference = mvAndDepth.getDepth() - lastMoveDepth;
 			if(depthDifference <= 0 && proceededMoves.size() > 0) {
 				int firstProceededMove = proceededMoves.size() + depthDifference - 1;
-				List<Move> movesToBeUndone = proceededMoves.subList(firstProceededMove , proceededMoves.size());
+				List<ValuedMove> movesToBeUndone = proceededMoves.subList(firstProceededMove , proceededMoves.size());
 				proceededMoves = proceededMoves.subList(0,firstProceededMove);
 //				System.out.println("movesToBeUndone = " + movesToBeUndone); // debug
 				g.delete(movesToBeUndone);
@@ -105,7 +105,7 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 			return bestMove;
 		} else {
 //			System.out.println("FIRST EMPTY SQUARE MOVE"); // debug
-			return new Move(HeuristicCommon.firtEmptySquare(gOrig), this.getSVal());
+			return new ValuedMove(HeuristicCommon.firtEmptySquare(gOrig), this.getSVal());
 		}
 	}
 	

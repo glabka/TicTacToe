@@ -3,16 +3,16 @@ package game_components;
 import game_components.Square.SVal;
 import grid_computations.Coordinate;
 
-public class Move extends Coordinate {
+public class ValuedMove extends Coordinate {
 
 	private final SVal sVal;
 	
-	public Move(int row, int column, SVal sVal) {
+	public ValuedMove(int row, int column, SVal sVal) {
 		super(row, column);
 		this.sVal = sVal;
 	}
 	
-	public Move(Coordinate coo, SVal sVal) {
+	public ValuedMove(Coordinate coo, SVal sVal) {
 		super(coo.getRow(), coo.getColumn());
 		this.sVal = sVal;
 	}
