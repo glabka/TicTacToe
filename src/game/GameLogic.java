@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import custom_exceptions.FullOpponentsException;
 import custom_exceptions.PlayerAlreadyExistsException;
 import custom_exceptions.PlayerNotRegistredException;
 import game.communication.IPlayerCallback;
@@ -33,22 +34,43 @@ public class GameLogic {
 	
 	
 	
-	public void receiveMessage(int senderID, Message message) {
+	public Message receiveMessage(int senderID, Message message) {
 		Message response = null;
 		
 		InnerPlayerRepresentation senderPlayer = players.get(senderID);
 		if (senderPlayer == null) {
-			throw new PlayerNotRegistredException("playerID: " + senderID);
+			throw new PlayerNotRegistredException("callback for playerID: " + senderID + "not registered");
 		}
 		
 		String gameName = message.getGameName();
 		if (gameName == null || gameName.isEmpty()) {
 			response = Message.createMessage(CommunicationProtocolValue.ERROR);
-			response.setCommunicationError(CommunicationError.NULL_OR_EMPTY_REQUIRED_FIELD);
+			response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
+			response.setErrorInfo("gameName null or empty");
+			return response;
+		}
+		
+		if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.CREATE_GAME) {
+			GameMetaData gameMetaData = message.getGameMataData();
+			if (gameMetaData == null) {
+				response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
+				response.setErrorInfo("gamenull or empty");
+				return response;
+			} else {
+				gameManager.registerGame(gameName, gameMetaData);
+				// register player that initiated the game
+				gameManager.getGame(gameName).registerPlayer(players.get(senderID));
+			}
+		} else if(message.getCommunicationProtocolValue() == CommunicationProtocolValue.REGISTER_FOR_GAME) {
+			// registering second player for game
+			try {
+				gameManager.getGame(gameName).registerPlayer(players.get(senderID));
+			} catch (FullOpponentsException e) {
+				
+			}
 		}
 		
 		// TODO
-//		gameManager.registerGame(, gameMetaData);
 	}
 	
 	public void registerPlayersCallback(int playersID, IPlayerCallback playersCallback) {

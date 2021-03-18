@@ -4,11 +4,11 @@ import java.io.IOException;
 
 import javax.websocket.Session;
 
-public class WebSocketPlayerCommChanel implements IPlayerCallback {
+public class WebSocketPlayerCallback implements IPlayerCallback {
 
 	private Session session;
 	
-	public WebSocketPlayerCommChanel(Session session) {
+	public WebSocketPlayerCallback(Session session) {
 		this.session = session;
 	}
 	

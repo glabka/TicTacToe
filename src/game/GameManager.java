@@ -11,7 +11,7 @@ public class GameManager {
 	private final Map<String, GameVer2> games = new HashMap<>();
 	
 	public void registerGame(String gameName, GameMetaData gameMetaData) {
-		if(!games.containsKey(gameName)) {
+		if(!doesGameExist(gameName)) {
 			games.put(gameName, new GameVer2(gameName, gameMetaData));
 		} else {
 			throw new GameAlreadyExistExeption("gameName:" + gameName);
@@ -19,7 +19,7 @@ public class GameManager {
 	}
 	
 	public GameVer2 getGame(String gameName) {
-		if(games.containsKey(gameName)) {
+		if(doesGameExist(gameName)) {
 			return games.get(gameName);
 		} else {
 			throw new GameDoesntExistExeption("gameName:" + gameName);

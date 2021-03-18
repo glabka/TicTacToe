@@ -12,7 +12,7 @@ public class InnerPlayerRepresentation {
 		this.id = id;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 	
@@ -24,7 +24,7 @@ public class InnerPlayerRepresentation {
 			return false;
 		}
 		InnerPlayerRepresentation webPlayer = (InnerPlayerRepresentation) o;
-		if (this.getId().equals(webPlayer.getId())) {
+		if (this.getId() == webPlayer.getId()) {
 			return true;
 		} else {
 			return false;

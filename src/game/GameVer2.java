@@ -68,7 +68,7 @@ public class GameVer2 {
 	}
 
 	
-	public void addOpponent(InnerPlayerRepresentation iPlayerRepresentation) {
+	public void registerPlayer(InnerPlayerRepresentation iPlayerRepresentation) {
 		if(opponents[0] == null) {
 			opponents[0] = iPlayerRepresentation;
 		} else if (opponents[1] == null) {

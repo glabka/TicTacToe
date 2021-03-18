@@ -71,7 +71,7 @@ public class WebServerLogic {
 		// adding players to game
 		OnlineGame game = games.get(gameName);
 		if (!game.hasOpponents()) {
-			game.addOpponent(senderWebPlayer);
+			game.registerPlayer(senderWebPlayer);
 		} else {
 			// send error - game with specified name already has two players
 			responseMessage = Message.createMessage(gameName, CommunicationSignal.GAME_ALREADY_FULL);

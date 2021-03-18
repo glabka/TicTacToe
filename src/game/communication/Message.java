@@ -17,6 +17,7 @@ public class Message {
 	private MoveResult moveResult;
 	private GameResult gameResult;
 	private CommunicationError communicationError;
+	private String errorInfo;
 	
 	
 	public static Message createMessage(String gameName, CommunicationProtocolValue communicationProtocolValue) {
@@ -96,4 +97,13 @@ public class Message {
 	public void setCommunicationError(CommunicationError communicationError) {
 		this.communicationError = communicationError;
 	}
+
+	public String getErrorInfo() {
+		return errorInfo;
+	}
+
+	public void setErrorInfo(String errorInfo) {
+		this.errorInfo = errorInfo;
+	}
+	
 }
