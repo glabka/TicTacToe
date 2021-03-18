@@ -1,12 +1,8 @@
 package game.communication;
 
-import custom_exceptions.WebPlayerNotInitialized;
-import game_components.Square.SVal;
-
 public class InnerPlayerRepresentation {
 	
 	private final int id;
-	private SVal sVal;
 	
 	public InnerPlayerRepresentation(int id) {
 		this.id = id;
@@ -35,16 +31,4 @@ public class InnerPlayerRepresentation {
 	public int hashCode() {
 		return id;
 	}
-	
-	public void setSVal(SVal sVal) {
-		this.sVal = sVal;
-	}
-	
-	public SVal getSVal() {
-		if(sVal == null) {
-			throw new WebPlayerNotInitialized();
-		}
-		return sVal;
-	}
-	
 }

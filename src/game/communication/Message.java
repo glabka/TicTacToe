@@ -58,11 +58,11 @@ public class Message {
 		return gameName;
 	}
 
-	public GameMetaData getGameMataData() {
+	public GameMetaData getGameMetaData() {
 		return gameMataData;
 	}
 
-	public void setGameMataData(GameMetaData gameMataData) {
+	public void setGameMetaData(GameMetaData gameMataData) {
 		this.gameMataData = gameMataData;
 	}
 

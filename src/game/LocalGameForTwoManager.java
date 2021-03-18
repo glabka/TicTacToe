@@ -27,7 +27,7 @@ public class LocalGameForTwoManager {
 	
 	private void createGame() {
 		Message message = Message.createMessage(gameName, CommunicationProtocolValue.CREATE_GAME);
-		message.setGameMataData(new GameMetaData(5, 3));
+		message.setGameMetaData(new GameMetaData(5, 3));
 		gameLogic.receiveMessage(1, message);
 	}
 	

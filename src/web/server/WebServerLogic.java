@@ -65,7 +65,7 @@ public class WebServerLogic {
 				return responses;
 			}
 			
-			games.put(gameName, new OnlineGame(gameName, receivedMessage.getGameMataData()));
+			games.put(gameName, new OnlineGame(gameName, receivedMessage.getGameMetaData()));
 		}
 		
 		// adding players to game

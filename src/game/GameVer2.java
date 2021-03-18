@@ -1,10 +1,13 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import custom_exceptions.FullOpponentsException;
 import custom_exceptions.IllegalPlayerException;
 import custom_exceptions.IndexesOutOfRangeException;
+import custom_exceptions.NotPlayersTurnException;
 import custom_exceptions.OnlineGameNotInitialized;
 import custom_exceptions.PlayersWithSameSValException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
@@ -17,6 +20,7 @@ public class GameVer2 {
 	private final String gameName;
 	private GameState gameState = GameState.BEGINNING;
 	private final InnerPlayerRepresentation[] opponents = new InnerPlayerRepresentation[2];
+	private InnerPlayerRepresentation firstPlayer;
 	private InnerPlayerRepresentation turn;
 	private final GameMetaData gameMetaData;
 	private final Grid grid;
@@ -27,8 +31,32 @@ public class GameVer2 {
 		this.grid = new Grid(gameMetaData.getGridSize());
 	}
 	
+	private InnerPlayerRepresentation getFirstPlayer() {
+		return firstPlayer;
+	}
+	
+	private InnerPlayerRepresentation getSecondPlayer() {
+		if (opponents[0] == getFirstPlayer()) {
+			return opponents[1];
+		} else {
+			return opponents[0];
+		}
+	}
+	
 	public void insert(int row, int column, InnerPlayerRepresentation player) {
-		grid.insert(row, column, player.getSVal());
+		if(player != getTurn()) {
+			throw new NotPlayersTurnException("it is not player's " + player + "turn");
+		}
+		
+		if(getFirstPlayer() == player) {
+			grid.insert(row, column, SVal.CROSS);
+		} else if (getSecondPlayer() == player) {
+			grid.insert(row, column, SVal.CIRCLE);
+		} else {
+			throw new IllegalPlayerException();
+		}
+		nextTurn();
+		
 		if (gameState == GameState.BEGINNING) {
 			gameState = GameState.IN_GAME;
 		} else if (gameState == GameState.IN_GAME && (Rules.endOfGame(grid, gameMetaData.getStreakLength()))) {
@@ -38,10 +66,10 @@ public class GameVer2 {
 	
 	public InnerPlayerRepresentation getWinner() {
 		SVal winnerVal = Rules.findWinner(grid, gameMetaData.getStreakLength());
-		if(winnerVal == opponents[0].getSVal()) {
-			return opponents[0];
-		} else if (winnerVal == opponents[1].getSVal()){
-			return opponents[1];
+		if(winnerVal == SVal.CROSS) {
+			return getFirstPlayer();
+		} else if (winnerVal == SVal.CIRCLE){
+			return getSecondPlayer();
 		} else {
 			return null;
 		}
@@ -71,10 +99,8 @@ public class GameVer2 {
 	public void registerPlayer(InnerPlayerRepresentation iPlayerRepresentation) {
 		if(opponents[0] == null) {
 			opponents[0] = iPlayerRepresentation;
+			firstPlayer = iPlayerRepresentation;
 		} else if (opponents[1] == null) {
-			if (opponents[0].getSVal() == iPlayerRepresentation.getSVal()) {
-				throw new PlayersWithSameSValException();
-			}
 			opponents[1] = iPlayerRepresentation;
 		} else {
 			throw new FullOpponentsException();
@@ -115,11 +141,14 @@ public class GameVer2 {
 		return gameName;
 	}
 
-	public InnerPlayerRepresentation[] getPlayers() {
-		return Arrays.copyOf(opponents, opponents.length);
+	public List<InnerPlayerRepresentation> getPlayers() {
+		if(!isInitialized()) {
+			throw new OnlineGameNotInitialized();
+		}
+		return new ArrayList<>(Arrays.asList(opponents));
 	}
 	
-	public void nextTurn() {
+	private void nextTurn() {
 		if(!isInitialized()) {
 			throw new OnlineGameNotInitialized();
 		}
@@ -133,13 +162,11 @@ public class GameVer2 {
 		return turn;
 	}
 	
-	public void setStartingPlayer(InnerPlayerRepresentation iPlayerRepresentation) {
-		if (opponents[0] != iPlayerRepresentation && opponents[1] != iPlayerRepresentation) {
-			throw new IllegalPlayerException();
-		}
-	}
-	
-	private boolean isInitialized() {
+	/**
+	 * Both players must be registered
+	 * @return
+	 */
+	public boolean isInitialized() {
 		if(turn == null) {
 			return false;
 		} else if (opponents[0] == null) {
