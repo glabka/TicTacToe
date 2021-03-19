@@ -10,8 +10,10 @@ import custom_exceptions.PlayerNotRegistredException;
 import game.communication.IPlayerCallback;
 import game.communication.InnerPlayerRepresentation;
 import game.communication.Message;
+import game.communication.Move;
 import game.communication.enums.CommunicationError;
 import game.communication.enums.CommunicationProtocolValue;
+import game.communication.enums.MoveResult;
 
 public class GameLogic {
 
@@ -71,7 +73,7 @@ public class GameLogic {
 			} else {
 				gameManager.registerGame(gameName, gameMetaData);
 				// register player that initiated the game
-				gameManager.getGame(gameName).registerPlayer(players.get(senderID));
+				gameManager.getGame(gameName).registerPlayer(senderPlayer);
 			}
 		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.DOES_GAME_EXIST) { 
 			if (gameManager.getGame(gameName) != null) {
@@ -92,8 +94,8 @@ public class GameLogic {
 			
 			if(message.getCommunicationProtocolValue() == CommunicationProtocolValue.REGISTER_PLAYER) {
 				// registering second player for game
-				if (!gameManager.getGame(gameName).isInitialized()) {
-					gameManager.getGame(gameName).registerPlayer(players.get(senderID));
+				if (!game.isInitialized()) {
+					game.registerPlayer(senderPlayer);
 				} else {
 					response = Message.createMessage(CommunicationProtocolValue.ERROR);
 					response.setCommunicationError(CommunicationError.GAME_ALREADY_OCCUPIED);
@@ -104,10 +106,30 @@ public class GameLogic {
 				response.setGameMetaData(game.getGameMetaData());
 				return response;
 			} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GET_GRID_REPRESENTATION) {
-				byte[][] grid = gameManager.getGame(gameName).getGridRepresentation(players.get(senderID));
+				byte[][] grid = game.getGridRepresentation(senderPlayer);
 				response = Message.createMessage(CommunicationProtocolValue.GRID_REPRESENTATION);
 				response.setGrid(grid);
 				return response;
+			} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.MY_MOVE) {
+				Move mv = message.getMove();
+				
+				if (mv == null) {
+					response = Message.createMessage(CommunicationProtocolValue.ERROR);
+					response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
+					return response;
+				}
+				
+				if (!game.getTurn().equals(senderPlayer)) {
+					response = Message.createMessage(CommunicationProtocolValue.MOVE_RESULT);
+					response.setMoveResult(MoveResult.NOT_YOUR_TURN);
+					return response;
+				}
+				
+				// TODO
+				
+				
+			} else {
+				throw new UnsupportedOperationException("message's CommunicationProtocolValue: " + message.getCommunicationProtocolValue());
 			}
 		}
 		

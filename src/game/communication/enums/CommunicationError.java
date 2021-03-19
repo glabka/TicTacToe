@@ -9,6 +9,4 @@ public enum CommunicationError {
 	// related to game metadata
 	GRID_SIZE_TOO_SMALL, GRID_SIZE_TOO_BIG, STREAK_LENGTH_TOO_SMALL,
 	STREAK_LENGTH_BIGGER_THAN_GRID, REQUIRED_FIELD_NULL_OR_EMPTY,
-	// other
-	SUCCESS
 }
