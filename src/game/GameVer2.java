@@ -9,8 +9,9 @@ import custom_exceptions.IllegalPlayerException;
 import custom_exceptions.IndexesOutOfRangeException;
 import custom_exceptions.NotPlayersTurnException;
 import custom_exceptions.OnlineGameNotInitialized;
-import custom_exceptions.PlayersWithSameSValException;
+import custom_exceptions.PlayerNotRegistredException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
+import game.communication.GridTransferRepresentation;
 import game.communication.InnerPlayerRepresentation;
 import game_components.Grid;
 import game_components.Square.SVal;
@@ -179,6 +180,19 @@ public class GameVer2 {
 
 	public GameMetaData getGameMetaData() {
 		return gameMetaData;
+	}
+	
+	public byte[][] getGridRepresentation(InnerPlayerRepresentation player) {
+		SVal playersVal;
+		if (player == getFirstPlayer()) {
+			playersVal = SVal.CROSS;
+		} else if (player == getSecondPlayer()) {
+			playersVal = SVal.CIRCLE;
+		} else {
+			throw new PlayerNotRegistredException("playersID: " + player.getId());
+		}
+		
+		return GridTransferRepresentation.getGridTransferRepresentation(grid, playersVal);
 	}
 	
 

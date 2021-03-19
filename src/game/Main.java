@@ -5,54 +5,46 @@
  */
 package game;
 
-import game_mechanics.Rules;
-import grid_computations.Computations;
-import grid_computations.FullStreak;
-import grid_computations.PotStreakFilledLengthComparator;
-import grid_computations.PotentialStreak;
-import players.Player;
-import players.ai_players.MergeAIPlayer;
-import players.ai_players.AbstractAIPlayer;
-import players.ai_players.DepthAIPlayer;
-import players.ai_players.NaiveBlockAttackAIPlayer;
-import players.ai_players.NaiveAttackAIPlayer;
-import players.ai_players.OneStepAIPlayer;
-import players.ai_players.TreeEvaluationAIPlayer;
-import players.ai_players.heuristics.SquareNaiveBlockAttackHeuristic;
-import players.ai_players.heuristics.AbstractGridHeuristic;
-import players.ai_players.heuristics.AbstractSquareHeuristic;
-import players.ai_players.heuristics.GirdMergeHeuristic;
-import players.ai_players.heuristics.SquareBlockAttackHeuristic;
-import players.ai_players.heuristics.SquareDecidingAttackBlockHeuristic;
-import players.ai_players.heuristics.SquareDecidingMergeBlockAttackHeuristic;
-import players.ai_players.heuristics.SquareMergeBlockAttackHeuristic;
-import players.ai_players.heuristics.GridDiffHeuristic;
-import players.ai_players.heuristics.GridDiffPoweredHeuristic;
-import players.ai_players.heuristics.GridDiffRatedValuesHeuristic;
-import players.ai_players.heuristics.HeuristicCommon;
-import players.ai_players.heuristics.SquareNaiveAttackHeuristic;
-import players.ai_players.heuristics.SquareMergedHeuristic;
-import players.ai_players.heuristics.SquareMixedHeuristic;
-import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
-import players.ai_players.support_classes.AbstractRatedCoosFilter;
-import players.ai_players.support_classes.FewBestRatedCoosFilter;
-import players.ai_players.support_classes.LengthCooValEstimator;
-import players.ai_players.support_classes.PoweredLengthCooValEstimator;
-import players.ai_players.support_classes.SortedNodesTree;
-import players.ai_players.support_classes.SortedTreeNode;
-import players.ui_players.UIPlayer;
-
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.google.gson.Gson;
+
+import game.communication.GridTransferRepresentation;
+import game.communication.Message;
+import game.communication.enums.CommunicationProtocolValue;
 import game_components.Grid;
 import game_components.Square;
 import game_components.Square.SVal;
+import players.Player;
+import players.ai_players.AbstractAIPlayer;
+import players.ai_players.DepthAIPlayer;
+import players.ai_players.NaiveBlockAttackAIPlayer;
+import players.ai_players.OneStepAIPlayer;
+import players.ai_players.TreeEvaluationAIPlayer;
+import players.ai_players.heuristics.AbstractGridHeuristic;
+import players.ai_players.heuristics.AbstractSquareHeuristic;
+import players.ai_players.heuristics.GirdMergeHeuristic;
+import players.ai_players.heuristics.GridDiffHeuristic;
+import players.ai_players.heuristics.GridDiffPoweredHeuristic;
+import players.ai_players.heuristics.GridDiffRatedValuesHeuristic;
+import players.ai_players.heuristics.SquareBlockAttackHeuristic;
+import players.ai_players.heuristics.SquareDecidingAttackBlockHeuristic;
+import players.ai_players.heuristics.SquareDecidingMergeBlockAttackHeuristic;
+import players.ai_players.heuristics.SquareMergeBlockAttackHeuristic;
+import players.ai_players.heuristics.SquareMergedHeuristic;
+import players.ai_players.heuristics.SquareMixedHeuristic;
+import players.ai_players.heuristics.SquareNaiveBlockAttackHeuristic;
+import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
+import players.ai_players.support_classes.AbstractRatedCoosFilter;
+import players.ai_players.support_classes.FewBestRatedCoosFilter;
+import players.ai_players.support_classes.LengthCooValEstimator;
+import players.ai_players.support_classes.PoweredLengthCooValEstimator;
+import players.ui_players.UIPlayer;
 
 /**
  *
@@ -67,28 +59,43 @@ public class Main {
         // TODO compare with https://www.quora.com/What-are-some-good-project-ideas-for-an-undergraduate-object-oriented-programming-course-using-Java
         
         Grid g = new Grid(5);
-//        g.insert(1, 0, Square.SVal.CIRCLE);
-//        g.insert(1, 1, Square.SVal.CIRCLE);
-//        g.insert(1, 2, Square.SVal.CIRCLE);
-//        g.insert(1, 3, Square.SVal.CIRCLE);
-//        
-//        g.insert(0, 1, Square.SVal.CIRCLE);
-//        g.insert(0, 2, Square.SVal.CIRCLE);
-//        g.insert(0, 4, Square.SVal.CIRCLE);
-//        
-////        g.insert(3,2, SVal.CIRCLE);
-//        
-//        g.insert(2, 4, Square.SVal.CROSS);
-//        g.insert(3, 4, Square.SVal.CROSS);
-//        g.insert(4, 4, Square.SVal.CROSS);
-//        
-//        g.insert(2, 2, Square.SVal.CROSS);
-//        g.insert(3, 3, Square.SVal.CROSS);
-//        
-////        g.insert(4,0, SVal.CROSS);
+        g.insert(1, 0, Square.SVal.CIRCLE);
+        g.insert(1, 1, Square.SVal.CIRCLE);
+        g.insert(1, 2, Square.SVal.CIRCLE);
+        g.insert(1, 3, Square.SVal.CIRCLE);
+        
+        g.insert(0, 1, Square.SVal.CIRCLE);
+        g.insert(0, 2, Square.SVal.CIRCLE);
+        g.insert(0, 4, Square.SVal.CIRCLE);
+        
+//        g.insert(3,2, SVal.CIRCLE);
+        
+        g.insert(2, 4, Square.SVal.CROSS);
+        g.insert(3, 4, Square.SVal.CROSS);
+        g.insert(4, 4, Square.SVal.CROSS);
+        
+        g.insert(2, 2, Square.SVal.CROSS);
+        g.insert(3, 3, Square.SVal.CROSS);
+        
+//        g.insert(4,0, SVal.CROSS);
         g.printGridDebug();
-////        Rules.test(g);
-//        System.out.println(Rules.findWinner(g, 4));
+        
+        ////////////////////////////////////////////////////////////////////////////
+        //----------------------JSON and MESSAGE testing----------------------------
+        ////////////////////////////////////////////////////////////////////////////
+        Message message = Message.createMessage(CommunicationProtocolValue.GRID_REPRESENTATION);
+        message.setGrid(GridTransferRepresentation.getGridTransferRepresentation(g, SVal.CROSS));
+        Gson gson = new Gson();
+        String messageStr = gson.toJson(message);
+        System.out.println(messageStr);
+        Message message2 = gson.fromJson(messageStr, Message.class);
+        Grid g2 = GridTransferRepresentation.getGrid(message2.getGrid(), SVal.CROSS);
+        g2.printGridDebug();
+        
+        
+        
+//////        Rules.test(g);
+////        System.out.println(Rules.findWinner(g, 4));
 //        
 		////////////////////////////////////////////////////////////////////////////
 		//-------------------------------Streak testing-----------------------------
@@ -135,7 +142,7 @@ public class Main {
 //		////////////////////////////////////////////////////////////////////////////
 //		//----------------------PotentialStreak's Comparators-----------------------
 //		////////////////////////////////////////////////////////////////////////////
-//        List<PotentialStreak> allPotStreaksCircle0 = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3);
+//        List<PotentialStreak> allPotStreaksCircle0 = Computations.getAllPotentialStreaks(g, SVal.CIRCLE, 3, 0);
 //        Collections.sort(allPotStreaksCircle0, new PotStreakFilledLengthComparator());
 //        System.out.println("PotStreakFilledLengthComparator");
 //        for (PotentialStreak streak : allPotStreaksCircle0) {
@@ -192,7 +199,7 @@ public class Main {
 		//---------------------------------AI GAME----------------------------------
 		////////////////////////////////////////////////////////////////////////////
 
-    	testAI();
+//    	testAI();
 //    	findBestAITest();
         
 		////////////////////////////////////////////////////////////////////////////
@@ -214,7 +221,7 @@ public class Main {
         //----------------------------------GAME------------------------------------
         ////////////////////////////////////////////////////////////////////////////
         
-//        uiGame();
+        uiGame();
         
         // closing the standard stream for whole program
         Scanner in = new Scanner(System.in);
@@ -283,7 +290,7 @@ public class Main {
 //        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
         
-        Game aiGame = new Game(aiPlayer, uiPlayer, g, streakLength);
+        Game aiGame = new Game(uiPlayer, aiPlayer, g, streakLength);
         aiGame.play();
     }
     

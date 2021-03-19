@@ -85,7 +85,8 @@ public class GameLogic {
 			// For all these communicationProtocolValues game must be created
 			GameVer2 game = gameManager.getGame(gameName);
 			if (game == null) {
-				response = Message.createMessage(CommunicationProtocolValue.GAME_DOESNT_EXIST);
+				response = Message.createMessage(CommunicationProtocolValue.ERROR);
+				response.setCommunicationError(CommunicationError.GAME_DOESNT_EXIST);
 				return response;
 			}
 			
@@ -103,7 +104,10 @@ public class GameLogic {
 				response.setGameMetaData(game.getGameMetaData());
 				return response;
 			} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GET_GRID_REPRESENTATION) {
-				
+				byte[][] grid = gameManager.getGame(gameName).getGridRepresentation(players.get(senderID));
+				response = Message.createMessage(CommunicationProtocolValue.GRID_REPRESENTATION);
+				response.setGrid(grid);
+				return response;
 			}
 		}
 		

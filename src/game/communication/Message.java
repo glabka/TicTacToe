@@ -11,13 +11,14 @@ public class Message {
 
 	private GameState gameState;
 	private String gameName;
-	private GameMetaData gameMataData;
+	private GameMetaData gameMetaData;
 	private Move move;
 	private CommunicationProtocolValue communicationProtocolValue;
 	private MoveResult moveResult;
 	private GameResult gameResult;
 	private CommunicationError communicationError;
 	private String errorInfo;
+	private byte[][] grid;
 	
 	
 	public static Message createMessage(String gameName, CommunicationProtocolValue communicationProtocolValue) {
@@ -59,11 +60,11 @@ public class Message {
 	}
 
 	public GameMetaData getGameMetaData() {
-		return gameMataData;
+		return gameMetaData;
 	}
 
-	public void setGameMetaData(GameMetaData gameMataData) {
-		this.gameMataData = gameMataData;
+	public void setGameMetaData(GameMetaData gameMetaData) {
+		this.gameMetaData = gameMetaData;
 	}
 
 	public Move getMove() {
@@ -105,5 +106,12 @@ public class Message {
 	public void setErrorInfo(String errorInfo) {
 		this.errorInfo = errorInfo;
 	}
-	
+
+	public byte[][] getGrid() {
+		return grid;
+	}
+
+	public void setGrid(byte[][] grid) {
+		this.grid = grid;
+	}
 }
