@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import game.communication.GridTransferRepresentation;
 import game.communication.Message;
 import game.communication.enums.CommunicationProtocolValue;
+import game.local.LocalGameForTwoManager;
 import game_components.Grid;
 import game_components.Square;
 import game_components.Square.SVal;
@@ -57,41 +58,44 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO compare with https://www.quora.com/What-are-some-good-project-ideas-for-an-undergraduate-object-oriented-programming-course-using-Java
-        
-        Grid g = new Grid(5);
-        g.insert(1, 0, Square.SVal.CIRCLE);
-        g.insert(1, 1, Square.SVal.CIRCLE);
-        g.insert(1, 2, Square.SVal.CIRCLE);
-        g.insert(1, 3, Square.SVal.CIRCLE);
-        
-        g.insert(0, 1, Square.SVal.CIRCLE);
-        g.insert(0, 2, Square.SVal.CIRCLE);
-        g.insert(0, 4, Square.SVal.CIRCLE);
-        
-//        g.insert(3,2, SVal.CIRCLE);
-        
-        g.insert(2, 4, Square.SVal.CROSS);
-        g.insert(3, 4, Square.SVal.CROSS);
-        g.insert(4, 4, Square.SVal.CROSS);
-        
-        g.insert(2, 2, Square.SVal.CROSS);
-        g.insert(3, 3, Square.SVal.CROSS);
-        
-//        g.insert(4,0, SVal.CROSS);
-        g.printGridDebug();
-        
-        ////////////////////////////////////////////////////////////////////////////
-        //----------------------JSON and MESSAGE testing----------------------------
-        ////////////////////////////////////////////////////////////////////////////
-        Message message = Message.createMessage(CommunicationProtocolValue.GRID_REPRESENTATION);
-        message.setGrid(GridTransferRepresentation.getGridTransferRepresentation(g, SVal.CROSS));
-        Gson gson = new Gson();
-        String messageStr = gson.toJson(message);
-        System.out.println(messageStr);
-        Message message2 = gson.fromJson(messageStr, Message.class);
-        Grid g2 = GridTransferRepresentation.getGrid(message2.getGrid(), SVal.CROSS);
-        g2.printGridDebug();
-        
+    	LocalGameForTwoManager lgftm = new LocalGameForTwoManager();
+    	lgftm.play();
+    	
+    	
+//        Grid g = new Grid(5);
+//        g.insert(1, 0, Square.SVal.CIRCLE);
+//        g.insert(1, 1, Square.SVal.CIRCLE);
+//        g.insert(1, 2, Square.SVal.CIRCLE);
+//        g.insert(1, 3, Square.SVal.CIRCLE);
+//        
+//        g.insert(0, 1, Square.SVal.CIRCLE);
+//        g.insert(0, 2, Square.SVal.CIRCLE);
+//        g.insert(0, 4, Square.SVal.CIRCLE);
+//        
+////        g.insert(3,2, SVal.CIRCLE);
+//        
+//        g.insert(2, 4, Square.SVal.CROSS);
+//        g.insert(3, 4, Square.SVal.CROSS);
+//        g.insert(4, 4, Square.SVal.CROSS);
+//        
+//        g.insert(2, 2, Square.SVal.CROSS);
+//        g.insert(3, 3, Square.SVal.CROSS);
+//        
+////        g.insert(4,0, SVal.CROSS);
+//        g.printGridDebug();
+//        
+//        ////////////////////////////////////////////////////////////////////////////
+//        //----------------------JSON and MESSAGE testing----------------------------
+//        ////////////////////////////////////////////////////////////////////////////
+//        Message message = Message.createMessage(CommunicationProtocolValue.GRID_REPRESENTATION);
+//        message.setGrid(GridTransferRepresentation.getGridTransferRepresentation(g, SVal.CROSS));
+//        Gson gson = new Gson();
+//        String messageStr = gson.toJson(message);
+//        System.out.println(messageStr);
+//        Message message2 = gson.fromJson(messageStr, Message.class);
+//        Grid g2 = GridTransferRepresentation.getGrid(message2.getGrid(), SVal.CROSS);
+//        g2.printGridDebug();
+//        
         
         
 //////        Rules.test(g);

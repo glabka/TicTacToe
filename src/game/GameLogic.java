@@ -60,7 +60,7 @@ public class GameLogic {
 			return response;
 		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.CREATE_GAME) {
 			synchronized (gameManager) {
-				if (gameManager.getGame(gameName) != null) {
+				if (gameManager.doesGameExist(gameName)) {
 					response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 					response.setCommunicationError(CommunicationError.GAME_ALREADY_EXIST);
 					return response;

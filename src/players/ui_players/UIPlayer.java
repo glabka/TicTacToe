@@ -19,7 +19,8 @@ public class UIPlayer extends Player {
 
 
 	@Override
-	public ValuedMove nextMove(Grid g) {		
+	public ValuedMove nextMove(Grid g) {
+		System.out.println("Enter move for player " + name);
 		char readChar;
 		
 		while (true) {
