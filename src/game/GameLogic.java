@@ -97,6 +97,19 @@ public class GameLogic {
 				// registering second player for game
 				if (!game.isInitialized()) {
 					game.registerPlayer(senderPlayer);
+					InnerPlayerRepresentation startingPlayer = game.getTurn();
+					response = Message.createMessage(gameName, CommunicationProtocolValue.PLAY_FIRT_MOVE);
+					
+					if (senderPlayer.equals(startingPlayer)) {
+						return response;
+					} else {
+						try {
+							callbacks.get(startingPlayer).sendMessage(response);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					
 				} else {
 					response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 					response.setCommunicationError(CommunicationError.GAME_ALREADY_OCCUPIED);
@@ -141,28 +154,35 @@ public class GameLogic {
 						// deleting finished game
 						gameManager.deleteGame(gameName);
 						
+						response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
+						Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
+						messageForOpponent.setMove(message.getMove()); // sending last move to opponent
+						
 						if (winner != null) {
-							response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							response.setGameResult(GameResult.YOU_WIN);
-							Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							messageForOpponent.setGameResult(GameResult.YOU_LOSE);
-							try {
-								callbacks.get(opponent).sendMessage(message);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							return response;
 						} else {
-							response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							response.setGameResult(GameResult.TIE);
-							Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							messageForOpponent.setGameResult(GameResult.TIE);
-							try {
-								callbacks.get(opponent).sendMessage(message);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							return response;
+						}
+						
+						try {
+							callbacks.get(opponent).sendMessage(message);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						
+						return response;
+					} else {
+						// game is not over
+						InnerPlayerRepresentation opponent = game.getOpponent(senderPlayer);
+						Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.OPPONENTS_MOVE);
+						messageForOpponent.setMove(message.getMove());
+						
+						try {
+							callbacks.get(opponent).sendMessage(message);
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
 					}
 				}
