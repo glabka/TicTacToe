@@ -54,6 +54,20 @@ public class Grid {
         }
     }
     
+    public boolean verifyCoosInBoundies(int row, int column) {
+    	if(grid.length <= row) {
+        	return false;
+        } else if (row < 0) {
+        	return false;
+        } else if (grid[0].length <= column) {
+        	return false;
+        } else if (column < 0) {
+        	return false;
+        } else {
+        	return true;
+        }
+    }
+    
     public void insert(ValuedMove mv) {
         insert(mv.getRow(), mv.getColumn(), mv.getVal());
     }

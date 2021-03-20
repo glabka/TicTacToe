@@ -9,6 +9,7 @@ public enum CommunicationProtocolValue {
 	PLAY_FIRT_MOVE,
 	GAME_DOESNT_EXIST,
 	GAME_EXISTS,
+	GAME_OVER,
 	// client values
 	MY_MOVE,
 	CREATE_GAME, // automatically registers you as player

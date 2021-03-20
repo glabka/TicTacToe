@@ -1,10 +1,10 @@
 package game;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import custom_exceptions.FullOpponentsException;
 import custom_exceptions.PlayerAlreadyExistsException;
 import custom_exceptions.PlayerNotRegistredException;
 import game.communication.IPlayerCallback;
@@ -13,6 +13,7 @@ import game.communication.Message;
 import game.communication.Move;
 import game.communication.enums.CommunicationError;
 import game.communication.enums.CommunicationProtocolValue;
+import game.communication.enums.GameResult;
 import game.communication.enums.MoveResult;
 
 public class GameLogic {
@@ -117,17 +118,54 @@ public class GameLogic {
 					response = Message.createMessage(CommunicationProtocolValue.ERROR);
 					response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
 					return response;
-				}
-				
-				if (!game.getTurn().equals(senderPlayer)) {
+				} else if (!game.getTurn().equals(senderPlayer)) {
 					response = Message.createMessage(CommunicationProtocolValue.MOVE_RESULT);
 					response.setMoveResult(MoveResult.NOT_YOUR_TURN);
 					return response;
+				} else if (!game.verifyCooInBoundaries(message.getMove().getRow(), message.getMove().getColumn())) {
+					response = Message.createMessage(CommunicationProtocolValue.MOVE_RESULT);
+					response.setMoveResult(MoveResult.MOVE_OUT_OF_RANGE);
+					return response;
+				} else if (!game.isSquareEmpty(message.getMove().getRow(), message.getMove().getColumn())) {
+					response = Message.createMessage(CommunicationProtocolValue.MOVE_RESULT);
+					response.setMoveResult(MoveResult.ALREADY_FILLED_UP_SQUARE);
+					return response;
+				} else {
+					// everything about move checked
+					game.insert(message.getMove(), senderPlayer);
+					// check if game over
+					GameState gameState = game.getGameState();
+					if (gameState == GameState.GAME_OVER) {
+						InnerPlayerRepresentation winner = game.getWinner();
+						InnerPlayerRepresentation opponent = game.getOpponent(senderPlayer);
+						// deleting finished game
+						gameManager.deleteGame(gameName);
+						
+						if (winner != null) {
+							response = Message.createMessage(CommunicationProtocolValue.GAME_OVER);
+							response.setGameResult(GameResult.YOU_WIN);
+							Message messageForOpponent = Message.createMessage(CommunicationProtocolValue.GAME_OVER);
+							messageForOpponent.setGameResult(GameResult.YOU_LOSE);
+							try {
+								callbacks.get(opponent).sendMessage(message);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							return response;
+						} else {
+							response = Message.createMessage(CommunicationProtocolValue.GAME_OVER);
+							response.setGameResult(GameResult.TIE);
+							Message messageForOpponent = Message.createMessage(CommunicationProtocolValue.GAME_OVER);
+							messageForOpponent.setGameResult(GameResult.TIE);
+							try {
+								callbacks.get(opponent).sendMessage(message);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							return response;
+						}
+					}
 				}
-				
-				// TODO
-				
-				
 			} else {
 				throw new UnsupportedOperationException("message's CommunicationProtocolValue: " + message.getCommunicationProtocolValue());
 			}
@@ -144,6 +182,10 @@ public class GameLogic {
 		InnerPlayerRepresentation newPlayer = new InnerPlayerRepresentation(playersID);
 		players.put(playersID, newPlayer);
 		callbacks.put(newPlayer, playersCallback);
+	}
+	
+	public void unregisterPlayer(int playersID) {
+		// TODO has to delete player from players, delete his callback and end all game he is participating in
 	}
 	
 }

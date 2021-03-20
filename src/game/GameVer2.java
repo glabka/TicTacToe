@@ -13,6 +13,7 @@ import custom_exceptions.PlayerNotRegistredException;
 import custom_exceptions.SessionIsNotAmongThisOpponentsInstance;
 import game.communication.GridTransferRepresentation;
 import game.communication.InnerPlayerRepresentation;
+import game.communication.Move;
 import game_components.Grid;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
@@ -44,6 +45,10 @@ public class GameVer2 {
 		}
 	}
 	
+	public void insert(Move mv, InnerPlayerRepresentation player) {
+		insert(mv.getRow(), mv.getColumn(), player);
+	}
+	
 	public void insert(int row, int column, InnerPlayerRepresentation player) {
 		if(player != getTurn()) {
 			throw new NotPlayersTurnException("it is not player's " + player + "turn");
@@ -63,6 +68,10 @@ public class GameVer2 {
 		} else if (gameState == GameState.IN_GAME && (Rules.endOfGame(grid, gameMetaData.getStreakLength()))) {
 			gameState = GameState.GAME_OVER;
 		}
+	}
+	
+	public boolean verifyCooInBoundaries(int row, int column) {
+		return grid.verifyCoosInBoundies(row, column);
 	}
 	
 	public InnerPlayerRepresentation getWinner() {
