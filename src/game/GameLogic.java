@@ -54,20 +54,20 @@ public class GameLogic {
 		}
 		
 		if (message.getCommunicationProtocolValue() == null) {
-			response = Message.createMessage(CommunicationProtocolValue.ERROR);
+			response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 			response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
 			response.setErrorInfo("Field communicationProtocolValue can not be null.");
 			return response;
 		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.CREATE_GAME) {
 			if (gameManager.getGame(gameName) != null) {
-				response = Message.createMessage(CommunicationProtocolValue.ERROR);
+				response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 				response.setCommunicationError(CommunicationError.GAME_ALREADY_EXIST);
 				return response;
 			}
 			
 			GameMetaData gameMetaData = message.getGameMetaData();
 			if (gameMetaData == null) {
-				response = Message.createMessage(CommunicationProtocolValue.ERROR);
+				response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 				response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
 				response.setErrorInfo("gameMetadata null or empty");
 				return response;
@@ -78,17 +78,17 @@ public class GameLogic {
 			}
 		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.DOES_GAME_EXIST) { 
 			if (gameManager.getGame(gameName) != null) {
-				response = Message.createMessage(CommunicationProtocolValue.GAME_EXISTS);
+				response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_EXISTS);
 				return response;
 			} else {
-				response = Message.createMessage(CommunicationProtocolValue.GAME_DOESNT_EXIST);
+				response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_DOESNT_EXIST);
 				return response;
 			}
 		} else {
 			// For all these communicationProtocolValues game must be created
 			GameVer2 game = gameManager.getGame(gameName);
 			if (game == null) {
-				response = Message.createMessage(CommunicationProtocolValue.ERROR);
+				response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 				response.setCommunicationError(CommunicationError.GAME_DOESNT_EXIST);
 				return response;
 			}
@@ -98,36 +98,36 @@ public class GameLogic {
 				if (!game.isInitialized()) {
 					game.registerPlayer(senderPlayer);
 				} else {
-					response = Message.createMessage(CommunicationProtocolValue.ERROR);
+					response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 					response.setCommunicationError(CommunicationError.GAME_ALREADY_OCCUPIED);
 					return response;
 				}		
 			}  else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GET_GAME_METADATA) {
-				response = Message.createMessage(CommunicationProtocolValue.GAME_METADATA);
+				response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_METADATA);
 				response.setGameMetaData(game.getGameMetaData());
 				return response;
 			} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GET_GRID_REPRESENTATION) {
 				byte[][] grid = game.getGridRepresentation(senderPlayer);
-				response = Message.createMessage(CommunicationProtocolValue.GRID_REPRESENTATION);
+				response = Message.createMessage(gameName, CommunicationProtocolValue.GRID_REPRESENTATION);
 				response.setGrid(grid);
 				return response;
 			} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.MY_MOVE) {
 				Move mv = message.getMove();
 				
 				if (mv == null) {
-					response = Message.createMessage(CommunicationProtocolValue.ERROR);
+					response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 					response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
 					return response;
 				} else if (!game.getTurn().equals(senderPlayer)) {
-					response = Message.createMessage(CommunicationProtocolValue.MOVE_RESULT);
+					response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
 					response.setMoveResult(MoveResult.NOT_YOUR_TURN);
 					return response;
 				} else if (!game.verifyCooInBoundaries(message.getMove().getRow(), message.getMove().getColumn())) {
-					response = Message.createMessage(CommunicationProtocolValue.MOVE_RESULT);
+					response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
 					response.setMoveResult(MoveResult.MOVE_OUT_OF_RANGE);
 					return response;
 				} else if (!game.isSquareEmpty(message.getMove().getRow(), message.getMove().getColumn())) {
-					response = Message.createMessage(CommunicationProtocolValue.MOVE_RESULT);
+					response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
 					response.setMoveResult(MoveResult.ALREADY_FILLED_UP_SQUARE);
 					return response;
 				} else {
@@ -142,9 +142,9 @@ public class GameLogic {
 						gameManager.deleteGame(gameName);
 						
 						if (winner != null) {
-							response = Message.createMessage(CommunicationProtocolValue.GAME_OVER);
+							response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							response.setGameResult(GameResult.YOU_WIN);
-							Message messageForOpponent = Message.createMessage(CommunicationProtocolValue.GAME_OVER);
+							Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							messageForOpponent.setGameResult(GameResult.YOU_LOSE);
 							try {
 								callbacks.get(opponent).sendMessage(message);
@@ -153,9 +153,9 @@ public class GameLogic {
 							}
 							return response;
 						} else {
-							response = Message.createMessage(CommunicationProtocolValue.GAME_OVER);
+							response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							response.setGameResult(GameResult.TIE);
-							Message messageForOpponent = Message.createMessage(CommunicationProtocolValue.GAME_OVER);
+							Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							messageForOpponent.setGameResult(GameResult.TIE);
 							try {
 								callbacks.get(opponent).sendMessage(message);
