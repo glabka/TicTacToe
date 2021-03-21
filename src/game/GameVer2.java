@@ -110,6 +110,7 @@ public class GameVer2 {
 		if(opponents[0] == null) {
 			opponents[0] = iPlayerRepresentation;
 			firstPlayer = iPlayerRepresentation;
+			turn = iPlayerRepresentation;
 		} else if (opponents[1] == null) {
 			opponents[1] = iPlayerRepresentation;
 		} else {
