@@ -41,25 +41,28 @@ public class LocalGameForTwoManager {
 		metaData = new GameMetaData(5, 3);
 		message.setGameMetaData(metaData);
 		message.setGameName(gameName);
-		gameLogic.receiveMessage(p1ID, message);
+		Message m = gameLogic.receiveMessage(p1ID, message);
+		System.out.println(m); // debug
 	}
 	
 	private void registerSecondPlayerForGame() {
 		Message message = Message.createMessage(gameName, CommunicationProtocolValue.REGISTER_PLAYER);
 		message.setGameName(gameName);
-		gameLogic.receiveMessage(p2ID, message);
+		Message m = gameLogic.receiveMessage(p2ID, message); // TODO if code change this could return PLAY_FIRT_MOVE
+		System.out.println(m); // debug
 	}
 	
 	public void play() {
 		registerPlayers();
 		createGame();
-		registerSecondPlayerForGame();
 		
 		LocalPlayerWrapper lpw1 = new LocalPlayerWrapper(metaData, lock1, gameLogic, callback1, gameName, p1ID);
-		LocalPlayerWrapper lpw2 = new LocalPlayerWrapper(metaData, lock2, gameLogic, callback1, gameName, p2ID);
+		LocalPlayerWrapper lpw2 = new LocalPlayerWrapper(metaData, lock2, gameLogic, callback2, gameName, p2ID);
 		
 		lpw1.start();
 		lpw2.start();
+		
+		registerSecondPlayerForGame();
 		
 		try {
 			lpw1.join();
