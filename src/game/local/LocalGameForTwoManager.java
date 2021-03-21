@@ -59,7 +59,7 @@ public class LocalGameForTwoManager {
 		LocalPlayerWrapper lpw2 = new LocalPlayerWrapper(metaData, lock2, gameLogic, callback1, gameName, p2ID);
 		
 		lpw1.start();
-		lpw1.start();
+		lpw2.start();
 		
 		try {
 			lpw1.join();
