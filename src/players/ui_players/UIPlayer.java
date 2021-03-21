@@ -20,7 +20,16 @@ public class UIPlayer extends Player {
 
 	@Override
 	public ValuedMove nextMove(Grid g) {
+		if (g.getCursorRow ()== null || g.getCursorColumn() == null) {
+			int cursorRow = g.size() / 2;
+	        int cursorColumn = g.size() / 2;
+	        g.setCursonRow(cursorRow);
+	        g.setCursonColumn(cursorColumn);
+		}
+		
 		System.out.println("Enter move for player " + name);
+		System.out.println(inputMessage);
+		g.printGrid();
 		char readChar;
 		
 		while (true) {
