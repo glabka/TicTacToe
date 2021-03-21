@@ -133,6 +133,7 @@ public class GameLogic {
 					if (mv == null) {
 						response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
 						response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
+						response.setErrorInfo("move was null");
 						return response;
 					} else if (!game.getTurn().equals(senderPlayer)) {
 						response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
@@ -158,6 +159,7 @@ public class GameLogic {
 							gameManager.deleteGame(gameName);
 							
 							response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
+							response.setMoveResult(MoveResult.SUCCESS);
 							Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
 							messageForOpponent.setMove(message.getMove()); // sending last move to opponent
 							
@@ -170,7 +172,7 @@ public class GameLogic {
 							}
 							
 							try {
-								callbacks.get(opponent).sendMessage(message);
+								callbacks.get(opponent).sendMessage(messageForOpponent);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -183,10 +185,15 @@ public class GameLogic {
 							messageForOpponent.setMove(message.getMove());
 							
 							try {
-								callbacks.get(opponent).sendMessage(message);
+								callbacks.get(opponent).sendMessage(messageForOpponent);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
+							
+							response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
+							response.setMoveResult(MoveResult.SUCCESS);
+							return response;
+							
 						}
 					}
 				} else {
