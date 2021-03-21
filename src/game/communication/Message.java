@@ -1,5 +1,7 @@
 package game.communication;
 
+import com.google.gson.Gson;
+
 import game.GameMetaData;
 import game.GameState;
 import game.communication.enums.CommunicationError;
@@ -113,5 +115,11 @@ public class Message {
 
 	public void setGrid(byte[][] grid) {
 		this.grid = grid;
+	}
+	
+	public String toString() {
+		Gson gson = new Gson();
+		String json = gson.toJson(this);
+		return json;
 	}
 }
