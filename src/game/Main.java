@@ -225,7 +225,7 @@ public class Main {
         //----------------------------------GAME------------------------------------
         ////////////////////////////////////////////////////////////////////////////
         
-        uiGame();
+//        uiGame();
         
         // closing the standard stream for whole program
         Scanner in = new Scanner(System.in);

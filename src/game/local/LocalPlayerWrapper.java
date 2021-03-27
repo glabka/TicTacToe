@@ -85,8 +85,9 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 						if (m.getCommunicationProtocolValue() == CommunicationProtocolValue.MOVE_RESULT &&
 								m.getMoveResult() == MoveResult.SUCCESS) {
 							grid.insert(mv.getRow(), mv.getColumn(), player.getSVal());
+						} else if (m.getCommunicationProtocolValue() == CommunicationProtocolValue.GAME_OVER){
+							break outerloop;
 						}
-						
 					} else if (comVal == CommunicationProtocolValue.GAME_OVER) {
 						Move opponentsMove = message.getMove();
 						grid.insert(opponentsMove.getRow(), opponentsMove.getColumn(), SVal.getOpposite(player.getSVal()));
