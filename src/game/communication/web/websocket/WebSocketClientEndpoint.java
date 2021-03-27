@@ -1,4 +1,4 @@
-package web.client_game.websocket;
+package game.communication.web.websocket;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,53 +15,34 @@ import javax.websocket.Session;
 
 import com.google.gson.Gson;
 
-import game.GameState;
 import game.communication.Message;
-import web.CommunicationSignal;
 
 @ClientEndpoint
-public class TicTacToeClientEndpoint {
+public class WebSocketClientEndpoint {
 
 	private CountDownLatch latch;
 	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private Gson gson = new Gson();
 	
-	public TicTacToeClientEndpoint(CountDownLatch latch) {
+	public WebSocketClientEndpoint(CountDownLatch latch) {
 		this.latch = latch;
 	}
 
 	@OnOpen
 	public void onOpen(Session session) {
 		logger.info("Connected:");
-
-		Gson gson = new Gson();
-		Message message = Message.createMessage("test game", CommunicationSignal.START);
-		message.setGridSize(5);
-		message.setStreakLength(3);
-		String jsonMessage = gson.toJson(message);
-		
-		try {
-			session.getBasicRemote().sendText(jsonMessage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//TODO
 	}
 
 	@OnMessage
 	public String onMessage(String message, Session session) {
-		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-
-		try {
-			System.out.println(message);
-			String userInput = bufferRead.readLine();
-			return userInput;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		// TODO
 	}
 
 	@OnClose
 	public void onClose(Session session, CloseReason closeReason) {
 		logger.info("Session " + session.getId() + " closed.");
+		// TODO
 		latch.countDown();
 	}
 }

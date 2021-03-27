@@ -1,4 +1,4 @@
-package web.server;
+package game.communication.web.websocket;
 
 import java.io.IOException;
 

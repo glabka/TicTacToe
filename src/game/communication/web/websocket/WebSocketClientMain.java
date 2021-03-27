@@ -1,18 +1,18 @@
-package web.client_game.websocket;
+package game.communication.web.websocket;
 
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 
 import org.glassfish.tyrus.client.ClientManager;
 
-public class ClientMain {
+public class WebSocketClientMain {
 	
 	public static void main(String[] args){
 		String serverName = args[0];
 		int portNumber = Integer.parseInt(args[1]);
 		
 		CountDownLatch latch = new CountDownLatch(1);
-		TicTacToeClientEndpoint clientEndPoint = new TicTacToeClientEndpoint(latch);
+		WebSocketClientEndpoint clientEndPoint = new WebSocketClientEndpoint(latch);
 		ClientManager clientManager = ClientManager.createClient();
 				
 		try {

@@ -1,7 +1,6 @@
-package web.server.websocket;
+package game.communication.web.websocket;
 
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +21,9 @@ import game.communication.Message;
 import game.communication.PlayerIDAssigner;
 import game.communication.enums.CommunicationError;
 import game.communication.enums.CommunicationProtocolValue;
-import web.server.WebSocketPlayerCallback;
 
 @ServerEndpoint(value = "/tictactoe")
-public class TicTacToeServerEndpoint {
+public class WebSocketServerEndpoint {
 	
     private static GameLogic gameLogic = GameLogic.getGameLogic();
     private static Map<Session, Integer> playersIDs = Collections.synchronizedMap(new HashMap<Session, Integer>());
@@ -39,7 +37,7 @@ public class TicTacToeServerEndpoint {
 	}
 	
 	@OnMessage
-	public void onMessage(String message, Session session) {
+	public String onMessage(String message, Session session) {
 		
 		// decoding message
 		logger.info("message from " + session.getId() + " message: " + message);
@@ -50,23 +48,19 @@ public class TicTacToeServerEndpoint {
 			Message response = Message.createMessage(CommunicationProtocolValue.ERROR);
 			response.setCommunicationError(CommunicationError.WRONG_MESSAGE_FORMAT);
 			
-			String responseStr = gson.toJson(response);
-			try {
-				session.getBasicRemote().sendText(responseStr);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			return;
+			return gson.toJson(response);
 		}
 		// sending to GameLogic
-		gameLogic.receiveMessage(playersIDs.get(session), decodedMessage);
+		Message gameLogicResponse = gameLogic.receiveMessage(playersIDs.get(session), decodedMessage);
+		// returning back response
+		return gson.toJson(gameLogicResponse);
 	}
 	
 	@OnClose
 	public void onClose(Session session, CloseReason closeReason) {
 		playersIDs.remove(session);
 		logger.info("Session " + session.getId() + " closed");
-//		gameLogic.quit();
+//		gameLogic.quit(); // TODO - quitting all games player was involved in
 	}
 	
 }

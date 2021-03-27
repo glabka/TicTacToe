@@ -1,17 +1,21 @@
-package web.server.websocket;
+package game.communication.web;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import org.glassfish.tyrus.server.Server;
 
+import game.communication.web.websocket.WebSocketServerEndpoint;
 
-public class ServerMain {
-
+public class WebServer {
+	
+//	private GameLogic gameLogic = GameLogic.getGameLogic(); // for use from different technologies than is websocket
+	
 	public static void main(String[] args) {
 		String serverName =  args[0]; // an ip address or localhost
     	int portNumber = Integer.parseInt(args[1]);
     	
-    	Server server = new Server(serverName, portNumber, "/websockets", TicTacToeServerEndpoint.class);
+    	Server server = new Server(serverName, portNumber, "/websockets", WebSocketServerEndpoint.class);
     	
     	try {
     		server.start();
@@ -24,7 +28,6 @@ public class ServerMain {
     		server.stop();
     	}
 
-
 	}
-
+	
 }
