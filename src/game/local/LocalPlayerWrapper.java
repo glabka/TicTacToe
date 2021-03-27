@@ -54,7 +54,7 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 				Move mv = null;
 				List<Message> messages = myCallback.getMessages();
 				for (Message message : messages) {
-					if(!MessageConsistencyChecker.checkMessage(message)) {
+					if(!MessageConsistencyChecker.checkServerMessage(message)) {
 						throw new WrongMessageException();
 					}
 					

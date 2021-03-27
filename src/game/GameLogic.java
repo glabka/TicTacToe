@@ -10,6 +10,7 @@ import custom_exceptions.PlayerNotRegistredException;
 import game.communication.IPlayerCallback;
 import game.communication.InnerPlayerRepresentation;
 import game.communication.Message;
+import game.communication.MessageConsistencyChecker;
 import game.communication.Move;
 import game.communication.enums.CommunicationError;
 import game.communication.enums.CommunicationProtocolValue;
@@ -40,52 +41,21 @@ public class GameLogic {
 	public Message receiveMessage(int senderID, Message message) {
 		Message response = null;
 		
-		InnerPlayerRepresentation senderPlayer = players.get(senderID);
-		if (senderPlayer == null) {
+		InnerPlayerRepresentation sender = players.get(senderID);
+		if (sender == null) {
 			throw new PlayerNotRegistredException("callback for playerID: " + senderID + "not registered");
 		}
 		
-		String gameName = message.getGameName();
-		if (gameName == null || gameName.isEmpty()) {
-			response = Message.createMessage(CommunicationProtocolValue.ERROR);
-			response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
-			response.setErrorInfo("gameName null or empty");
+		response = MessageConsistencyChecker.checkClientMessage(message);
+		if (response != null) {
 			return response;
 		}
 		
-		if (message.getCommunicationProtocolValue() == null) {
-			response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
-			response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
-			response.setErrorInfo("Field communicationProtocolValue can not be null.");
-			return response;
-		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.CREATE_GAME) {
-			synchronized (gameManager) {
-				if (gameManager.doesGameExist(gameName)) {
-					response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
-					response.setCommunicationError(CommunicationError.GAME_ALREADY_EXIST);
-					return response;
-				}
-				
-				GameMetaData gameMetaData = message.getGameMetaData();
-				if (gameMetaData == null) {
-					response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
-					response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
-					response.setErrorInfo("gameMetadata null or empty");
-					return response;
-				} else {
-					gameManager.registerGame(gameName, gameMetaData);
-					// register player that initiated the game
-					gameManager.getGame(gameName).registerPlayer(senderPlayer);
-				}
-			}
+		String gameName = message.getGameName();
+		if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.CREATE_GAME) {
+			return tryCreateGame(sender, message);
 		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.DOES_GAME_EXIST) { 
-			if (gameManager.getGame(gameName) != null) {
-				response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_EXISTS);
-				return response;
-			} else {
-				response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_DOESNT_EXIST);
-				return response;
-			}
+			return doesGameExist(message);
 		} else {
 			// For all these communicationProtocolValues game must be created
 			GameVer2 game = gameManager.getGame(gameName);
@@ -98,112 +68,151 @@ public class GameLogic {
 			synchronized (game) {
 				if(message.getCommunicationProtocolValue() == CommunicationProtocolValue.REGISTER_PLAYER) {
 					// registering second player for game
-					if (!game.isInitialized()) {
-						game.registerPlayer(senderPlayer);
-						InnerPlayerRepresentation startingPlayer = game.getTurn();
-						response = Message.createMessage(gameName, CommunicationProtocolValue.PLAY_FIRT_MOVE);
-						
-						if (senderPlayer.equals(startingPlayer)) {
-							return response;
-						} else {
-							try {
-								callbacks.get(startingPlayer).sendMessage(response);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-						
-					} else {
-						response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
-						response.setCommunicationError(CommunicationError.GAME_ALREADY_OCCUPIED);
-						return response;
-					}		
+					return tryRegisterSecondPlayer(sender, game);
 				}  else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GET_GAME_METADATA) {
-					response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_METADATA);
-					response.setGameMetaData(game.getGameMetaData());
-					return response;
+					return getGameMetaData(game);
 				} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GET_GRID_REPRESENTATION) {
-					byte[][] grid = game.getGridRepresentation(senderPlayer);
-					response = Message.createMessage(gameName, CommunicationProtocolValue.GRID_REPRESENTATION);
-					response.setGrid(grid);
-					return response;
+					return getGridRepresentation(sender, game);
 				} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.MY_MOVE) {
-					Move mv = message.getMove();
-					
-					if (mv == null) {
-						response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
-						response.setCommunicationError(CommunicationError.REQUIRED_FIELD_NULL_OR_EMPTY);
-						response.setErrorInfo("move was null");
-						return response;
-					} else if (!game.getTurn().equals(senderPlayer)) {
-						response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
-						response.setMoveResult(MoveResult.NOT_YOUR_TURN);
-						return response;
-					} else if (!game.verifyCooInBoundaries(message.getMove().getRow(), message.getMove().getColumn())) {
-						response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
-						response.setMoveResult(MoveResult.MOVE_OUT_OF_RANGE);
-						return response;
-					} else if (!game.isSquareEmpty(message.getMove().getRow(), message.getMove().getColumn())) {
-						response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
-						response.setMoveResult(MoveResult.ALREADY_FILLED_UP_SQUARE);
-						return response;
-					} else {
-						// everything about move checked
-						game.insert(message.getMove(), senderPlayer);
-						// check if game over
-						GameState gameState = game.getGameState();
-						if (gameState == GameState.GAME_OVER) {
-							InnerPlayerRepresentation winner = game.getWinner();
-							InnerPlayerRepresentation opponent = game.getOpponent(senderPlayer);
-							// deleting finished game
-							gameManager.deleteGame(gameName);
-							
-							response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
-							response.setMoveResult(MoveResult.SUCCESS);
-							Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
-							messageForOpponent.setMove(message.getMove()); // sending last move to opponent
-							
-							if (winner != null) {
-								response.setGameResult(GameResult.YOU_WIN);
-								messageForOpponent.setGameResult(GameResult.YOU_LOSE);
-							} else {
-								response.setGameResult(GameResult.TIE);
-								messageForOpponent.setGameResult(GameResult.TIE);
-							}
-							
-							try {
-								callbacks.get(opponent).sendMessage(messageForOpponent);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							
-							return response;
-						} else {
-							// game is not over
-							InnerPlayerRepresentation opponent = game.getOpponent(senderPlayer);
-							Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.OPPONENTS_MOVE);
-							messageForOpponent.setMove(message.getMove());
-							
-							try {
-								callbacks.get(opponent).sendMessage(messageForOpponent);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							
-							response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
-							response.setMoveResult(MoveResult.SUCCESS);
-							return response;
-							
-						}
-					}
+					return tryToPlayMove(sender, game, message.getMove());
 				} else {
 					throw new UnsupportedOperationException("message's CommunicationProtocolValue: " + message.getCommunicationProtocolValue());
 				}
 			}
 		}
-		
-		// TODO
-		return null;
+	}
+	
+	private Message tryCreateGame(InnerPlayerRepresentation sender, Message message) {
+		String gameName = message.getGameName();
+		synchronized (gameManager) {
+			if (gameManager.doesGameExist(gameName)) {
+				Message response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
+				response.setCommunicationError(CommunicationError.GAME_ALREADY_EXIST);
+				return response;
+			}
+			
+			GameMetaData gameMetaData = message.getGameMetaData();
+			gameManager.registerGame(gameName, gameMetaData);
+			// register player that initiated the game
+			gameManager.getGame(gameName).registerPlayer(sender);
+			return null;
+		}
+	}
+	
+	private Message doesGameExist(Message message) {
+		Message response;
+		String gameName = message.getGameName();
+		if (gameManager.getGame(gameName) != null) {
+			response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_EXISTS);
+			return response;
+		} else {
+			response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_DOESNT_EXIST);
+			return response;
+		}
+	}
+	
+	private Message tryRegisterSecondPlayer(InnerPlayerRepresentation sender, GameVer2 game) {
+		Message response;
+		String gameName = game.getGameName();
+		if (!game.isInitialized()) {
+			game.registerPlayer(sender);
+			InnerPlayerRepresentation startingPlayer = game.getTurn();
+			response = Message.createMessage(gameName, CommunicationProtocolValue.PLAY_FIRT_MOVE);
+			
+			if (sender.equals(startingPlayer)) {
+				return response;
+			} else {
+				try {
+					callbacks.get(startingPlayer).sendMessage(response);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;	
+		} else {
+			response = Message.createMessage(gameName, CommunicationProtocolValue.ERROR);
+			response.setCommunicationError(CommunicationError.GAME_ALREADY_OCCUPIED);
+			return response;
+		}
+	}
+	
+	private Message getGameMetaData(GameVer2 game) {
+		Message response = Message.createMessage(game.getGameName(), CommunicationProtocolValue.GAME_METADATA);
+		response.setGameMetaData(game.getGameMetaData());
+		return response;
+	}
+	
+	private Message getGridRepresentation(InnerPlayerRepresentation sender, GameVer2 game) {
+		byte[][] grid = game.getGridRepresentation(sender);
+		Message response = Message.createMessage(game.getGameName(), CommunicationProtocolValue.GRID_REPRESENTATION);
+		response.setGrid(grid);
+		return response;
+	}
+	
+	private Message tryToPlayMove(InnerPlayerRepresentation sender, GameVer2 game, Move mv) {
+		Message response;
+		String gameName = game.getGameName();
+		if (!game.getTurn().equals(sender)) {
+			response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
+			response.setMoveResult(MoveResult.NOT_YOUR_TURN);
+			return response;
+		} else if (!game.verifyCooInBoundaries(mv.getRow(), mv.getColumn())) {
+			response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
+			response.setMoveResult(MoveResult.MOVE_OUT_OF_RANGE);
+			return response;
+		} else if (!game.isSquareEmpty(mv.getRow(), mv.getColumn())) {
+			response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
+			response.setMoveResult(MoveResult.ALREADY_FILLED_UP_SQUARE);
+			return response;
+		} else {
+			// everything about move checked
+			game.insert(mv, sender);
+			// check if game over
+			GameState gameState = game.getGameState();
+			if (gameState == GameState.GAME_OVER) {
+				InnerPlayerRepresentation winner = game.getWinner();
+				InnerPlayerRepresentation opponent = game.getOpponent(sender);
+				// deleting finished game
+				gameManager.deleteGame(gameName);
+				
+				response = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
+				response.setMoveResult(MoveResult.SUCCESS);
+				Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.GAME_OVER);
+				messageForOpponent.setMove(mv); // sending last move to opponent
+				
+				if (winner != null) {
+					response.setGameResult(GameResult.YOU_WIN);
+					messageForOpponent.setGameResult(GameResult.YOU_LOSE);
+				} else {
+					response.setGameResult(GameResult.TIE);
+					messageForOpponent.setGameResult(GameResult.TIE);
+				}
+				
+				try {
+					callbacks.get(opponent).sendMessage(messageForOpponent);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				return response;
+			} else {
+				// game is not over
+				InnerPlayerRepresentation opponent = game.getOpponent(sender);
+				Message messageForOpponent = Message.createMessage(gameName, CommunicationProtocolValue.OPPONENTS_MOVE);
+				messageForOpponent.setMove(mv);
+				
+				try {
+					callbacks.get(opponent).sendMessage(messageForOpponent);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				response = Message.createMessage(gameName, CommunicationProtocolValue.MOVE_RESULT);
+				response.setMoveResult(MoveResult.SUCCESS);
+				return response;
+				
+			}
+		}
 	}
 	
 	public void registerPlayersCallback(int playersID, IPlayerCallback playersCallback) {
