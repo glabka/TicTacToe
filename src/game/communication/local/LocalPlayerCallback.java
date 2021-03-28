@@ -42,4 +42,12 @@ public class LocalPlayerCallback implements IPlayerCallback {
 		return newList;
 	}
 	
+	public Message getMessage() {
+		if (messages.size() > 0) {
+			return messages.remove(0);
+		} else {
+			return null;
+		}
+	}
+	
 }

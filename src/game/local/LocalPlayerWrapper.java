@@ -3,13 +3,17 @@ package game.local;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.plaf.synth.SynthToggleButtonUI;
+
 import custom_exceptions.WrongMessageException;
 import game.GameLogic;
 import game.GameMetaData;
 import game.communication.ClientLogic;
+import game.communication.InnerPlayerRepresentation;
 import game.communication.Message;
 import game.communication.MessageConsistencyChecker;
 import game.communication.Move;
+import game.communication.enums.CommunicationError;
 import game.communication.enums.CommunicationProtocolValue;
 import game.communication.enums.MoveResult;
 import game.communication.local.LocalPlayerCallback;
@@ -46,6 +50,14 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 	@Override
 	public void run() {
 		synchronized (lock) {
+			
+			if (!registerGameAndPlayer()) {
+				System.out.println("Game with name " + gameName + " was already occupied.");
+				return;
+			} else {
+				System.out.println("playerID: " + playersID + " registered."); // debug
+			}
+			
 			outerloop:
 			while(true) {
 				try {
@@ -54,7 +66,6 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 					e.printStackTrace();
 					continue;
 				}
-				Move mv = null;
 				List<Message> messages = myCallback.getMessages();
 				for (Message message : messages) {
 					if (clientLogic.processMessage(message)) {
@@ -67,6 +78,73 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 			}
 			System.out.println("Game Over");
 		}
+	}
+	
+	// TODO - move registerGameAndPlayer ClientLogic if possible
+	
+	/**
+	 * Method returns true if game was created/exists and player was succesfully registred
+	 * @return
+	 */
+	private boolean registerGameAndPlayer() {
+		Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.CREATE_GAME);
+		GameMetaData metaData = new GameMetaData(5, 3);
+		messageForGL.setGameMetaData(metaData);
+		gameLogic.receiveMessage(playersID, messageForGL);
+		
+		System.out.println("debug 1");
+		Message message = waitForResponse();
+		System.out.println("debug 2");
+		logMessageDebug("Q", message);
+		
+		if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GAME_CREATED) {
+			return true;
+		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.ERROR &&
+				message.getCommunicationError() == CommunicationError.GAME_ALREADY_EXISTS) {
+			// register as second player
+			return registerAsSecondPlayer();
+		} else {
+			throw new UnsupportedOperationException("message's CommunicationProtocolValue: " + message);
+		}
+	}
+	
+	private boolean registerAsSecondPlayer() {
+		Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.REGISTER_PLAYER);
+		gameLogic.receiveMessage(playersID, messageForGL);
+		
+		Message message = waitForResponse();
+		if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.PLAYER_REGISTERED) {
+			return true;
+		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.ERROR &&
+				message.getCommunicationError() == CommunicationError.GAME_ALREADY_OCCUPIED) {
+			return false;
+		} else {
+			throw new UnsupportedOperationException("message's CommunicationProtocolValue: " + message);
+		}
+	}
+	
+	private Message waitForResponse() {
+		Message message = myCallback.getMessage();
+		if(message != null) {
+			return message;
+		}
+		// wait for response from Game Logic
+		while(true) {
+			try {
+				System.out.println("playersID:" + playersID + " waiting");
+				lock.wait();
+				break;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		return myCallback.getMessage();
+	}
+	
+	private void logMessageDebug(String identifier, Message message) {
+		System.out.println(playersID + " " + identifier + " " + message);
 	}
 	
 }

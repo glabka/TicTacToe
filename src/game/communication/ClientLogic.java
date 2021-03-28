@@ -63,20 +63,18 @@ public class ClientLogic {
 			Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.MY_MOVE);
 			messageForGL.setMove(mv);
 			logMessageDebug("B", messageForGL); // debug
-			Message m = gameLogic.receiveMessage(playersID, messageForGL);
-			logMessageDebug("C", m); // debug
-			if (m.getCommunicationProtocolValue() == CommunicationProtocolValue.MOVE_RESULT &&
-					m.getMoveResult() == MoveResult.SUCCESS) {
-				grid.insert(mv.getRow(), mv.getColumn(), player.getSVal());
-			} else if (m.getCommunicationProtocolValue() == CommunicationProtocolValue.GAME_OVER){
-				printGameResult(m.getGameResult());
-				return true;
-			}
 		} else if (comVal == CommunicationProtocolValue.GAME_OVER) {
 			Move opponentsMove = message.getMove();
 			grid.insert(opponentsMove.getRow(), opponentsMove.getColumn(), SVal.getOpposite(player.getSVal()));
 			return true;
-		} else {
+		} else if (comVal == CommunicationProtocolValue.MOVE_RESULT &&
+				message.getMoveResult() == MoveResult.SUCCESS) {
+			Move mv = message.getMove();
+			grid.insert(mv.getRow(), mv.getColumn(), player.getSVal());
+		} else if (comVal == CommunicationProtocolValue.GAME_OVER){
+			printGameResult(message.getGameResult());
+			return true;
+	    } else {
 			System.out.println("unprocessed CommunicationProtocolValue: " + comVal);
 		}
 		

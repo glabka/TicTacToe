@@ -37,7 +37,6 @@ public class WebSocketClientEndpoint {
 	private CountDownLatch latch;
 	private String gameName;
 	private GameMetaData metaData;
-	private GameLogic gameLogic = GameLogic.getGameLogic();
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private Gson gson = new Gson();
 	private int playersID;
@@ -58,7 +57,7 @@ public class WebSocketClientEndpoint {
 		message.setGameMetaData(metaData);
 		Message m = gameLogic.receiveMessage(playersID, message);
 		if (m != null && m.getCommunicationProtocolValue() == CommunicationProtocolValue.ERROR
-				&& m.getCommunicationError() == CommunicationError.GAME_ALREADY_EXIST) {
+				&& m.getCommunicationError() == CommunicationError.GAME_ALREADY_EXISTS) {
 			message = Message.createMessage(gameName, CommunicationProtocolValue.REGISTER_PLAYER);
 			m = gameLogic.receiveMessage(playersID, message);
 			if (m != null && m.getCommunicationProtocolValue() == CommunicationProtocolValue.ERROR
@@ -88,9 +87,5 @@ public class WebSocketClientEndpoint {
 		logger.info("Session " + session.getId() + " closed.");
 		// TODO
 		latch.countDown();
-	}
-	
-	private void logMessageDebug(String identifier, Message message) {
-		System.out.println(playersID + " " + identifier + " " + message);
 	}
 }

@@ -2,13 +2,16 @@ package game.communication.enums;
 
 public enum CommunicationProtocolValue {
 	// server values
-	OPPONENTS_MOVE, MOVE_RESULT,
+	PLAYER_REGISTERED,
+	OPPONENTS_MOVE,
+	MOVE_RESULT,
 	GAME_METADATA,
 	GRID_REPRESENTATION,
 	ERROR,
 	PLAY_FIRT_MOVE,
 	GAME_DOESNT_EXIST,
 	GAME_EXISTS,
+	GAME_CREATED, // and also player registered
 	GAME_OVER,
 	// client values
 	MY_MOVE,
