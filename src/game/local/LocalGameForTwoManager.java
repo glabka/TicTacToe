@@ -40,14 +40,12 @@ public class LocalGameForTwoManager {
 		Message message = Message.createMessage(gameName, CommunicationProtocolValue.CREATE_GAME);
 		metaData = new GameMetaData(5, 3);
 		message.setGameMetaData(metaData);
-		message.setGameName(gameName);
 		Message m = gameLogic.receiveMessage(p1ID, message);
 		System.out.println(m); // debug
 	}
 	
 	private void registerSecondPlayerForGame() {
 		Message message = Message.createMessage(gameName, CommunicationProtocolValue.REGISTER_PLAYER);
-		message.setGameName(gameName);
 		Message m = gameLogic.receiveMessage(p2ID, message); // TODO if code change this could return PLAY_FIRT_MOVE
 		System.out.println(m); // debug
 	}
