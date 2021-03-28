@@ -78,8 +78,8 @@ public class WebSocketClientEndpoint {
 	public String onMessage(String messageStr, Session session) {
 		synchronized (lock) {
 			Message message = gson.fromJson(messageStr, Message.class);
-
-			
+			// TODO
+			return null;
 		}
 	}
 

@@ -6,6 +6,7 @@ import java.util.Random;
 import custom_exceptions.WrongMessageException;
 import game.GameLogic;
 import game.GameMetaData;
+import game.communication.ClientLogic;
 import game.communication.Message;
 import game.communication.MessageConsistencyChecker;
 import game.communication.Move;
@@ -28,6 +29,7 @@ public class LocalPlayerWrapper extends Thread {
 	private Player player = null;
 	private String gameName;
 	private int playersID;
+	private ClientLogic clientLogic;
 	
 	public LocalPlayerWrapper(GameMetaData metaData, Object lock, GameLogic gameLogic,
 LocalPlayerCallback myCallBack, String gameName, int playersID) {
@@ -38,6 +40,7 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 		this.myCallback = myCallBack;
 		this.gameName = gameName;
 		this.playersID = playersID;
+		this.clientLogic = new ClientLogic(metaData, gameLogic, gameName, playersID);
 	}
 	
 	@Override
@@ -54,55 +57,16 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 				Move mv = null;
 				List<Message> messages = myCallback.getMessages();
 				for (Message message : messages) {
-					if(!MessageConsistencyChecker.checkServerMessage(message)) {
-						throw new WrongMessageException();
-					}
-					
-					logMessageDebug("A", message); // debug	
-					
-					CommunicationProtocolValue comVal = message.getCommunicationProtocolValue();
-					if (comVal == CommunicationProtocolValue.PLAY_FIRT_MOVE || 
-							comVal == CommunicationProtocolValue.OPPONENTS_MOVE) {
-						
-						if (comVal == CommunicationProtocolValue.PLAY_FIRT_MOVE) {
-							player = new UIPlayer(SVal.CROSS, "someName" + playersID);
-						} else if (comVal == CommunicationProtocolValue.OPPONENTS_MOVE) {
-							if (player == null) {
-								player = new UIPlayer(SVal.CIRCLE, "someName" + playersID);
-							}
-							
-							Move opponentsMove = message.getMove();
-							grid.insert(opponentsMove.getRow(), opponentsMove.getColumn(), SVal.getOpposite(player.getSVal()));
-						}
-						ValuedMove valMv = player.nextMove(grid);
-						mv = new Move(valMv.getRow(), valMv.getColumn());
-						
-						Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.MY_MOVE);
-						messageForGL.setMove(mv);
-						logMessageDebug("B", messageForGL); // debug
-						Message m = gameLogic.receiveMessage(playersID, messageForGL);
-						logMessageDebug("C", m); // debug
-						if (m.getCommunicationProtocolValue() == CommunicationProtocolValue.MOVE_RESULT &&
-								m.getMoveResult() == MoveResult.SUCCESS) {
-							grid.insert(mv.getRow(), mv.getColumn(), player.getSVal());
-						} else if (m.getCommunicationProtocolValue() == CommunicationProtocolValue.GAME_OVER){
-							break outerloop;
-						}
-					} else if (comVal == CommunicationProtocolValue.GAME_OVER) {
-						Move opponentsMove = message.getMove();
-						grid.insert(opponentsMove.getRow(), opponentsMove.getColumn(), SVal.getOpposite(player.getSVal()));
+					if (clientLogic.processMessage(message)) {
+						// Game Over
 						break outerloop;
 					} else {
-						System.out.println("unprocessed CommunicationProtocolValue: " + comVal);
+						// TODO - maybe nothing
 					}
 				}
 			}
 			System.out.println("Game Over");
 		}
-	}
-	
-	private void logMessageDebug(String identifier, Message message) {
-		System.out.println(playersID + " " + identifier + " " + message);
 	}
 	
 }
