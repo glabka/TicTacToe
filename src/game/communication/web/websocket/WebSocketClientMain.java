@@ -5,6 +5,8 @@ import java.util.concurrent.CountDownLatch;
 
 import org.glassfish.tyrus.client.ClientManager;
 
+import game.GameMetaData;
+
 public class WebSocketClientMain {
 	
 	public static void main(String[] args){
@@ -12,7 +14,7 @@ public class WebSocketClientMain {
 		int portNumber = Integer.parseInt(args[1]);
 		
 		CountDownLatch latch = new CountDownLatch(1);
-		WebSocketClientEndpoint clientEndPoint = new WebSocketClientEndpoint(latch);
+		WebSocketClientEndpoint clientEndPoint = new WebSocketClientEndpoint(latch, "game5x3", new GameMetaData(5, 3));
 		ClientManager clientManager = ClientManager.createClient();
 				
 		try {
