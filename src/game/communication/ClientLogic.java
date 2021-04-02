@@ -1,5 +1,7 @@
 package game.communication;
 
+import java.io.IOException;
+
 import custom_exceptions.WrongMessageException;
 import game.GameLogic;
 import game.GameMetaData;
@@ -18,15 +20,15 @@ public class ClientLogic {
 
 	private final Grid grid;
 	private final int streakLength;
-	private GameLogic gameLogic;
+	private IGameLogicCallback gameLogicCallback;
 	private Player player = null;
 	private String gameName;
 	private int playersID;
 	
-	public ClientLogic(GameMetaData metaData,  GameLogic gameLogic, String gameName, int playersID) {
+	public ClientLogic(GameMetaData metaData,  IGameLogicCallback gameLogicCallback, String gameName, int playersID) {
 		grid = new Grid(metaData.getGridSize());
 		streakLength = metaData.getStreakLength();
-		this.gameLogic = gameLogic;
+		this.gameLogicCallback = gameLogicCallback;
 		this.gameName = gameName;
 		this.playersID = playersID;
 	}
@@ -63,6 +65,11 @@ public class ClientLogic {
 			Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.MY_MOVE);
 			messageForGL.setMove(mv);
 			logMessageDebug("B", messageForGL); // debug
+			try {
+				gameLogicCallback.sendMessage(messageForGL);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		} else if (comVal == CommunicationProtocolValue.GAME_OVER) {
 			Move opponentsMove = message.getMove();
 			grid.insert(opponentsMove.getRow(), opponentsMove.getColumn(), SVal.getOpposite(player.getSVal()));
@@ -71,7 +78,7 @@ public class ClientLogic {
 				message.getMoveResult() == MoveResult.SUCCESS) {
 			Move mv = message.getMove();
 			grid.insert(mv.getRow(), mv.getColumn(), player.getSVal());
-		} else if (comVal == CommunicationProtocolValue.GAME_OVER){
+		} else if (comVal == CommunicationProtocolValue.GAME_OVER) {
 			printGameResult(message.getGameResult());
 			return true;
 	    } else {

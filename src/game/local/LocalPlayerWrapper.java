@@ -9,6 +9,7 @@ import custom_exceptions.WrongMessageException;
 import game.GameLogic;
 import game.GameMetaData;
 import game.communication.ClientLogic;
+import game.communication.IGameLogicCallback;
 import game.communication.InnerPlayerRepresentation;
 import game.communication.Message;
 import game.communication.MessageConsistencyChecker;
@@ -16,6 +17,7 @@ import game.communication.Move;
 import game.communication.enums.CommunicationError;
 import game.communication.enums.CommunicationProtocolValue;
 import game.communication.enums.MoveResult;
+import game.communication.local.LocalGameLogicCallback;
 import game.communication.local.LocalPlayerCallback;
 import game_components.Grid;
 import game_components.Square.SVal;
@@ -34,6 +36,7 @@ public class LocalPlayerWrapper extends Thread {
 	private String gameName;
 	private int playersID;
 	private ClientLogic clientLogic;
+	private IGameLogicCallback gameLogicCallback;
 	
 	public LocalPlayerWrapper(GameMetaData metaData, Object lock, GameLogic gameLogic,
 LocalPlayerCallback myCallBack, String gameName, int playersID) {
@@ -44,7 +47,8 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 		this.myCallback = myCallBack;
 		this.gameName = gameName;
 		this.playersID = playersID;
-		this.clientLogic = new ClientLogic(metaData, gameLogic, gameName, playersID);
+		gameLogicCallback = new LocalGameLogicCallback(playersID, gameLogic);
+		this.clientLogic = new ClientLogic(metaData, gameLogicCallback, gameName, playersID);
 	}
 	
 	@Override
@@ -66,13 +70,19 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 					e.printStackTrace();
 					continue;
 				}
-				List<Message> messages = myCallback.getMessages();
-				for (Message message : messages) {
-					if (clientLogic.processMessage(message)) {
-						// Game Over
-						break outerloop;
-					} else {
-						// TODO - maybe nothing
+				// this while loop is for case when new message is added during processing of older messages
+				while (true) {
+					List<Message> messages = myCallback.getMessages();
+					if (messages.isEmpty()) {
+						break;
+					}
+					for (Message message : messages) {
+						if (clientLogic.processMessage(message)) {
+							// Game Over
+							break outerloop;
+						} else {
+							// TODO - maybe nothing
+						}
 					}
 				}
 			}
