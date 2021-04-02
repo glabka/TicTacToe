@@ -35,6 +35,7 @@ public class LocalPlayerWrapper extends Thread {
 	private Player player = null;
 	private String gameName;
 	private int playersID;
+	private GameMetaData metaData;
 	private ClientLogic clientLogic;
 	private IGameLogicCallback gameLogicCallback;
 	
@@ -47,6 +48,7 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 		this.myCallback = myCallBack;
 		this.gameName = gameName;
 		this.playersID = playersID;
+		this.metaData = new GameMetaData(5, 3);
 		gameLogicCallback = new LocalGameLogicCallback(playersID, gameLogic);
 		this.clientLogic = new ClientLogic(metaData, gameLogicCallback, gameName, playersID);
 	}
@@ -90,21 +92,14 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 		}
 	}
 	
-	// TODO - move registerGameAndPlayer ClientLogic if possible
-	
 	/**
-	 * Method returns true if game was created/exists and player was succesfully registred
+	 * Method returns true if game was created/exists and player was successfully registered
 	 * @return
 	 */
 	private boolean registerGameAndPlayer() {
-		Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.CREATE_GAME);
-		GameMetaData metaData = new GameMetaData(5, 3);
-		messageForGL.setGameMetaData(metaData);
-		gameLogic.receiveMessage(playersID, messageForGL);
+		clientLogic.tryRegisterGameAndPlayer(metaData);
 		
-		System.out.println("debug 1");
 		Message message = waitForResponse();
-		System.out.println("debug 2");
 		logMessageDebug("Q", message);
 		
 		if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GAME_CREATED) {
@@ -119,8 +114,7 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 	}
 	
 	private boolean registerAsSecondPlayer() {
-		Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.REGISTER_PLAYER);
-		gameLogic.receiveMessage(playersID, messageForGL);
+		clientLogic.tryRegisterAsSecondPlayer();
 		
 		Message message = waitForResponse();
 		if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.PLAYER_REGISTERED) {

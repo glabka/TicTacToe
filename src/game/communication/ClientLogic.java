@@ -33,6 +33,25 @@ public class ClientLogic {
 		this.playersID = playersID;
 	}
 	
+	public void tryRegisterGameAndPlayer(GameMetaData metaData) {
+		Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.CREATE_GAME);
+		messageForGL.setGameMetaData(metaData);
+		try {
+			gameLogicCallback.sendMessage(messageForGL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void tryRegisterAsSecondPlayer() {
+		Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.REGISTER_PLAYER);
+		try {
+			gameLogicCallback.sendMessage(messageForGL);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * 
 	 * @param message
@@ -58,6 +77,8 @@ public class ClientLogic {
 				
 				Move opponentsMove = message.getMove();
 				grid.insert(opponentsMove.getRow(), opponentsMove.getColumn(), SVal.getOpposite(player.getSVal()));
+				grid.setCursonRow(opponentsMove.getRow());
+				grid.setCursonColumn(opponentsMove.getColumn());
 			}
 			ValuedMove valMv = player.nextMove(grid);
 			Move mv = new Move(valMv.getRow(), valMv.getColumn());
