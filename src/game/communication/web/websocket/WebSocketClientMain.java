@@ -6,6 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import org.glassfish.tyrus.client.ClientManager;
 
 import game.GameMetaData;
+import game.communication.ClientLogic;
 
 public class WebSocketClientMain {
 	

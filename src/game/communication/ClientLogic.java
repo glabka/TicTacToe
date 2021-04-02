@@ -109,7 +109,7 @@ public class ClientLogic {
 				// it is your move that was the last
 				grid.insert(lastMove.getRow(), lastMove.getColumn(), player.getSVal());
 			} else {
-				// opponents last move
+				// message.getMoveResult() == null -> opponents move 
 				grid.insert(lastMove.getRow(), lastMove.getColumn(), SVal.getOpposite(player.getSVal()));
 			}
 			return true;
@@ -126,16 +126,6 @@ public class ClientLogic {
 	
 	public Grid getGrid() {
 		return grid.gridsCopy();
-	}
-	
-	private void printGameResult(GameResult gameResult) {
-		if(gameResult == GameResult.TIE) {
-			System.out.println("Game ended by tie.");
-		} else if (gameResult == GameResult.YOU_WIN) {
-			System.out.println("Player " + player.getSVal() + " wins.");
-		} else {
-			System.out.println("Player " + SVal.getOpposite(player.getSVal()) + " wins.");
-		}
 	}
 	
 	private void logMessageDebug(String identifier, Message message) {

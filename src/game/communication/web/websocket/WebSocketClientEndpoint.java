@@ -20,6 +20,7 @@ import com.google.gson.JsonSyntaxException;
 import custom_exceptions.WrongMessageException;
 import game.GameLogic;
 import game.GameMetaData;
+import game.communication.ClientLogic;
 import game.communication.Message;
 import game.communication.MessageConsistencyChecker;
 import game.communication.Move;
@@ -31,6 +32,11 @@ import game_components.ValuedMove;
 import game_components.Square.SVal;
 import players.ui_players.UIPlayer;
 
+/**
+ * Single game Web Socket Client Endpoint
+ * @author glabka
+ *
+ */
 @ClientEndpoint
 public class WebSocketClientEndpoint {
 
@@ -41,6 +47,7 @@ public class WebSocketClientEndpoint {
 	private Gson gson = new Gson();
 	private int playersID;
 	private Object lock;
+	private ClientLogic clientLogic;
 	
 	public WebSocketClientEndpoint(CountDownLatch latch, String gameName, GameMetaData metaData) {
 		this.latch = latch;
@@ -52,40 +59,23 @@ public class WebSocketClientEndpoint {
 
 	@OnOpen
 	public void onOpen(Session session) {
-		logger.info("Session " + session.getId() + " opened.");
-		Message message = Message.createMessage(gameName, CommunicationProtocolValue.CREATE_GAME);
-		message.setGameMetaData(metaData);
-		Message m = gameLogic.receiveMessage(playersID, message);
-		if (m != null && m.getCommunicationProtocolValue() == CommunicationProtocolValue.ERROR
-				&& m.getCommunicationError() == CommunicationError.GAME_ALREADY_EXISTS) {
-			message = Message.createMessage(gameName, CommunicationProtocolValue.REGISTER_PLAYER);
-			m = gameLogic.receiveMessage(playersID, message);
-			if (m != null && m.getCommunicationProtocolValue() == CommunicationProtocolValue.ERROR
-					&& m.getCommunicationError() == CommunicationError.GAME_ALREADY_OCCUPIED) {
-				System.out.println("Game already exist and is fully occupied by players.");
-				try {
-					session.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					latch.countDown();
-				}
-			}
-		}
+		this.clientLogic = new ClientLogic(metaData, new WebSocketGameLogicCallback(session), gameName, playersID);
+		clientLogic.tryRegisterGameAndPlayer(metaData);
 	}
 
 	@OnMessage
-	public String onMessage(String messageStr, Session session) {
+	public void onMessage(String messageStr, Session session) {
+		Message message = gson.fromJson(messageStr, Message.class);
+		
 		synchronized (lock) {
-			Message message = gson.fromJson(messageStr, Message.class);
-			// TODO
-			return null;
+			clientLogic.processMessage(message);
 		}
 	}
-
+	
 	@OnClose
 	public void onClose(Session session, CloseReason closeReason) {
 		logger.info("Session " + session.getId() + " closed.");
-		// TODO
+		// TODO - maybe
 		latch.countDown();
 	}
 }

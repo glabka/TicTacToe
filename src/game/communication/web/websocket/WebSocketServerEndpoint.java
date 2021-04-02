@@ -1,6 +1,7 @@
 package game.communication.web.websocket;
 
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class WebSocketServerEndpoint {
 	}
 	
 	@OnMessage
-	public String onMessage(String message, Session session) {
+	public void onMessage(String message, Session session) {
 		
 		// decoding message
 		logger.info("message from " + session.getId() + " message: " + message);
@@ -48,12 +49,14 @@ public class WebSocketServerEndpoint {
 			Message response = Message.createMessage(CommunicationProtocolValue.ERROR);
 			response.setCommunicationError(CommunicationError.WRONG_MESSAGE_FORMAT);
 			
-			return gson.toJson(response);
+			try {
+				session.getBasicRemote().sendText(gson.toJson(response));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		// sending to GameLogic
-		Message gameLogicResponse = gameLogic.receiveMessage(playersIDs.get(session), decodedMessage);
-		// returning back response
-		return gson.toJson(gameLogicResponse);
+		gameLogic.receiveMessage(playersIDs.get(session), decodedMessage);
 	}
 	
 	@OnClose
