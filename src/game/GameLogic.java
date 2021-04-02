@@ -218,14 +218,18 @@ public class GameLogic {
 		return response;
 	}
 	
-	private void tryCatchSendMessage(InnerPlayerRepresentation sender, Message response) {
+	private void tryCatchSendMessage(InnerPlayerRepresentation sender, Message message) {
 		try {
-			callbacks.get(sender).sendMessage(response);
+			callbacks.get(sender).sendMessage(message);
+			logMessageDebug(sender.getId(), " gameLogic A", message); // debug
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	private void logMessageDebug(int player, String identifier, Message message) {
+		System.out.println("to player " + player + " " + identifier + " " + message);
+	}
 	public void registerPlayersCallback(int playersID, IPlayerCallback playersCallback) {
 		if (players.containsKey(playersID)) {
 			throw new PlayerAlreadyExistsException("playersID: " + playersID);

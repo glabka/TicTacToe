@@ -57,30 +57,16 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 	public void run() {
 		synchronized (lock) {
 			
-			if (!registerGameAndPlayer()) {
-				System.out.println("Game with name " + gameName + " was already occupied.");
-				return;
-			} else {
-				System.out.println("playerID: " + playersID + " registered."); // debug
-			}
+			clientLogic.tryRegisterGameAndPlayer(metaData);
 			
 			outerloop:
 			while(true) {
-				try {
-					lock.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					continue;
-				}
-				// this while loop is for case when new message is added during processing of older messages
 				while (true) {
-					List<Message> messages = myCallback.getMessages();
-					if (messages.isEmpty()) {
-						break;
-					}
+					List<Message> messages = waitForResponse();
 					for (Message message : messages) {
 						if (clientLogic.processMessage(message)) {
 							// Game Over
+							clientLogic.getGrid().printGrid();
 							break outerloop;
 						} else {
 							// TODO - maybe nothing
@@ -92,45 +78,10 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 		}
 	}
 	
-	/**
-	 * Method returns true if game was created/exists and player was successfully registered
-	 * @return
-	 */
-	private boolean registerGameAndPlayer() {
-		clientLogic.tryRegisterGameAndPlayer(metaData);
-		
-		Message message = waitForResponse();
-		logMessageDebug("Q", message);
-		
-		if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.GAME_CREATED) {
-			return true;
-		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.ERROR &&
-				message.getCommunicationError() == CommunicationError.GAME_ALREADY_EXISTS) {
-			// register as second player
-			return registerAsSecondPlayer();
-		} else {
-			throw new UnsupportedOperationException("message's CommunicationProtocolValue: " + message);
-		}
-	}
-	
-	private boolean registerAsSecondPlayer() {
-		clientLogic.tryRegisterAsSecondPlayer();
-		
-		Message message = waitForResponse();
-		if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.PLAYER_REGISTERED) {
-			return true;
-		} else if (message.getCommunicationProtocolValue() == CommunicationProtocolValue.ERROR &&
-				message.getCommunicationError() == CommunicationError.GAME_ALREADY_OCCUPIED) {
-			return false;
-		} else {
-			throw new UnsupportedOperationException("message's CommunicationProtocolValue: " + message);
-		}
-	}
-	
-	private Message waitForResponse() {
-		Message message = myCallback.getMessage();
-		if(message != null) {
-			return message;
+	private List<Message> waitForResponse() {
+		List<Message> messages = myCallback.getMessages();
+		if (messages != null && !messages.isEmpty()) {
+			return messages;
 		}
 		// wait for response from Game Logic
 		while(true) {
@@ -143,12 +94,6 @@ LocalPlayerCallback myCallBack, String gameName, int playersID) {
 				continue;
 			}
 		}
-		
-		return myCallback.getMessage();
-	}
-	
-	private void logMessageDebug(String identifier, Message message) {
-		System.out.println(playersID + " " + identifier + " " + message);
-	}
-	
+		return myCallback.getMessages();
+	}	
 }

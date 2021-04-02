@@ -5,6 +5,7 @@ import java.io.IOException;
 import custom_exceptions.WrongMessageException;
 import game.GameLogic;
 import game.GameMetaData;
+import game.communication.enums.CommunicationError;
 import game.communication.enums.CommunicationProtocolValue;
 import game.communication.enums.GameResult;
 import game.communication.enums.MoveResult;
@@ -43,7 +44,7 @@ public class ClientLogic {
 		}
 	}
 	
-	public void tryRegisterAsSecondPlayer() {
+	private void tryRegisterAsSecondPlayer() {
 		Message messageForGL = Message.createMessage(gameName, CommunicationProtocolValue.REGISTER_PLAYER);
 		try {
 			gameLogicCallback.sendMessage(messageForGL);
@@ -51,11 +52,11 @@ public class ClientLogic {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param message
-	 * @return true if game over
+	 * @return true if game over or player even wasnt connected
 	 */
 	public boolean processMessage(Message message) {
 		if(!MessageConsistencyChecker.checkServerMessage(message)) {
@@ -65,7 +66,18 @@ public class ClientLogic {
 		logMessageDebug("A", message); // debug	
 		
 		CommunicationProtocolValue comVal = message.getCommunicationProtocolValue();
-		if (comVal == CommunicationProtocolValue.PLAY_FIRT_MOVE || 
+		// processing of attempt to register game and player
+		if (comVal== CommunicationProtocolValue.GAME_CREATED) {
+			return false;
+		} else if (comVal== CommunicationProtocolValue.ERROR &&
+				message.getCommunicationError() == CommunicationError.GAME_ALREADY_EXISTS) {
+			// register as second player
+			tryRegisterAsSecondPlayer();
+		} else if (comVal == CommunicationProtocolValue.ERROR &&
+				message.getCommunicationError() == CommunicationError.GAME_ALREADY_OCCUPIED) {
+			return true;
+		// processing of in game message
+		} else if (comVal == CommunicationProtocolValue.PLAY_FIRT_MOVE || 
 				comVal == CommunicationProtocolValue.OPPONENTS_MOVE) {
 			
 			if (comVal == CommunicationProtocolValue.PLAY_FIRT_MOVE) {
@@ -92,21 +104,28 @@ public class ClientLogic {
 				e.printStackTrace();
 			}
 		} else if (comVal == CommunicationProtocolValue.GAME_OVER) {
-			Move opponentsMove = message.getMove();
-			grid.insert(opponentsMove.getRow(), opponentsMove.getColumn(), SVal.getOpposite(player.getSVal()));
+			Move lastMove = message.getMove();
+			if (message.getMoveResult() == MoveResult.SUCCESS) {
+				// it is your move that was the last
+				grid.insert(lastMove.getRow(), lastMove.getColumn(), player.getSVal());
+			} else {
+				// opponents last move
+				grid.insert(lastMove.getRow(), lastMove.getColumn(), SVal.getOpposite(player.getSVal()));
+			}
 			return true;
 		} else if (comVal == CommunicationProtocolValue.MOVE_RESULT &&
 				message.getMoveResult() == MoveResult.SUCCESS) {
 			Move mv = message.getMove();
 			grid.insert(mv.getRow(), mv.getColumn(), player.getSVal());
-		} else if (comVal == CommunicationProtocolValue.GAME_OVER) {
-			printGameResult(message.getGameResult());
-			return true;
-	    } else {
+		}  else {
 			System.out.println("unprocessed CommunicationProtocolValue: " + comVal);
 		}
 		
 		return false;
+	}
+	
+	public Grid getGrid() {
+		return grid.gridsCopy();
 	}
 	
 	private void printGameResult(GameResult gameResult) {
