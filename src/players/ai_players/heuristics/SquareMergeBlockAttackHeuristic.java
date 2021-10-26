@@ -67,4 +67,14 @@ public class SquareMergeBlockAttackHeuristic extends AbstractSquareHeuristic {
 		}
 	}
 
+	@Override
+	public Object clone() {
+		if (filter == null) {
+			return new SquareMergeBlockAttackHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone());
+		} else {
+			return new SquareMergeBlockAttackHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone(),
+					(AbstractRatedCoosFilter) filter.clone());
+		}
+	}
+
 }

@@ -7,8 +7,10 @@ import java.util.List;
  * @author glabk
  *
  */
-public abstract class AbstractRatedCoosFilter {
+public abstract class AbstractRatedCoosFilter implements Cloneable {
 
 	public abstract List<RatedCoordinate> filterRatedCoos(List<RatedCoordinate> coos);
 	
+	public abstract Object clone();
+
 }

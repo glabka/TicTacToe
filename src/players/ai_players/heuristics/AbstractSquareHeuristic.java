@@ -12,7 +12,7 @@ import players.ai_players.support_classes.RatedCoordinate;
  * @author glabk
  *
  */
-public abstract class AbstractSquareHeuristic {
+public abstract class AbstractSquareHeuristic implements Cloneable {
 	
 	protected AbstractCooValFromStreakEstimator cooEstimator;
 	
@@ -22,4 +22,6 @@ public abstract class AbstractSquareHeuristic {
 
 	public abstract List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength);
 	
+	public abstract Object clone();
+
 }

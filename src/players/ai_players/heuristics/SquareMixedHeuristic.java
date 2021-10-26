@@ -164,7 +164,17 @@ public class SquareMixedHeuristic extends AbstractSquareHeuristic {
 		
 		return mixedList;
 	}
+
+	@Override
+	public Object clone() {
+		if (filter == null) {
+			return new SquareMixedHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone());
+		} else {
+			return new SquareMixedHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone(),
+					(AbstractRatedCoosFilter) filter.clone());
 	
+		}
+	}
 	
 //	public static void test() {
 //		List<RatedCoordinate> list1 = new LinkedList<>();

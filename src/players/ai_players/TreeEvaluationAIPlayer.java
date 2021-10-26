@@ -151,7 +151,7 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 //			g.printGridDebug();// debug
 			proceededMoves.add(mvAndDepth.getMove());
 			
-			double gridHeuristicVal = this.gridHeurisric.getGridsHeuristicValue(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth(), this.getSVal()), this.streakLength);		
+			double gridHeuristicVal = this.gridHeuristic.getGridsHeuristicValue(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth(), this.getSVal()), this.streakLength);
 			SortedTreeNode<RatedCoordinate> child = tree.addChild(parrentNode, new RatedCoordinate(mvAndDepth.getMove(), gridHeuristicVal));
 			
 			

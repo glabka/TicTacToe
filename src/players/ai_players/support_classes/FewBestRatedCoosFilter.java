@@ -27,6 +27,11 @@ public class FewBestRatedCoosFilter extends AbstractRatedCoosFilter {
 		}
 	}
 
+	@Override
+	public Object clone() {
+		return new FewBestRatedCoosFilter(howMuch);
+	}
+
 	
 	
 }

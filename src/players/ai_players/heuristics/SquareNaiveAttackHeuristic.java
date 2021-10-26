@@ -48,4 +48,9 @@ public class SquareNaiveAttackHeuristic extends AbstractSquareHeuristic {
 		
 		return HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, cooEstimator);
 	}
+
+	@Override
+	public Object clone() {
+		return new SquareNaiveAttackHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone());
+	}
 }

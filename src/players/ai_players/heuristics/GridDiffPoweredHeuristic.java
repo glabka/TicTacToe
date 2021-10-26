@@ -29,5 +29,10 @@ public class GridDiffPoweredHeuristic extends AbstractGridHeuristic {
 		
 		return Math.pow(HeuristicCommon.addAllRatedCoos(coosForAttack), power) - Math.pow(HeuristicCommon.addAllRatedCoos(coosForDefending), power);
 	}
+
+	@Override
+	public Object clone() {
+		return new GridDiffPoweredHeuristic((AbstractCooValFromStreakEstimator) estimator.clone(), power);
+	}
 	
 }

@@ -10,4 +10,9 @@ public class LengthCooValEstimator extends AbstractCooValFromStreakEstimator {
 		return potStreak.filledCoosSize();
 	}
 
+	@Override
+	public Object clone() {
+		return new LengthCooValEstimator();
+	}
+
 }

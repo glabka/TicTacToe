@@ -16,4 +16,9 @@ public class OneValueEstimator extends AbstractCooValFromStreakEstimator{
 		return value;
 	}
 
+	@Override
+	public Object clone() {
+		return new OneValueEstimator(value);
+	}
+
 }

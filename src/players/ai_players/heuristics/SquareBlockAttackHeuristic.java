@@ -37,6 +37,11 @@ public class SquareBlockAttackHeuristic extends AbstractSquareHeuristic {
 			}
 		}
 	}
+
+	@Override
+	public Object clone() {
+		return new SquareBlockAttackHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone());
+	}
 	
 
 	

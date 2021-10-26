@@ -16,4 +16,9 @@ public class PoweredLengthCooValEstimator extends AbstractCooValFromStreakEstima
 		return Math.pow(potStreak.filledCoosSize(), power);
 	}
 
+	@Override
+	public Object clone() {
+		return new PoweredLengthCooValEstimator(power);
+	}
+
 }

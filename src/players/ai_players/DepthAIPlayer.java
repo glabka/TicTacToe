@@ -74,7 +74,7 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 			
 			if(mvAndDepth.getDepth() == depth - 1 && !Rules.endOfGame(g, streakLength)) {
 				// evaluating where move leads to depth
-				double moveHeuristicValue = this.gridHeurisric.getGridsHeuristicValue(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth(), this.getSVal()), streakLength);
+				double moveHeuristicValue = this.gridHeuristic.getGridsHeuristicValue(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth(), this.getSVal()), streakLength);
 				if(bestMoveValue < moveHeuristicValue) {
 					bestMove = proceededMoves.get(0);
 					bestMoveValue = moveHeuristicValue;

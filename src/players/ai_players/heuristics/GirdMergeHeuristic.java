@@ -28,4 +28,11 @@ public class GirdMergeHeuristic extends AbstractGridHeuristic{
 		return HeuristicCommon.addAllRatedCoos(filtredPotCoos);
 	}
 
+	@Override
+	public Object clone() {
+		return new GirdMergeHeuristic((AbstractSquareHeuristic) squareHeuristic.clone(),
+				(AbstractCooValFromStreakEstimator) estimator.clone(), (AbstractRatedCoosFilter)
+				ratedCoosFilter.clone());
+	}
+
 }

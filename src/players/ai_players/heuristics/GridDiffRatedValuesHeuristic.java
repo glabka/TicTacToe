@@ -37,6 +37,12 @@ public class GridDiffRatedValuesHeuristic extends AbstractGridHeuristic {
 		
 		return HeuristicCommon.addAllRatedCoos(filtredPotCoos) - HeuristicCommon.addAllRatedCoos(filtredOpponentsCoos);
 	}
+
+	@Override
+	public Object clone() {
+		return new GridDiffRatedValuesHeuristic((AbstractSquareHeuristic) squareHeuristic.clone(), (AbstractCooValFromStreakEstimator)
+				estimator.clone(), (AbstractRatedCoosFilter) ratedCoosFilter.clone());
+	}
 	
 	
 }

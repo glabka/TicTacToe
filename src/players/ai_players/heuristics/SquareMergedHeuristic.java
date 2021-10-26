@@ -48,6 +48,11 @@ public class SquareMergedHeuristic extends AbstractSquareHeuristic{
 		List<RatedCoordinate> combinedCoos = HeuristicCommon.combineAllEqualRatedCoos(allRatedCoos);
 		return combinedCoos;
 	}
+
+	@Override
+	public Object clone() {
+		return new SquareMergedHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone());
+	}
 	
 
 }

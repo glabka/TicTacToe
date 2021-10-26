@@ -5,7 +5,7 @@ import game_components.Square.SVal;
 import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
 import players.ai_players.support_classes.AbstractRatedCoosFilter;
 
-public abstract class AbstractGridHeuristic {
+public abstract class AbstractGridHeuristic implements Cloneable{
 	
 	protected AbstractSquareHeuristic squareHeuristic;
 	protected AbstractCooValFromStreakEstimator estimator;
@@ -23,4 +23,6 @@ public abstract class AbstractGridHeuristic {
 	
 	public abstract double getGridsHeuristicValue(Grid g, SVal currentPlayer, int streakLength);
 	
+	public abstract Object clone();
+
 }

@@ -49,4 +49,11 @@ public class GridDiffHeuristic extends AbstractGridHeuristic {
 		return combinedCoos;
 	}
 
+
+
+	@Override
+	public Object clone() {
+		return new GridDiffHeuristic((AbstractCooValFromStreakEstimator) estimator.clone());
+	}
+
 }
