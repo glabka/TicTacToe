@@ -7,21 +7,15 @@ package game;
  */
 public class Result implements Comparable<Result>{
 	
-	private String combination;
 	private int numberOfLosses;
 	private int numberOfWins;
 	private int numberOfTies;
 
-	public Result(String combination, int numberOfWins, int numberOfLosses, int numberOfTies) {
+	public Result(int numberOfWins, int numberOfLosses, int numberOfTies) {
 		super();
-		this.combination = combination;
 		this.numberOfLosses = numberOfLosses;
 		this.numberOfWins = numberOfWins;
 		this.numberOfTies = numberOfTies;
-	}
-	
-	public String getCombination() {
-		return combination;
 	}
 	
 	public int getNumOfLosses() {
@@ -50,7 +44,11 @@ public class Result implements Comparable<Result>{
 		}
 	}
 	
+	public Result getInverseResult() {
+		return new Result(numberOfLosses, numberOfWins, numberOfTies);
+	}
+	
 	public String toString() {
-		return "w: " + this.getNumOfWins() + ", l: " + this.getNumOfLosses() + " , t: " + this.getNumOfTies() + ", " +this.getCombination();
+		return "w: " + this.getNumOfWins() + ", l: " + this.getNumOfLosses() + " , t: " + this.getNumOfTies();
 	}
 }
