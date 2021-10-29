@@ -48,6 +48,7 @@ public class Result implements Comparable<Result>{
 		return new Result(numberOfLosses, numberOfWins, numberOfTies);
 	}
 	
+	@Override
 	public String toString() {
 		return "w: " + this.getNumOfWins() + ", l: " + this.getNumOfLosses() + " , t: " + this.getNumOfTies();
 	}
