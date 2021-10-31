@@ -1,4 +1,4 @@
-package players.ui_players;
+package players;
 
 import java.util.Scanner;
 
@@ -6,7 +6,6 @@ import game.CursorController;
 import game_components.Grid;
 import game_components.ValuedMove;
 import game_components.Square.SVal;
-import players.Player;
 
 public class UIPlayer extends Player {
 	

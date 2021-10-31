@@ -1,38 +1,28 @@
-package players.ai_players;
+package srategies;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import game_components.Grid;
-import game_components.ValuedMove;
 import game_components.Square.SVal;
+import game_components.ValuedMove;
 import grid_computations.Computations;
-import grid_computations.Coordinate;
-import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
-import grid_computations.ValuedCoordinate;
-import players.ai_players.heuristics.HeuristicCommon;
-import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
-import players.ai_players.support_classes.LengthCooValEstimator;
-import players.ai_players.support_classes.PoweredLengthCooValEstimator;
-import players.ai_players.support_classes.RatedCoordinate;
-import players.ai_players.support_classes.RatedCoordinatesValueComparator;
+import strategies.heuristics.HeuristicCommon;
+import strategies.support_classes.AbstractCooValFromStreakEstimator;
+import strategies.support_classes.PoweredLengthCooValEstimator;
+import strategies.support_classes.RatedCoordinate;
+import strategies.support_classes.RatedCoordinatesValueComparator;
 
-public class MergeAIPlayer extends AbstractAIPlayer {
-
-	public MergeAIPlayer(SVal playersSVal, String name, int streakLength) {
-		super(playersSVal, name, streakLength);
-	}
+public class MergeStrategy extends AbstractStrategy {
 
 	@Override
-	public ValuedMove nextMove(Grid g) {
+	public ValuedMove nextMove(SVal sVal, Grid g, int streakLength) {
 		int minNumOfFilledCoos = 1;
-		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength, minNumOfFilledCoos);
-		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength, minNumOfFilledCoos);
+		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(sVal), streakLength, minNumOfFilledCoos);
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, sVal, streakLength, minNumOfFilledCoos);
 		AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
 		
 		List<RatedCoordinate> coosForDefending = defend(opponentsPotStreaks, estimator);
@@ -54,7 +44,7 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 //		System.out.println(combinedCoos); // debug
 		RatedCoordinate coo = Collections.max(combinedCoos, new RatedCoordinatesValueComparator());
 		
-		return new ValuedMove(coo, playersSVal);
+		return new ValuedMove(coo, sVal);
 	}
 	
 	private List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
@@ -70,7 +60,7 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 				list.add(new RatedCoordinate(row - 1, column - 1, value));
 				return list;
 			} else {
-				list.add(new RatedCoordinate(NaiveBlockAttackAIPlayer.firtEmptySquare(g), value));
+				list.add(new RatedCoordinate(NaiveBlockAttackStrategy.firtEmptySquare(g), value));
 				return list;
 			}
 		}
@@ -195,6 +185,21 @@ public class MergeAIPlayer extends AbstractAIPlayer {
 //		Collections.sort(combinedLists, new RatedCoordinatesValueComparator());
 //		System.out.println(combinedLists);
 		
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof MergeStrategy)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return 0;
 	}
 
 }

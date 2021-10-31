@@ -1,4 +1,4 @@
-package players.ai_players.support_classes;
+package strategies.support_classes;
 
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;

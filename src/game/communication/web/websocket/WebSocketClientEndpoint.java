@@ -30,7 +30,7 @@ import game.communication.enums.CommunicationProtocolValue;
 import game.communication.enums.MoveResult;
 import game_components.ValuedMove;
 import game_components.Square.SVal;
-import players.ui_players.UIPlayer;
+import players.UIPlayer;
 
 /**
  * Single game Web Socket Client Endpoint

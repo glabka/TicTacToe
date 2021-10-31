@@ -1,4 +1,4 @@
-package players.ai_players;
+package srategies;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -6,10 +6,10 @@ import java.util.List;
 
 import game_components.ValuedMove;
 import game_components.Square.SVal;
-import players.ai_players.support_classes.MoveAndDepth;
-import players.ai_players.support_classes.RatedCoordinate;
+import strategies.support_classes.MoveAndDepth;
+import strategies.support_classes.RatedCoordinate;
 
-public class AIPlayersCommon {
+public class StrategiesCommon {
 
 	public static List<MoveAndDepth> mdfromRatedCoosList(List<RatedCoordinate> ratedCoos, SVal val, int depth) {
 		List<MoveAndDepth> list = new LinkedList<>();

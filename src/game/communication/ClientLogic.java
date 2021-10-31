@@ -14,7 +14,7 @@ import game_components.Grid;
 import game_components.ValuedMove;
 import game_components.Square.SVal;
 import players.Player;
-import players.ui_players.UIPlayer;
+import players.UIPlayer;
 
 public class ClientLogic {
 

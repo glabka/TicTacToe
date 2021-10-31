@@ -1,4 +1,4 @@
-package players.ai_players.heuristics;
+package strategies.heuristics;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,12 +15,12 @@ import grid_computations.Computations;
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
 import grid_computations.ValuedCoordinate;
-import players.ai_players.NaiveBlockAttackAIPlayer;
-import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
-import players.ai_players.support_classes.AbstractRatedCoosFilter;
-import players.ai_players.support_classes.OneValueEstimator;
-import players.ai_players.support_classes.RatedCoordinate;
-import players.ai_players.support_classes.RatedCoordinatesValueComparator;
+import srategies.NaiveBlockAttackStrategy;
+import strategies.support_classes.AbstractCooValFromStreakEstimator;
+import strategies.support_classes.AbstractRatedCoosFilter;
+import strategies.support_classes.OneValueEstimator;
+import strategies.support_classes.RatedCoordinate;
+import strategies.support_classes.RatedCoordinatesValueComparator;
 
 public class HeuristicCommon {
 
@@ -256,7 +256,7 @@ public class HeuristicCommon {
 			list.add(new RatedCoordinate(row - 1, column - 1, value));
 			return list;
 		} else {
-			Coordinate coo = NaiveBlockAttackAIPlayer.firtEmptySquare(g);
+			Coordinate coo = firtEmptySquare(g);
 			if(coo != null) {
 				list.add(new RatedCoordinate(coo, value));
 			}
@@ -275,7 +275,7 @@ public class HeuristicCommon {
 		if(combinedCoos == null || combinedCoos.isEmpty()) {
 			List<RatedCoordinate> list = new ArrayList<>();
 			int value = 5; // kind of random positive value
-			Coordinate coo = NaiveBlockAttackAIPlayer.firtEmptySquare(g);
+			Coordinate coo = firtEmptySquare(g);
 			
 			if(coo != null) {
 				list.add(new RatedCoordinate(coo, value));

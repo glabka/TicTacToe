@@ -15,7 +15,7 @@ import game_components.Square;
 import game_components.Square.SVal;
 import game_mechanics.Rules;
 import players.Player;
-import players.ui_players.UIPlayer;
+import players.UIPlayer;
 
 /**
  *

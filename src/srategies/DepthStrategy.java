@@ -1,37 +1,61 @@
-package players.ai_players;
+package srategies;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import game_components.Grid;
-import game_components.ValuedMove;
 import game_components.Square.SVal;
+import game_components.ValuedMove;
 import game_mechanics.Rules;
-import players.ai_players.heuristics.AbstractGridHeuristic;
-import players.ai_players.heuristics.AbstractSquareHeuristic;
-import players.ai_players.heuristics.HeuristicCommon;
-import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
-import players.ai_players.support_classes.AbstractRatedCoosFilter;
-import players.ai_players.support_classes.PoweredLengthCooValEstimator;
-import players.ai_players.support_classes.RatedCoordinate;
-import players.ai_players.support_classes.MoveAndDepth;
+import strategies.heuristics.AbstractGridHeuristic;
+import strategies.heuristics.AbstractSquareHeuristic;
+import strategies.heuristics.HeuristicCommon;
+import strategies.support_classes.AbstractRatedCoosFilter;
+import strategies.support_classes.MoveAndDepth;
+import strategies.support_classes.RatedCoordinate;
 
-public class DepthAIPlayer extends AbstractAIPlayer {
+public class DepthStrategy extends AbstractStrategy {
 	
 	protected int depth;
 
-	public DepthAIPlayer(SVal playersSVal, String name, int streakLength, AbstractSquareHeuristic squareHeuristic, AbstractGridHeuristic gridHeuristic, AbstractRatedCoosFilter ratedCoosFilter, int depth) {
-		super(playersSVal, name, streakLength, squareHeuristic, gridHeuristic, ratedCoosFilter);
+	public DepthStrategy(AbstractSquareHeuristic squareHeuristic, AbstractGridHeuristic gridHeuristic, AbstractRatedCoosFilter ratedCoosFilter, int depth) {
+		super(squareHeuristic, gridHeuristic, ratedCoosFilter);
 		this.depth = depth;
 	}
 	
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof DepthStrategy)) {
+			return false;
+		}
+
+		DepthStrategy other = (DepthStrategy) o;
+
+		// checking all fields
+		if (!this.squareHeuristic.equals(other.squareHeuristic)) {
+			return false;
+		} else if (!this.gridHeuristic.equals(other.gridHeuristic)) {
+			return false;
+		} else if (!this.ratedCoosFilter.equals(other.getRatedCoosFilter())) {
+			return false;
+		} else if (this.depth != other.depth) {
+			return false;
+		}
+		return true;
+	}
+
+	public int hashCode() {
+		String str = "" + this.squareHeuristic.hashCode() + this.gridHeuristic.hashCode() + this.ratedCoosFilter.hashCode() + depth;
+		return str.hashCode();
+	}
+	
 	@Override
-	public ValuedMove nextMove(Grid g) {
+	public ValuedMove nextMove(SVal sVal, Grid g, int streakLength) {
 		Grid gOrig = g;
 		g = g.gridsCopy();
 		
-		List<MoveAndDepth> md = nextMovesAndDepth(g, this.getSVal(), 0);
+		List<MoveAndDepth> md = nextMovesAndDepth(g, sVal, 0);
 		
 		List<ValuedMove> proceededMoves = new LinkedList<>();
 		
@@ -74,7 +98,7 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 			
 			if(mvAndDepth.getDepth() == depth - 1 && !Rules.endOfGame(g, streakLength)) {
 				// evaluating where move leads to depth
-				double moveHeuristicValue = this.gridHeuristic.getGridsHeuristicValue(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth(), this.getSVal()), streakLength);
+				double moveHeuristicValue = this.gridHeuristic.getGridsHeuristicValue(g, StrategiesCommon.getPlayer(mvAndDepth.getDepth(), sVal), streakLength);
 				if(bestMoveValue < moveHeuristicValue) {
 					bestMove = proceededMoves.get(0);
 					bestMoveValue = moveHeuristicValue;
@@ -82,11 +106,11 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 			}
 			
 			SVal winner = Rules.findWinner(g, streakLength);
-			if(winner == this.getSVal() && winningMoveDepth < mvAndDepth.getDepth()) {
+			if(winner == sVal && winningMoveDepth < mvAndDepth.getDepth()) {
 				bestMove = proceededMoves.get(0);
 				winningMoveDepth = mvAndDepth.getDepth();
 				bestMoveValue = Double.POSITIVE_INFINITY;
-			} else if (winner == SVal.getOpposite(this.getSVal())) {
+			} else if (winner == SVal.getOpposite(sVal)) {
 				continue;
 			} else if(Rules.endOfGame(g, streakLength)) {
 				continue;
@@ -96,8 +120,8 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 			
 			// determining and adding next moves
 			if(mvAndDepth.getDepth() + 1 < depth) {
-				List<MoveAndDepth> nextMd = nextMovesAndDepth(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth() + 1, this.getSVal()), mvAndDepth.getDepth() + 1);
-				AIPlayersCommon.addToBeginingOfList(md, nextMd);
+				List<MoveAndDepth> nextMd = nextMovesAndDepth(g, StrategiesCommon.getPlayer(mvAndDepth.getDepth() + 1, sVal), mvAndDepth.getDepth() + 1);
+				StrategiesCommon.addToBeginingOfList(md, nextMd);
 			}
 		}
 		
@@ -105,13 +129,13 @@ public class DepthAIPlayer extends AbstractAIPlayer {
 			return bestMove;
 		} else {
 //			System.out.println("FIRST EMPTY SQUARE MOVE"); // debug
-			return new ValuedMove(HeuristicCommon.firtEmptySquare(gOrig), this.getSVal());
+			return new ValuedMove(HeuristicCommon.firtEmptySquare(gOrig), sVal);
 		}
 	}
 	
 	private List<MoveAndDepth> nextMovesAndDepth(Grid g, SVal val, int depth) {
 		List<RatedCoordinate> firstMoveRatedCoos = this.ratedCoosFilter.filterRatedCoos(this.squareHeuristic.getRatedCoos(val, g, streakLength));
-		List<MoveAndDepth> md = AIPlayersCommon.mdfromRatedCoosList(firstMoveRatedCoos, val, depth);
+		List<MoveAndDepth> md = StrategiesCommon.mdfromRatedCoosList(firstMoveRatedCoos, val, depth);
 		return md;
 		// option when only best option count for simulated opponent
 //		if (depth % 2 == 0) {

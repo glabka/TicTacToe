@@ -1,43 +1,38 @@
-package players.ai_players;
+package srategies;
 
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import game_components.Grid;
-import game_components.ValuedMove;
 import game_components.Square.SVal;
+import game_components.ValuedMove;
 import game_mechanics.Rules;
-import players.ai_players.heuristics.AbstractGridHeuristic;
-import players.ai_players.heuristics.AbstractSquareHeuristic;
-import players.ai_players.support_classes.AbstractRatedCoosFilter;
-import players.ai_players.support_classes.MoveAndDepth;
-import players.ai_players.support_classes.RatedCoordinate;
-import players.ai_players.support_classes.RatedCoordinatesValueComparator;
-import players.ai_players.support_classes.SortedNodesTree;
-import players.ai_players.support_classes.SortedTreeNode;
+import strategies.heuristics.AbstractGridHeuristic;
+import strategies.heuristics.AbstractSquareHeuristic;
+import strategies.support_classes.AbstractRatedCoosFilter;
+import strategies.support_classes.MoveAndDepth;
+import strategies.support_classes.RatedCoordinate;
+import strategies.support_classes.RatedCoordinatesValueComparator;
+import strategies.support_classes.SortedNodesTree;
+import strategies.support_classes.SortedTreeNode;
 
 
-public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
+public class TreeEvaluationStrategy extends AbstractStrategy {
 
 	private int depth;
 	
 	/**
 	 * 
-	 * @param playersSVal
-	 * @param name
-	 * @param streakLength
 	 * @param squareHeuristic
 	 * @param gridHeuristic
 	 * @param ratedCoosFilter
 	 * @param depth - depth in this context translate into 1 more depth means one move from playersSval and one move from opponent
 	 */
-	public TreeEvaluationAIPlayer(SVal playersSVal, String name, int streakLength,
-			AbstractSquareHeuristic squareHeuristic, AbstractGridHeuristic gridHeuristic,
+	public TreeEvaluationStrategy(AbstractSquareHeuristic squareHeuristic, AbstractGridHeuristic gridHeuristic,
 			AbstractRatedCoosFilter ratedCoosFilter, int depth) {
-		super(playersSVal, name, streakLength, squareHeuristic, gridHeuristic, ratedCoosFilter);
+		super(squareHeuristic, gridHeuristic, ratedCoosFilter);
 		if (depth < 1) {
 			throw new IllegalArgumentException("depth < 1 and it should not.");
 		}
@@ -45,24 +40,53 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 	}
 
 	@Override
-	public ValuedMove nextMove(Grid g) {
-		SortedNodesTree<RatedCoordinate> tree = getSortedNodesTree(g);
-		evaluateTree(tree);
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof TreeEvaluationStrategy)) {
+			return false;
+		}
+
+		TreeEvaluationStrategy other = (TreeEvaluationStrategy) o;
+
+		// checking all fields
+		if (this.squareHeuristic != other.squareHeuristic) {
+			return false;
+		} else if (this.gridHeuristic != other.gridHeuristic) {
+			return false;
+		} else if (this.ratedCoosFilter != other.getRatedCoosFilter()) {
+			return false;
+		} else if (this.depth != other.depth) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		String str = "" + this.squareHeuristic.hashCode() + this.gridHeuristic.hashCode() + this.ratedCoosFilter.hashCode() + depth;
+		return str.hashCode();
+	}
+
+	@Override
+	public ValuedMove nextMove(SVal sVal, Grid g, int streakLength) {
+		SortedNodesTree<RatedCoordinate> tree = getSortedNodesTree(g, sVal);
+		evaluateTree(tree, sVal);
 		
 		double biggestNum = Double.NEGATIVE_INFINITY;
 		ValuedMove bestMove = null;
 		for(SortedTreeNode<RatedCoordinate> node : tree.getSortedChildren(tree.getRoot())) {
 			if(node.getNodeEvaluationNumber() >= biggestNum) {
 				biggestNum = node.getNodeEvaluationNumber();
-				bestMove = new ValuedMove(node.getVal(), this.getSVal());
+				bestMove = new ValuedMove(node.getVal(), sVal);
 			}
 		}
 		
 		return bestMove;
 	}
 	
-	private void evaluateTree(SortedNodesTree<RatedCoordinate> tree) {
-		List<SortedTreeNode<RatedCoordinate>> nodesForEvaluation = evaluateLeafs(tree.getLeafs());
+	private void evaluateTree(SortedNodesTree<RatedCoordinate> tree, SVal sVal) {
+		List<SortedTreeNode<RatedCoordinate>> nodesForEvaluation = evaluateLeafs(tree.getLeafs(), sVal);
 		Comparator<SortedTreeNode<RatedCoordinate>> depthComparator = (SortedTreeNode<RatedCoordinate> n1, SortedTreeNode<RatedCoordinate> n2) -> Integer.compare(n1.getDepth(), n2.getDepth());
 		int maxLeafDepth = nodesForEvaluation.stream().max(depthComparator).orElse(tree.getRoot()).getDepth();
 		
@@ -81,7 +105,7 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 			for(SortedTreeNode<RatedCoordinate> parent : parents) {
 				List<SortedTreeNode<RatedCoordinate>> children = parent.getChildren();
 				
-				if(AIPlayersCommon.opponentsTurn(currentDepth.getVal() + 1, this.getSVal())) { // depth + 1 because first node (node 0) doesn't represent any move
+				if(StrategiesCommon.opponentsTurn(currentDepth.getVal() + 1, sVal)) { // depth + 1 because first node (node 0) doesn't represent any move
 					parent.setNodeEvaluationNumber(children.stream().min(evalComparator).orElse(null).getNodeEvaluationNumber());
 				} else {
 					parent.setNodeEvaluationNumber(children.stream().max(evalComparator).orElse(null).getNodeEvaluationNumber());
@@ -93,9 +117,9 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		}
 	}
 	
-	private List<SortedTreeNode<RatedCoordinate>> evaluateLeafs(List<SortedTreeNode<RatedCoordinate>> leafs) {
+	private List<SortedTreeNode<RatedCoordinate>> evaluateLeafs(List<SortedTreeNode<RatedCoordinate>> leafs, SVal sVal) {
 		for(SortedTreeNode<RatedCoordinate> leaf : leafs) {
-			if(AIPlayersCommon.opponentsTurn(leaf.getDepth() + 1, this.playersSVal)) { // depth + 1 because first node (node 0) doesn't represent any move
+			if(StrategiesCommon.opponentsTurn(leaf.getDepth() + 1, sVal)) { // depth + 1 because first node (node 0) doesn't represent any move
 				//if leaf is opponent it means game ended with winning or loosing or tie and is to be set as opposite of what is value for opponent
 				leaf.setNodeEvaluationNumber(-leaf.getVal().getValue());
 			} else {
@@ -117,11 +141,11 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		return parents;
 	}
 	
-	private SortedNodesTree<RatedCoordinate> getSortedNodesTree(Grid g) {
+	private SortedNodesTree<RatedCoordinate> getSortedNodesTree(Grid g, SVal sVal) {
 		g = g.gridsCopy();
 		SortedNodesTree<RatedCoordinate> tree = new SortedNodesTree<RatedCoordinate>(null, new RatedCoordinatesValueComparator()); // null because the value of original grid is not interesting for decision making
 		
-		List<MoveAndDepth> md = nextMovesAndDepth(g, getSVal(), 0);
+		List<MoveAndDepth> md = nextMovesAndDepth(g, sVal, 0);
 		SortedTreeNode<RatedCoordinate> parrentNode = tree.getRoot();
 		
 		List<ValuedMove> proceededMoves = new LinkedList<>();
@@ -151,15 +175,15 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 //			g.printGridDebug();// debug
 			proceededMoves.add(mvAndDepth.getMove());
 			
-			double gridHeuristicVal = this.gridHeuristic.getGridsHeuristicValue(g, AIPlayersCommon.getPlayer(mvAndDepth.getDepth(), this.getSVal()), this.streakLength);
+			double gridHeuristicVal = this.gridHeuristic.getGridsHeuristicValue(g, StrategiesCommon.getPlayer(mvAndDepth.getDepth(), sVal), this.streakLength);
 			SortedTreeNode<RatedCoordinate> child = tree.addChild(parrentNode, new RatedCoordinate(mvAndDepth.getMove(), gridHeuristicVal));
 			
 			
-			SVal nextPlayer = AIPlayersCommon.getPlayer(mvAndDepth.getDepth() + 1, this.getSVal());
+			SVal nextPlayer = StrategiesCommon.getPlayer(mvAndDepth.getDepth() + 1, sVal);
 			if(mvAndDepth.getDepth() + 2 < this.depth && child.getVal().getValue() != Double.NEGATIVE_INFINITY
 					&& child.getVal().getValue() != Double.POSITIVE_INFINITY && !Rules.endOfGame(g, streakLength)) { // + 1 because of next step + 1 because of no step root of tree
 				List<MoveAndDepth> nextMd = nextMovesAndDepth(g, nextPlayer, mvAndDepth.getDepth() + 1);
-				AIPlayersCommon.addToBeginingOfList(md, nextMd);
+				StrategiesCommon.addToBeginingOfList(md, nextMd);
 				parrentNode = child;
 			}
 			
@@ -193,7 +217,7 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 	
 	private List<MoveAndDepth> nextMovesAndDepth(Grid g, SVal val, int depth) {
 		List<RatedCoordinate> firstMoveRatedCoos = this.ratedCoosFilter.filterRatedCoos(this.squareHeuristic.getRatedCoos(val, g, streakLength));
-		List<MoveAndDepth> md = AIPlayersCommon.mdfromRatedCoosList(firstMoveRatedCoos, val, depth);
+		List<MoveAndDepth> md = StrategiesCommon.mdfromRatedCoosList(firstMoveRatedCoos, val, depth);
 		return md;
 	}
 	
@@ -220,6 +244,5 @@ public class TreeEvaluationAIPlayer extends AbstractAIPlayer {
 		public void setVal(int val) {
 			this.val = val;
 		}
-	}
-	
+	}	
 }

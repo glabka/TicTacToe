@@ -1,40 +1,30 @@
-package players.ai_players;
+package srategies;
 
 import java.util.Collections;
 import java.util.List;
 
 import game_components.Grid;
-import game_components.ValuedMove;
 import game_components.Square.SVal;
+import game_components.ValuedMove;
 import grid_computations.Computations;
 import grid_computations.Coordinate;
 import grid_computations.PotStreakFilledLengthComparator;
 import grid_computations.PotentialStreak;
-import players.Player;
+import strategies.heuristics.HeuristicCommon;
 
-public class NaiveBlockAttackAIPlayer extends AbstractAIPlayer {
-
-	/**
-	 * 
-	 * @param playersSVal
-	 * @param name
-	 * @param streakLength winning streak length
-	 */
-	public NaiveBlockAttackAIPlayer(SVal playersSVal, String name, int streakLength) {
-		super(playersSVal, name, streakLength);
-	}
+public class NaiveBlockAttackStrategy extends AbstractStrategy {
 
 	@Override
-	public ValuedMove nextMove(Grid g) {
+	public ValuedMove nextMove(SVal sVal, Grid g, int streakLength) {
 		int minNumOfFilledCoos = 1;
-		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(this.getSVal()), streakLength, minNumOfFilledCoos);
-		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, this.getSVal(), streakLength, minNumOfFilledCoos);
+		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(sVal), streakLength, minNumOfFilledCoos);
+		List<PotentialStreak> potStreaks = Computations.getAllPotentialStreaks(g, sVal, streakLength, minNumOfFilledCoos);
 		
 		Coordinate cooForDefending = defend(opponentsPotStreaks, streakLength - 2);
 		if(cooForDefending != null) {
-			return new ValuedMove(cooForDefending, this.getSVal());
+			return new ValuedMove(cooForDefending, sVal);
 		} else {
-			return new ValuedMove(attack(potStreaks, g), this.getSVal());
+			return new ValuedMove(attack(potStreaks, g), sVal);
 		}
 	}
 	
@@ -62,7 +52,7 @@ public class NaiveBlockAttackAIPlayer extends AbstractAIPlayer {
 			} else if (g.size() > 2 && g.isSquareEmpty(row - 1, column - 1)) {
 				return new Coordinate(row - 1, column - 1);
 			} else {
-				return firtEmptySquare(g);
+				return HeuristicCommon.firtEmptySquare(g);
 			}
 		}
 		
@@ -71,16 +61,20 @@ public class NaiveBlockAttackAIPlayer extends AbstractAIPlayer {
 		PotentialStreak fullestStreak = potStreaks.get(potStreaks.size() - 1);
 		return fullestStreak.potentialCoos()[0];
 	}
-	
-	public static Coordinate firtEmptySquare(Grid g) {
-		for (int i = 0; i < g.size(); i++) {
-			for (int j = 0; j < g.size(); j++) {
-				if(g.isSquareEmpty(i, j)) {
-					return new Coordinate(i, j);
-				}
-			}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof NaiveBlockAttackStrategy)) {
+			return false;
 		}
-		return null;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return 2;
 	}
 	
 	

@@ -1,9 +1,9 @@
-package players.ai_players.heuristics;
+package strategies.heuristics;
 
 import game_components.Grid;
 import game_components.Square.SVal;
-import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
-import players.ai_players.support_classes.AbstractRatedCoosFilter;
+import strategies.support_classes.AbstractCooValFromStreakEstimator;
+import strategies.support_classes.AbstractRatedCoosFilter;
 
 public abstract class AbstractGridHeuristic implements Cloneable{
 	

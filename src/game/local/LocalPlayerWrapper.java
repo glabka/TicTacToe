@@ -23,7 +23,7 @@ import game_components.Grid;
 import game_components.Square.SVal;
 import game_components.ValuedMove;
 import players.Player;
-import players.ui_players.UIPlayer;
+import players.UIPlayer;
 
 public class LocalPlayerWrapper extends Thread {
 

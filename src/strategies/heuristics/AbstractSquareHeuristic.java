@@ -1,11 +1,11 @@
-package players.ai_players.heuristics;
+package strategies.heuristics;
 
 import java.util.List;
 
 import game_components.Grid;
 import game_components.Square.SVal;
-import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
-import players.ai_players.support_classes.RatedCoordinate;
+import strategies.support_classes.AbstractCooValFromStreakEstimator;
+import strategies.support_classes.RatedCoordinate;
 
 /**
  * Heuristics for search returning RatedCoordinates

@@ -1,81 +1,29 @@
-package players.ai_players;
+package players;
 
+import game_components.Grid;
 import game_components.Square.SVal;
-import players.Player;
-import players.ai_players.heuristics.AbstractGridHeuristic;
-import players.ai_players.heuristics.AbstractSquareHeuristic;
-import players.ai_players.support_classes.AbstractRatedCoosFilter;
+import game_components.ValuedMove;
+import srategies.AbstractStrategy;
 
-public abstract class AbstractAIPlayer extends Player{
-
-	protected int streakLength;
-	protected AbstractSquareHeuristic squareHeuristic;
-	protected AbstractGridHeuristic gridHeuristic;
-	protected AbstractRatedCoosFilter ratedCoosFilter;
-
-	/**
-	 * 
-	 * @param playersSVal
-	 * @param name
-	 * @param streakLength winning streak length
-	 */
-	public AbstractAIPlayer(SVal playersSVal, String name, int streakLength) {
-		super(playersSVal, name);
-		this.streakLength = streakLength;
-		this.squareHeuristic = null;
-	}
+public class AIPlayer extends Player{
 	
-	/**
-	 * 
-	 * @param playersSVal
-	 * @param name
-	 * @param streakLength winning streak length
-	 */
-	public AbstractAIPlayer(SVal playersSVal, String name, int streakLength, AbstractSquareHeuristic squareHeuristic) {
-		super(playersSVal, name);
-		this.streakLength = streakLength;
-		this.squareHeuristic = squareHeuristic;
-	}
+	private SVal sVal;
+	private int streakLength;
+	private AbstractStrategy strategy;
 	
-	/**
-	 * 
-	 * @param playersSVal
-	 * @param name
-	 * @param streakLength winning streak length
-	 */
-	public AbstractAIPlayer(SVal playersSVal, String name, int streakLength, AbstractSquareHeuristic squareHeuristic, AbstractGridHeuristic gridHeuristic, AbstractRatedCoosFilter ratedCoosFilter) {
-		super(playersSVal, name);
+	public AIPlayer(SVal sVal, String name, int streakLength, AbstractStrategy strategy) {
+		super(sVal, name);
+		this.sVal = sVal;
 		this.streakLength = streakLength;
-		this.squareHeuristic = squareHeuristic;
-		this.gridHeuristic = gridHeuristic;
-		this.ratedCoosFilter = ratedCoosFilter;
+		this.strategy = strategy;
 	}
 
 	public int getStreakLength() {
 		return streakLength;
 	}
 
-	public AbstractSquareHeuristic getSquareHeuristic() {
-		if (squareHeuristic == null) {
-			return null;
-		} else {
-			return (AbstractSquareHeuristic) squareHeuristic.clone();
-		}
-	}
-
-	public AbstractGridHeuristic getGridHeuristic() {
-		if (gridHeuristic == null) {
-			return null;
-		} else {
-			return (AbstractGridHeuristic) gridHeuristic.clone();
-		}
-	}
-
-	public AbstractRatedCoosFilter getRatedCoosFilter() {
-		if (ratedCoosFilter == null) {
-			return null;
-		} else {
-			return (AbstractRatedCoosFilter) ratedCoosFilter.clone();
-		}
+	@Override
+	public ValuedMove nextMove(Grid g) {
+		return strategy.nextMove(sVal, g, streakLength);
 	}
 }

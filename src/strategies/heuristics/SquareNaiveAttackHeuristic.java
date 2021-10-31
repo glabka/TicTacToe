@@ -1,4 +1,4 @@
-package players.ai_players.heuristics;
+package strategies.heuristics;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,9 +9,9 @@ import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
-import players.ai_players.NaiveBlockAttackAIPlayer;
-import players.ai_players.support_classes.AbstractCooValFromStreakEstimator;
-import players.ai_players.support_classes.RatedCoordinate;
+import srategies.NaiveBlockAttackStrategy;
+import strategies.support_classes.AbstractCooValFromStreakEstimator;
+import strategies.support_classes.RatedCoordinate;
 
 public class SquareNaiveAttackHeuristic extends AbstractSquareHeuristic {
 
