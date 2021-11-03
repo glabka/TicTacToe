@@ -15,7 +15,6 @@ import grid_computations.Computations;
 import grid_computations.Coordinate;
 import grid_computations.PotentialStreak;
 import grid_computations.ValuedCoordinate;
-import srategies.NaiveBlockAttackStrategy;
 import strategies.support_classes.AbstractCooValFromStreakEstimator;
 import strategies.support_classes.AbstractRatedCoosFilter;
 import strategies.support_classes.OneValueEstimator;

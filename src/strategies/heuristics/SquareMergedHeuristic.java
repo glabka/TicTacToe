@@ -8,7 +8,6 @@ import game_components.Grid;
 import game_components.Square.SVal;
 import grid_computations.Computations;
 import grid_computations.PotentialStreak;
-import srategies.NaiveBlockAttackStrategy;
 import strategies.support_classes.AbstractCooValFromStreakEstimator;
 import strategies.support_classes.PoweredLengthCooValEstimator;
 import strategies.support_classes.RatedCoordinate;

@@ -1,4 +1,4 @@
-package srategies;
+package strategies;
 
 import game_components.Grid;
 import game_components.Square.SVal;
