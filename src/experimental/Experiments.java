@@ -5,29 +5,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.google.gson.Gson;
-
 import game.Game;
 import game.Result;
-import game.communication.GridTransferRepresentation;
-import game.communication.Message;
-import game.communication.enums.CommunicationProtocolValue;
-import game.local.LocalGameForTwoManager;
 import game_components.Grid;
-import game_components.Square;
 import game_components.Square.SVal;
-import players.AbstractAIPlayer;
+import players.AIPlayer;
 import players.Player;
 import players.UIPlayer;
-import srategies.DepthAIPlayer;
-import srategies.NaiveBlockAttackStrategy;
-import srategies.OneStepStrategy;
-import srategies.TreeEvaluationStrategy;
+import strategies.AbstractStrategy;
+import strategies.DepthStrategy;
+import strategies.NaiveBlockAttackStrategy;
+import strategies.OneStepStrategy;
+import strategies.TreeEvaluationStrategy;
 import strategies.heuristics.AbstractGridHeuristic;
 import strategies.heuristics.AbstractSquareHeuristic;
 import strategies.heuristics.GirdMergeHeuristic;
@@ -45,6 +38,7 @@ import strategies.support_classes.AbstractCooValFromStreakEstimator;
 import strategies.support_classes.AbstractRatedCoosFilter;
 import strategies.support_classes.FewBestRatedCoosFilter;
 import strategies.support_classes.LengthCooValEstimator;
+import strategies.support_classes.OneValueEstimator;
 import strategies.support_classes.PoweredLengthCooValEstimator;
 
 /**
@@ -211,8 +205,42 @@ public class Experiments {
         
         // SquareMixedHeuristic
 //        SquareMixedHeuristic.test();
-        
-		////////////////////////////////////////////////////////////////////////////
+    	
+//////    	 test equals and hasCode of some classes
+    	
+    	AbstractCooValFromStreakEstimator oneValEstimator1a = new OneValueEstimator(2);
+    	AbstractCooValFromStreakEstimator oneValEstimator1b = new OneValueEstimator(2);
+    	AbstractCooValFromStreakEstimator oneValEstimator2a = new OneValueEstimator(3);
+    	AbstractCooValFromStreakEstimator pLenEstimator1a = new PoweredLengthCooValEstimator(3.2);
+    	AbstractCooValFromStreakEstimator pLenEstimator1b= new PoweredLengthCooValEstimator(3.2);
+    	AbstractCooValFromStreakEstimator pLenEstimator2a= new PoweredLengthCooValEstimator(4);
+    	
+    	AbstractSquareHeuristic sNaviveBAHeuristic1a = new SquareNaiveBlockAttackHeuristic(oneValEstimator1a);
+    	AbstractSquareHeuristic sNaviveBAHeuristic1b = new SquareNaiveBlockAttackHeuristic(oneValEstimator1b);
+    	AbstractSquareHeuristic sNaviveBAHeuristic2a = new SquareNaiveBlockAttackHeuristic(oneValEstimator2a);
+    	
+    	// equals
+    	System.out.println("oneValEstimator1a.equals(oneValEstimator1b): " + oneValEstimator1a.equals(oneValEstimator1b));
+    	System.out.println("oneValEstimator1a.equals(oneValEstimator2a): " + oneValEstimator1a.equals(oneValEstimator2a));
+    	System.out.println("oneValEstimator1a.equals(pLenEstimator1a): " + oneValEstimator1a.equals(pLenEstimator1a));
+    	System.out.println("pLenEstimator1a.equals(pLenEstimator1b): " + pLenEstimator1a.equals(pLenEstimator1b));
+    	System.out.println("pLenEstimator1a.equals(pLenEstimator2a): " + pLenEstimator1a.equals(pLenEstimator2a));
+    	
+    	System.out.println("sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic1b): " + sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic1b));
+    	System.out.println("sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic2a): " + sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic2a));
+    	// hashCode
+    	System.out.println("oneValEstimator1a.hashCode() == (oneValEstimator1b.hashCode()): " + oneValEstimator1a.hashCode() + " == " + oneValEstimator1b.hashCode() + ": "+ (oneValEstimator1a.hashCode() == oneValEstimator1b.hashCode()));
+    	System.out.println("oneValEstimator1a.hashCode() == (oneValEstimator2a.hashCode()): " + oneValEstimator1a.hashCode() + " == " + oneValEstimator2a.hashCode() + ": "+ (oneValEstimator1a.hashCode() == oneValEstimator2a.hashCode()));
+    	System.out.println("oneValEstimator1a.hashCode() == (pLenEstimator1a.hashCode()): " + oneValEstimator1a.hashCode() + " == " + pLenEstimator1a.hashCode() + ": "+ (oneValEstimator1a.hashCode() == pLenEstimator1a.hashCode()));
+    	System.out.println("pLenEstimator1a.hashCode() == (pLenEstimator1b.hashCode()): " + pLenEstimator1a.hashCode() + " == " + pLenEstimator1b.hashCode() + ": "+ (pLenEstimator1a.hashCode() == pLenEstimator1b.hashCode()));
+    	System.out.println("pLenEstimator1a.hashCode() == (pLenEstimator2a.hashCode()): " + pLenEstimator1a.hashCode() + " == " + pLenEstimator2a.hashCode() + ": "+ (pLenEstimator1a.hashCode() == pLenEstimator2a.hashCode()));
+    	
+    	System.out.println("sNaviveBAHeuristic1a.hashCode() == (sNaviveBAHeuristic1b.hashCode()): " + sNaviveBAHeuristic1a.hashCode() + " == " + sNaviveBAHeuristic1b.hashCode() + ": "+ (sNaviveBAHeuristic1a.hashCode() == sNaviveBAHeuristic1b.hashCode()));
+    	System.out.println("sNaviveBAHeuristic1a.hashCode() == (sNaviveBAHeuristic2a.hashCode()): " + sNaviveBAHeuristic1a.hashCode() + " == " + sNaviveBAHeuristic2a.hashCode() + ": "+ (sNaviveBAHeuristic1a.hashCode() == sNaviveBAHeuristic2a.hashCode()));
+		
+    	
+    	
+    	////////////////////////////////////////////////////////////////////////////
 		//---------------------------------AI GAME----------------------------------
 		////////////////////////////////////////////////////////////////////////////
 
@@ -239,6 +267,12 @@ public class Experiments {
         ////////////////////////////////////////////////////////////////////////////
         
 //        uiGame();
+    	
+        ////////////////////////////////////////////////////////////////////////////
+        //------------------------BEST STRATEGY FINDER------------------------------
+        ////////////////////////////////////////////////////////////////////////////
+    	BestStrategyFinder bestStrategyFinder = new BestStrategyFinder();
+    	bestStrategyFinder.findBestStrategy(10);
         
         // closing the standard stream for whole program
         Scanner in = new Scanner(System.in);
@@ -295,18 +329,19 @@ public class Experiments {
     	
     	Grid g = new Grid(10);
         int streakLength = 5;
-        Player aiPlayer;
-//        aiPlayer = new BlockAttackNaiveAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-        aiPlayer= new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-//        aiPlayer= new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2);
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
+        AbstractStrategy strategy;
+        strategy = new NaiveBlockAttackStrategy();
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        strategy = new TreeEvaluationStrategy(sqDMBAH, gDiffPH, fewBestAIFilter, 2); // name = "tree eval sqMBAH gDiffPH" // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer= new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2);
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
+        Player aiPlayer = new AIPlayer(SVal.CROSS, "ai player", streakLength, strategy);
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
-        
+
         Game aiGame = new Game(uiPlayer, aiPlayer, g, streakLength);
         aiGame.play();
     }
@@ -387,8 +422,8 @@ public class Experiments {
     	int estimatorsIndex;
     	int squareHeuristicsIndex;
     	int gridHeuristicsIndex;
-    	AbstractAIPlayer p1;
-    	AbstractAIPlayer p2;
+    	AIPlayer p1;
+    	AIPlayer p2;
     	
     	for (AbstractRatedCoosFilter filter : aiFilters) {
     		filersIndex = Arrays.asList(aiFilters).indexOf(filter);
@@ -413,8 +448,8 @@ public class Experiments {
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
-							p1 = new NaiveBlockAttackStrategy(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
-							p2 = new DepthAIPlayer(testedAIVal, aiPlayerName, streakLength, squareHeuristic, gridHeuristic, filter, 3);
+							p1 = new AIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength, new NaiveBlockAttackStrategy());
+							p2 = new AIPlayer(testedAIVal, aiPlayerName, streakLength, new DepthStrategy(squareHeuristic, gridHeuristic, filter, 3));
 							SVal winner = aiGame(g, streakLength, p1, p2);
 							
 							if(winner == testedAIVal) {
@@ -454,8 +489,8 @@ public class Experiments {
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
-							p1 = new NaiveBlockAttackStrategy(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
-							p2 = new OneStepStrategy(testedAIVal, aiPlayerName, streakLength, squareHeuristic);
+							p1 = new AIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength, new NaiveBlockAttackStrategy());
+							p2 = new AIPlayer(testedAIVal, aiPlayerName, streakLength, new OneStepStrategy(squareHeuristic));
 							SVal winner = aiGame(g, streakLength, p1, p2);
 							
 							if(winner == testedAIVal) {
@@ -494,8 +529,8 @@ public class Experiments {
 							Grid g = new Grid(gameSizeAndStreakSizes[i][0]);
 							int streakLength = gameSizeAndStreakSizes[i][1];
 							
-							p1 = new NaiveBlockAttackStrategy(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength);
-							p2 = new TreeEvaluationStrategy(testedAIVal, aiPlayerName, streakLength, squareHeuristic, gridHeuristic, filter, 2);
+							p1 = new AIPlayer(referenceAIVal, "NaiveBlockAttackAIPlayer", streakLength, new NaiveBlockAttackStrategy());
+							p2 = new AIPlayer(testedAIVal, aiPlayerName, streakLength, new TreeEvaluationStrategy(squareHeuristic, gridHeuristic, filter, 2));
 							SVal winner = aiGame(g, streakLength, p1, p2);
 							
 							if(winner == testedAIVal) {
@@ -536,7 +571,7 @@ public class Experiments {
     	}
     }
     
-    private static SVal aiGame(Grid g, int streakLength, AbstractAIPlayer p1, AbstractAIPlayer p2) {  		
+    private static SVal aiGame(Grid g, int streakLength, AIPlayer p1, AIPlayer p2) {  		
 		Game game = new Game(p1, p2, g, streakLength);
 		return game.play(false);
     }
@@ -584,7 +619,7 @@ public class Experiments {
   
     		Grid g = new Grid(size[0]);
     		int streakLength = size[1];
-    		p1 = new NaiveBlockAttackStrategy(SVal.CROSS, "NaiveBlockAttackAIPlayer", streakLength);
+    		p1 = new AIPlayer(SVal.CROSS, "NaiveBlockAttackAIPlayer", streakLength, new NaiveBlockAttackStrategy());
 //    		p1 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 3);
 //    		p1 = new DepthAIPlayer(SVal.CROSS, "depth ai player", streakLength, sqBAH, gDiffH, fewBestAIFilter, 3); // even better
 //    		p1 = new DumbAIPlayer2(SVal.CROSS, "dumb ai player 1", streakLength);
@@ -614,7 +649,7 @@ public class Experiments {
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
 //    		p2 = new TreeEvaluationAIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 1); // even better (0, 12, 8) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-    		p2 = new TreeEvaluationStrategy(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, sqMixedH, gDiffPH, fewBestAIFilter4, 2); 
+    		p2 = new AIPlayer(SVal.CIRCLE, "tree eval sqMBAH gDiffPH", streakLength, new TreeEvaluationStrategy(sqMixedH, gDiffPH, fewBestAIFilter4, 2)); 
     		
     		
     		if(switchAI) {

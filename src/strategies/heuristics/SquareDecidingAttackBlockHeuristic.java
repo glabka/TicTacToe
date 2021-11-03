@@ -19,6 +19,30 @@ public class SquareDecidingAttackBlockHeuristic extends AbstractSquareHeuristic 
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof SquareDecidingAttackBlockHeuristic)) {
+			return false;
+		}
+
+		SquareDecidingAttackBlockHeuristic other = (SquareDecidingAttackBlockHeuristic) o;
+
+		// checking all fields
+		if (!this.cooEstimator.equals(other.cooEstimator)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		String str = "" + this.cooEstimator.hashCode() + 1;
+		return str.hashCode();
+	}
+
+
+	@Override
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength) {
 		int minNumOfFilledCoos = 1;
 		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(playersSVal), streakLength, minNumOfFilledCoos);

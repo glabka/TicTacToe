@@ -1,10 +1,13 @@
 package experimental;
 
-public class BestAIPlayerFinder {
+import java.util.HashMap;
+import java.util.Map;
+
+public class BestStrategyFinder {
 
 	private Map<> gameResults = new HashMap<>();
 	
-	public void findBestAIPlayer(int numberOfIteration) {
+	public void findBestStrategy(int numberOfIteration) {
 		
 	}
 

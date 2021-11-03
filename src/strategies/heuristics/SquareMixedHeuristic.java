@@ -28,6 +28,43 @@ public class SquareMixedHeuristic extends AbstractSquareHeuristic {
 		this.filter = filter;
 	}
 
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof SquareMixedHeuristic)) {
+			return false;
+		}
+
+		SquareMixedHeuristic other = (SquareMixedHeuristic) o;
+
+		// checking all fields
+		if (!this.cooEstimator.equals(other.cooEstimator)) {
+			return false;
+		} if (this.filter != null) {
+			if(!this.filter.equals(other.filter)) {
+				return false;
+			}
+		} else if (other.filter != null){
+			// this.filter == null but other.filter != null
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		String str;
+		if (this.filter == null) {
+			str = "" + this.cooEstimator.hashCode() + 5;
+		} else {
+			str = "" + this.cooEstimator.hashCode() + this.filter.hashCode() + 5;
+		}
+		return str.hashCode();
+	}
+
 	@Override
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength) {
 		int minNumOfFilledCoos = 1;

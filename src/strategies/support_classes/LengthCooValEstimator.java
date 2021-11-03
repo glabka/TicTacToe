@@ -10,6 +10,21 @@ public class LengthCooValEstimator extends AbstractCooValFromStreakEstimator {
 		return potStreak.filledCoosSize();
 	}
 
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof LengthCooValEstimator)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return 10;
+	}
+
 	@Override
 	public Object clone() {
 		return new LengthCooValEstimator();

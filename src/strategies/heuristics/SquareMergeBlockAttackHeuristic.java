@@ -25,6 +25,42 @@ public class SquareMergeBlockAttackHeuristic extends AbstractSquareHeuristic {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof SquareMergeBlockAttackHeuristic)) {
+			return false;
+		}
+
+		SquareMergeBlockAttackHeuristic other = (SquareMergeBlockAttackHeuristic) o;
+
+		// checking all fields
+		if (!this.cooEstimator.equals(other.cooEstimator)) {
+			return false;
+		} if (this.filter != null) {
+			if(!this.filter.equals(other.filter)) {
+				return false;
+			}
+		} else if (other.filter != null){
+			// this.filter == null but other.filter != null
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		String str;
+		if (this.filter == null) {
+			str = "" + this.cooEstimator.hashCode() + 3;
+		} else {
+			str = "" + this.cooEstimator.hashCode() + this.filter.hashCode() + 3;
+		}
+		return str.hashCode();
+	}
+
+	@Override
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength) {
 		int minNumOfFilledCoos = 1;
 		List<PotentialStreak> opponentsPotStreaks = Computations.getAllPotentialStreaks(g, SVal.getOpposite(playersSVal), streakLength, minNumOfFilledCoos);

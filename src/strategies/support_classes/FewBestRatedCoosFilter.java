@@ -10,6 +10,29 @@ public class FewBestRatedCoosFilter extends AbstractRatedCoosFilter {
 	public FewBestRatedCoosFilter(int howMuch) {
 		this.howMuch = howMuch;
 	}
+
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof FewBestRatedCoosFilter)) {
+			return false;
+		}
+
+		FewBestRatedCoosFilter other = (FewBestRatedCoosFilter) o;
+
+		// checking all fields
+		if (this.howMuch != other.howMuch) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return howMuch;
+	}
+
 	
 	@Override
 	public List<RatedCoordinate> filterRatedCoos(List<RatedCoordinate> coos) {
@@ -32,6 +55,4 @@ public class FewBestRatedCoosFilter extends AbstractRatedCoosFilter {
 		return new FewBestRatedCoosFilter(howMuch);
 	}
 
-	
-	
 }

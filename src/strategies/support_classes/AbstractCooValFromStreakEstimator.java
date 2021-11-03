@@ -12,4 +12,8 @@ public abstract class AbstractCooValFromStreakEstimator implements Cloneable {
 	public abstract double estimateValue(Coordinate coo, PotentialStreak potStreak);
 	
 	public abstract Object clone();
+
+	public abstract boolean equals(Object o);
+
+	public abstract int hashCode();
 }

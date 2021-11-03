@@ -17,7 +17,28 @@ public class GridDiffHeuristic extends AbstractGridHeuristic {
 		super(estimator);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof GridDiffHeuristic)) {
+			return false;
+		}
 
+		GridDiffHeuristic other = (GridDiffHeuristic) o;
+
+		// checking all fields
+		if (!this.estimator.equals(other.estimator)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		String str = "" + this.estimator.hashCode() + 1;
+		return str.hashCode();
+	}
 
 	@Override
 	public double getGridsHeuristicValue(Grid g, SVal currentPlayer, int streakLength) {

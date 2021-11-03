@@ -11,6 +11,28 @@ public class OneValueEstimator extends AbstractCooValFromStreakEstimator{
 		this.value = value;
 	}
 	
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof OneValueEstimator)) {
+			return false;
+		}
+
+		OneValueEstimator other = (OneValueEstimator) o;
+
+		// checking all fields
+		if (Math.abs(this.value - other.value) >= Double.MIN_VALUE) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Double.hashCode(value);
+	}
+
 	@Override
 	public double estimateValue(Coordinate coo, PotentialStreak potStreak) {
 		return value;

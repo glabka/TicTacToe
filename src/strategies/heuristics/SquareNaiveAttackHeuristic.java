@@ -18,6 +18,30 @@ public class SquareNaiveAttackHeuristic extends AbstractSquareHeuristic {
 		super(cooEstimator);
 	}
 
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		} else if (!(o instanceof SquareNaiveAttackHeuristic)) {
+			return false;
+		}
+
+		SquareNaiveAttackHeuristic other = (SquareNaiveAttackHeuristic) o;
+
+		// checking all fields
+		if (!this.cooEstimator.equals(other.cooEstimator)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		String str = "" + this.cooEstimator.hashCode() + 6;
+		return str.hashCode();
+	}
+
 	@Override
 	public List<RatedCoordinate> getRatedCoos(SVal playersSVal, Grid g, int streakLength) {
 		
