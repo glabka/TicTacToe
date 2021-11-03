@@ -50,11 +50,11 @@ public class TreeEvaluationStrategy extends AbstractStrategy {
 		TreeEvaluationStrategy other = (TreeEvaluationStrategy) o;
 
 		// checking all fields
-		if (this.squareHeuristic != other.squareHeuristic) {
+		if (!this.squareHeuristic.equals(other.squareHeuristic)) {
 			return false;
-		} else if (this.gridHeuristic != other.gridHeuristic) {
+		} else if (!this.gridHeuristic.equals(other.gridHeuristic)) {
 			return false;
-		} else if (this.ratedCoosFilter != other.getRatedCoosFilter()) {
+		} else if (!this.ratedCoosFilter.equals(other.getRatedCoosFilter())) {
 			return false;
 		} else if (this.depth != other.depth) {
 			return false;
