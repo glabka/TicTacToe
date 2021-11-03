@@ -244,23 +244,20 @@ public class HeuristicCommon {
 		return allStreaksForAttacking;
 	}
 	
-	public static List<RatedCoordinate> getMiddleOrFirstEmptyCoo(Grid g) {
-		List<RatedCoordinate> list = new ArrayList<>();
+	public static Coordinate getMiddleOrFirstEmptyCoo(Grid g) {
 		int row = g.size() / 2;
 		int column = row;
-		double value = Double.POSITIVE_INFINITY;
-		if(g.isSquareEmpty(row, column)) {
-			list.add(new RatedCoordinate(row, column, value));
-			return list;
+		if (g.isSquareEmpty(row, column)) {
+			return new Coordinate(row, column);
 		} else if (g.size() > 2 && g.isSquareEmpty(row - 1, column - 1)) {
-			list.add(new RatedCoordinate(row - 1, column - 1, value));
-			return list;
+			return new Coordinate(row - 1, column - 1);
 		} else {
 			Coordinate coo = firtEmptySquare(g);
 			if(coo != null) {
-				list.add(new RatedCoordinate(coo, value));
+				return coo;
+			} else {
+				throw new RuntimeException("No empty square in grid.");
 			}
-			return list;
 		}
 	}
 	

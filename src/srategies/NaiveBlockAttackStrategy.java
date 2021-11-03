@@ -45,15 +45,7 @@ public class NaiveBlockAttackStrategy extends AbstractStrategy {
 
 	static Coordinate attack(List<PotentialStreak> potStreaks, Grid g) {
 		if(potStreaks == null || potStreaks.isEmpty()) {
-			int row = g.size() / 2;
-			int column = row;
-			if(g.isSquareEmpty(row, column)) {
-				return new Coordinate(row , column);
-			} else if (g.size() > 2 && g.isSquareEmpty(row - 1, column - 1)) {
-				return new Coordinate(row - 1, column - 1);
-			} else {
-				return HeuristicCommon.firtEmptySquare(g);
-			}
+			return StrategiesCommon.getMiddleOrFirstEmptyCoo(g);
 		}
 		
 		Collections.sort(potStreaks, new PotStreakFilledLengthComparator());

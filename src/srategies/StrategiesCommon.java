@@ -5,7 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import game_components.ValuedMove;
+import grid_computations.Coordinate;
+import game_components.Grid;
 import game_components.Square.SVal;
+import strategies.heuristics.HeuristicCommon;
 import strategies.support_classes.MoveAndDepth;
 import strategies.support_classes.RatedCoordinate;
 
@@ -38,6 +41,10 @@ public class StrategiesCommon {
 		for(T t : listToBeAdded) {
 			listForAddingTo.add(0, t);
 		}
+	}
+	
+	public static Coordinate getMiddleOrFirstEmptyCoo(Grid g) {
+		return HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
 	}
 	
 }

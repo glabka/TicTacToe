@@ -31,19 +31,9 @@ public class SquareNaiveAttackHeuristic extends AbstractSquareHeuristic {
 	static List<RatedCoordinate> attack(List<PotentialStreak> potStreaks, Grid g, AbstractCooValFromStreakEstimator cooEstimator) {
 		List<RatedCoordinate> ratedCoos = new LinkedList<>();
 		if(potStreaks == null || potStreaks.isEmpty()) {
-			int row = g.size() / 2;
-			int column = row;
-			double val = Double.POSITIVE_INFINITY;
-			if(g.isSquareEmpty(row, column)) {
-				ratedCoos.add(new RatedCoordinate(row , column, val));
-				return ratedCoos;
-			} else if (g.size() > 2 && g.isSquareEmpty(row - 1, column - 1)) {
-				ratedCoos.add(new RatedCoordinate(row - 1, column - 1, val));
-				return ratedCoos;
-			} else {
-				ratedCoos.add(new RatedCoordinate(HeuristicCommon.firtEmptySquare(g), val));
-				return ratedCoos;
-			}
+			Coordinate midOrFirstCoo = HeuristicCommon.getMiddleOrFirstEmptyCoo(g);
+			ratedCoos.add(new RatedCoordinate(midOrFirstCoo, Double.POSITIVE_INFINITY));
+			return ratedCoos;
 		}
 		
 		return HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, cooEstimator);

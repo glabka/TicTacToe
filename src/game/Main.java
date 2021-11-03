@@ -5,28 +5,15 @@
  */
 package game;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
-import com.google.gson.Gson;
-
-import game.communication.GridTransferRepresentation;
-import game.communication.Message;
-import game.communication.enums.CommunicationProtocolValue;
-import game.local.LocalGameForTwoManager;
 import game_components.Grid;
-import game_components.Square;
 import game_components.Square.SVal;
-import players.AbstractAIPlayer;
+import players.AIPlayer;
 import players.Player;
 import players.UIPlayer;
-import srategies.DepthAIPlayer;
+import srategies.AbstractStrategy;
 import srategies.NaiveBlockAttackStrategy;
-import srategies.OneStepStrategy;
 import srategies.TreeEvaluationStrategy;
 import strategies.heuristics.AbstractGridHeuristic;
 import strategies.heuristics.AbstractSquareHeuristic;
@@ -44,7 +31,6 @@ import strategies.heuristics.SquareNaiveBlockAttackHeuristic;
 import strategies.support_classes.AbstractCooValFromStreakEstimator;
 import strategies.support_classes.AbstractRatedCoosFilter;
 import strategies.support_classes.FewBestRatedCoosFilter;
-import strategies.support_classes.LengthCooValEstimator;
 import strategies.support_classes.PoweredLengthCooValEstimator;
 
 /**
@@ -72,7 +58,7 @@ public class Main {
         //----------------------------------GAME------------------------------------
         ////////////////////////////////////////////////////////////////////////////
         
-        uiGame();
+//        uiGame();
         
         // closing the standard stream for whole program
         Scanner in = new Scanner(System.in);
@@ -129,16 +115,17 @@ public class Main {
     	
     	Grid g = new Grid(10);
         int streakLength = 5;
-        Player aiPlayer;
-//        aiPlayer = new BlockAttackNaiveAIPlayer(SVal.CROSS, "dumb ai player 1", streakLength);
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-        aiPlayer= new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2); // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
-//        aiPlayer= new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2);
-//        aiPlayer = new TreeEvaluationAIPlayer(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
+        AbstractStrategy strategy;
+        strategy = new NaiveBlockAttackStrategy();
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval ai player", streakLength, sqMergeH, gMergeH, fewBestAIFilter, 2);
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gDiffH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqBAH, gMergeH, fewBestAIFilter, 2); // good (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqMBAH, gMergeH, fewBestAIFilter, 2); // even better (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqMBAH gMergeH", streakLength, sqDMBAH, gMergeH, fewBestAIFilter, 2); // even better (0, 9, 11) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        strategy = new TreeEvaluationStrategy(sqDMBAH, gDiffPH, fewBestAIFilter, 2); // name = "tree eval sqMBAH gDiffPH" // even better (1, 12, 7) vs NaiveBlockAttackAIPlayer (with HeuristicCommon.getMiddleOrFirstEmptyCoo)
+//        aiPlayer= new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqMBAH gDiffPH", streakLength, sqDMBAH, gDiffPH, fewBestAIFilter, 2);
+//        aiPlayer = new TreeEvaluationStrategy(SVal.CROSS, "tree eval sqBAH gDiffH", streakLength, sqDABH, gDiffH, fewBestAIFilter, 2);
+        Player aiPlayer = new AIPlayer(SVal.CROSS, "ai player", streakLength, strategy);
         Player uiPlayer = new UIPlayer(SVal.CIRCLE, "ui player");
         
         Game aiGame = new Game(uiPlayer, aiPlayer, g, streakLength);

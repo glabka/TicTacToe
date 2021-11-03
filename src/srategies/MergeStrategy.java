@@ -50,19 +50,9 @@ public class MergeStrategy extends AbstractStrategy {
 	private List<RatedCoordinate> attack(Grid g, List<PotentialStreak> potStreaks, AbstractCooValFromStreakEstimator estimator) {
 		if(potStreaks == null || potStreaks.isEmpty()) {
 			List<RatedCoordinate> list = new ArrayList<>();
-			int row = g.size() / 2;
-			int column = row;
 			int value = streakLength - 1;
-			if(g.isSquareEmpty(row, column)) {
-				list.add(new RatedCoordinate(row, column, value));
-				return list;
-			} else if (g.size() > 2 && g.isSquareEmpty(row - 1, column - 1)) {
-				list.add(new RatedCoordinate(row - 1, column - 1, value));
-				return list;
-			} else {
-				list.add(new RatedCoordinate(NaiveBlockAttackStrategy.firtEmptySquare(g), value));
-				return list;
-			}
+			list.add(new RatedCoordinate(StrategiesCommon.getMiddleOrFirstEmptyCoo(g), value));
+			return list;
 		}
 		
 		List<RatedCoordinate> allRatedCoos = HeuristicCommon.getAllRatedCoosFromPotOfPotStreaks(potStreaks, estimator);
