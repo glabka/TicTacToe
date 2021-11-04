@@ -38,7 +38,6 @@ import strategies.support_classes.AbstractCooValFromStreakEstimator;
 import strategies.support_classes.AbstractRatedCoosFilter;
 import strategies.support_classes.FewBestRatedCoosFilter;
 import strategies.support_classes.LengthCooValEstimator;
-import strategies.support_classes.OneValueEstimator;
 import strategies.support_classes.PoweredLengthCooValEstimator;
 
 /**
@@ -207,36 +206,36 @@ public class Experiments {
 //        SquareMixedHeuristic.test();
     	
 //////    	 test equals and hasCode of some classes
-    	
-    	AbstractCooValFromStreakEstimator oneValEstimator1a = new OneValueEstimator(2);
-    	AbstractCooValFromStreakEstimator oneValEstimator1b = new OneValueEstimator(2);
-    	AbstractCooValFromStreakEstimator oneValEstimator2a = new OneValueEstimator(3);
-    	AbstractCooValFromStreakEstimator pLenEstimator1a = new PoweredLengthCooValEstimator(3.2);
-    	AbstractCooValFromStreakEstimator pLenEstimator1b= new PoweredLengthCooValEstimator(3.2);
-    	AbstractCooValFromStreakEstimator pLenEstimator2a= new PoweredLengthCooValEstimator(4);
-    	
-    	AbstractSquareHeuristic sNaviveBAHeuristic1a = new SquareNaiveBlockAttackHeuristic(oneValEstimator1a);
-    	AbstractSquareHeuristic sNaviveBAHeuristic1b = new SquareNaiveBlockAttackHeuristic(oneValEstimator1b);
-    	AbstractSquareHeuristic sNaviveBAHeuristic2a = new SquareNaiveBlockAttackHeuristic(oneValEstimator2a);
-    	
-    	// equals
-    	System.out.println("oneValEstimator1a.equals(oneValEstimator1b): " + oneValEstimator1a.equals(oneValEstimator1b));
-    	System.out.println("oneValEstimator1a.equals(oneValEstimator2a): " + oneValEstimator1a.equals(oneValEstimator2a));
-    	System.out.println("oneValEstimator1a.equals(pLenEstimator1a): " + oneValEstimator1a.equals(pLenEstimator1a));
-    	System.out.println("pLenEstimator1a.equals(pLenEstimator1b): " + pLenEstimator1a.equals(pLenEstimator1b));
-    	System.out.println("pLenEstimator1a.equals(pLenEstimator2a): " + pLenEstimator1a.equals(pLenEstimator2a));
-    	
-    	System.out.println("sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic1b): " + sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic1b));
-    	System.out.println("sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic2a): " + sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic2a));
-    	// hashCode
-    	System.out.println("oneValEstimator1a.hashCode() == (oneValEstimator1b.hashCode()): " + oneValEstimator1a.hashCode() + " == " + oneValEstimator1b.hashCode() + ": "+ (oneValEstimator1a.hashCode() == oneValEstimator1b.hashCode()));
-    	System.out.println("oneValEstimator1a.hashCode() == (oneValEstimator2a.hashCode()): " + oneValEstimator1a.hashCode() + " == " + oneValEstimator2a.hashCode() + ": "+ (oneValEstimator1a.hashCode() == oneValEstimator2a.hashCode()));
-    	System.out.println("oneValEstimator1a.hashCode() == (pLenEstimator1a.hashCode()): " + oneValEstimator1a.hashCode() + " == " + pLenEstimator1a.hashCode() + ": "+ (oneValEstimator1a.hashCode() == pLenEstimator1a.hashCode()));
-    	System.out.println("pLenEstimator1a.hashCode() == (pLenEstimator1b.hashCode()): " + pLenEstimator1a.hashCode() + " == " + pLenEstimator1b.hashCode() + ": "+ (pLenEstimator1a.hashCode() == pLenEstimator1b.hashCode()));
-    	System.out.println("pLenEstimator1a.hashCode() == (pLenEstimator2a.hashCode()): " + pLenEstimator1a.hashCode() + " == " + pLenEstimator2a.hashCode() + ": "+ (pLenEstimator1a.hashCode() == pLenEstimator2a.hashCode()));
-    	
-    	System.out.println("sNaviveBAHeuristic1a.hashCode() == (sNaviveBAHeuristic1b.hashCode()): " + sNaviveBAHeuristic1a.hashCode() + " == " + sNaviveBAHeuristic1b.hashCode() + ": "+ (sNaviveBAHeuristic1a.hashCode() == sNaviveBAHeuristic1b.hashCode()));
-    	System.out.println("sNaviveBAHeuristic1a.hashCode() == (sNaviveBAHeuristic2a.hashCode()): " + sNaviveBAHeuristic1a.hashCode() + " == " + sNaviveBAHeuristic2a.hashCode() + ": "+ (sNaviveBAHeuristic1a.hashCode() == sNaviveBAHeuristic2a.hashCode()));
+//    	
+//    	AbstractCooValFromStreakEstimator oneValEstimator1a = new OneValueEstimator(2);
+//    	AbstractCooValFromStreakEstimator oneValEstimator1b = new OneValueEstimator(2);
+//    	AbstractCooValFromStreakEstimator oneValEstimator2a = new OneValueEstimator(3);
+//    	AbstractCooValFromStreakEstimator pLenEstimator1a = new PoweredLengthCooValEstimator(3.2);
+//    	AbstractCooValFromStreakEstimator pLenEstimator1b= new PoweredLengthCooValEstimator(3.2);
+//    	AbstractCooValFromStreakEstimator pLenEstimator2a= new PoweredLengthCooValEstimator(4);
+//    	
+//    	AbstractSquareHeuristic sNaviveBAHeuristic1a = new SquareNaiveBlockAttackHeuristic(oneValEstimator1a);
+//    	AbstractSquareHeuristic sNaviveBAHeuristic1b = new SquareNaiveBlockAttackHeuristic(oneValEstimator1b);
+//    	AbstractSquareHeuristic sNaviveBAHeuristic2a = new SquareNaiveBlockAttackHeuristic(oneValEstimator2a);
+//    	
+//    	// equals
+//    	System.out.println("oneValEstimator1a.equals(oneValEstimator1b): " + oneValEstimator1a.equals(oneValEstimator1b));
+//    	System.out.println("oneValEstimator1a.equals(oneValEstimator2a): " + oneValEstimator1a.equals(oneValEstimator2a));
+//    	System.out.println("oneValEstimator1a.equals(pLenEstimator1a): " + oneValEstimator1a.equals(pLenEstimator1a));
+//    	System.out.println("pLenEstimator1a.equals(pLenEstimator1b): " + pLenEstimator1a.equals(pLenEstimator1b));
+//    	System.out.println("pLenEstimator1a.equals(pLenEstimator2a): " + pLenEstimator1a.equals(pLenEstimator2a));
+//    	
+//    	System.out.println("sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic1b): " + sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic1b));
+//    	System.out.println("sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic2a): " + sNaviveBAHeuristic1a.equals(sNaviveBAHeuristic2a));
+//    	// hashCode
+//    	System.out.println("oneValEstimator1a.hashCode() == (oneValEstimator1b.hashCode()): " + oneValEstimator1a.hashCode() + " == " + oneValEstimator1b.hashCode() + ": "+ (oneValEstimator1a.hashCode() == oneValEstimator1b.hashCode()));
+//    	System.out.println("oneValEstimator1a.hashCode() == (oneValEstimator2a.hashCode()): " + oneValEstimator1a.hashCode() + " == " + oneValEstimator2a.hashCode() + ": "+ (oneValEstimator1a.hashCode() == oneValEstimator2a.hashCode()));
+//    	System.out.println("oneValEstimator1a.hashCode() == (pLenEstimator1a.hashCode()): " + oneValEstimator1a.hashCode() + " == " + pLenEstimator1a.hashCode() + ": "+ (oneValEstimator1a.hashCode() == pLenEstimator1a.hashCode()));
+//    	System.out.println("pLenEstimator1a.hashCode() == (pLenEstimator1b.hashCode()): " + pLenEstimator1a.hashCode() + " == " + pLenEstimator1b.hashCode() + ": "+ (pLenEstimator1a.hashCode() == pLenEstimator1b.hashCode()));
+//    	System.out.println("pLenEstimator1a.hashCode() == (pLenEstimator2a.hashCode()): " + pLenEstimator1a.hashCode() + " == " + pLenEstimator2a.hashCode() + ": "+ (pLenEstimator1a.hashCode() == pLenEstimator2a.hashCode()));
+//    	
+//    	System.out.println("sNaviveBAHeuristic1a.hashCode() == (sNaviveBAHeuristic1b.hashCode()): " + sNaviveBAHeuristic1a.hashCode() + " == " + sNaviveBAHeuristic1b.hashCode() + ": "+ (sNaviveBAHeuristic1a.hashCode() == sNaviveBAHeuristic1b.hashCode()));
+//    	System.out.println("sNaviveBAHeuristic1a.hashCode() == (sNaviveBAHeuristic2a.hashCode()): " + sNaviveBAHeuristic1a.hashCode() + " == " + sNaviveBAHeuristic2a.hashCode() + ": "+ (sNaviveBAHeuristic1a.hashCode() == sNaviveBAHeuristic2a.hashCode()));
 		
     	
     	
@@ -269,10 +268,26 @@ public class Experiments {
 //        uiGame();
     	
         ////////////////////////////////////////////////////////////////////////////
+        //------------------STARTING SIGNIFICANCE EXPERIMENT------------------------
+        ////////////////////////////////////////////////////////////////////////////
+    	StartingPointDifferenceExperiment startSignificanceExperiment = new StartingPointDifferenceExperiment();
+    	int[] gridSizes = {3, 4, 5, 5, 6, 7, 10};
+    	int[] streakLengths = {3, 3, 3, 4, 5, 5, 7};
+    	AbstractStrategy strategy1 = new NaiveBlockAttackStrategy();
+    	
+    	AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
+    	AbstractSquareHeuristic squareHeuristic = new SquareMergeBlockAttackHeuristic(estimator);
+    	AbstractStrategy strategy2 = new OneStepStrategy(squareHeuristic);
+    	
+    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy1, strategy1);
+    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy2, strategy2);
+    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy1, strategy2);
+    	
+        ////////////////////////////////////////////////////////////////////////////
         //------------------------BEST STRATEGY FINDER------------------------------
         ////////////////////////////////////////////////////////////////////////////
-    	BestStrategyFinder bestStrategyFinder = new BestStrategyFinder();
-    	bestStrategyFinder.findBestStrategy(10);
+//    	BestStrategyFinder bestStrategyFinder = new BestStrategyFinder();
+//    	bestStrategyFinder.findBestStrategy(10);
         
         // closing the standard stream for whole program
         Scanner in = new Scanner(System.in);

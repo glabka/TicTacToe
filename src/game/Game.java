@@ -5,14 +5,10 @@
  */
 package game;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
-
 import custom_exceptions.PlayersWithSameSValException;
 import game_components.Grid;
-import game_components.ValuedMove;
-import game_components.Square;
 import game_components.Square.SVal;
+import game_components.ValuedMove;
 import game_mechanics.Rules;
 import players.Player;
 import players.UIPlayer;
