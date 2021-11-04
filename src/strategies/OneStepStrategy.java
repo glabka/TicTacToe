@@ -39,7 +39,7 @@ public class OneStepStrategy extends AbstractStrategy {
 
 		OneStepStrategy other = (OneStepStrategy) o;
 		// checking fields
-		if (!this.gridHeuristic.equals(other.gridHeuristic)) {
+		if (!this.squareHeuristic.equals(other.squareHeuristic)) {
 			return false;
 		}
 		return true;
@@ -47,7 +47,7 @@ public class OneStepStrategy extends AbstractStrategy {
 
 	@Override
 	public int hashCode() {
-		return ("" + this.gridHeuristic.hashCode()).hashCode();
+		return ("" + this.squareHeuristic.hashCode()).hashCode();
 	}
 
 }
