@@ -6,8 +6,8 @@ import game_components.Square.SVal;
 
 public abstract class Player {
 
-	public SVal playersSVal;
-	public String name;
+	protected SVal playersSVal;
+	protected String name;
 	
 	public Player(SVal playersSVal, String name) {
 		this.playersSVal = playersSVal;

@@ -7,15 +7,17 @@ import game_components.ValuedMove;
 
 public class AIPlayer extends Player{
 	
-	private SVal sVal;
-	private int streakLength;
-	private AbstractStrategy strategy;
+	protected int streakLength;
+	protected AbstractStrategy strategy;
 	
 	public AIPlayer(SVal sVal, String name, int streakLength, AbstractStrategy strategy) {
 		super(sVal, name);
-		this.sVal = sVal;
 		this.streakLength = streakLength;
 		this.strategy = strategy;
+	}
+	
+	public void setStreakLength(int streakLength) {
+		this.streakLength = streakLength;
 	}
 
 	public int getStreakLength() {
@@ -24,6 +26,6 @@ public class AIPlayer extends Player{
 
 	@Override
 	public ValuedMove nextMove(Grid g) {
-		return strategy.nextMove(sVal, g, streakLength);
+		return strategy.nextMove(super.getSVal(), g, streakLength);
 	}
 }
