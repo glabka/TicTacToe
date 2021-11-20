@@ -229,5 +229,9 @@ public class SquareMixedHeuristic extends AbstractSquareHeuristic {
 //		List<RatedCoordinate> mixedList = mixListsAndAdjustCoos(list1, list2);
 //		System.out.println("adjustedMixedList = " + mixedList);
 //	}
-	
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(cooEstimator = " + cooEstimator + ", filter = " + filter + ")";
+	}
 }

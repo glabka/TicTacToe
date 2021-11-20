@@ -43,4 +43,9 @@ public class OneValueEstimator extends AbstractCooValFromStreakEstimator{
 		return new OneValueEstimator(value);
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(value = " + value + ")";
+	}
+
 }

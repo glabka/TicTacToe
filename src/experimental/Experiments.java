@@ -13,6 +13,7 @@ import game.Game;
 import game.Result;
 import game_components.Grid;
 import game_components.Square.SVal;
+import game_components.ValuedMove;
 import players.AIPlayer;
 import players.Player;
 import players.UIPlayer;
@@ -38,7 +39,9 @@ import strategies.support_classes.AbstractCooValFromStreakEstimator;
 import strategies.support_classes.AbstractRatedCoosFilter;
 import strategies.support_classes.FewBestRatedCoosFilter;
 import strategies.support_classes.LengthCooValEstimator;
+import strategies.support_classes.MoveAndDepth;
 import strategies.support_classes.PoweredLengthCooValEstimator;
+import strategies.support_classes.RatedCoordinatesValueComparator;
 
 /**
  *
@@ -237,7 +240,18 @@ public class Experiments {
 //    	System.out.println("sNaviveBAHeuristic1a.hashCode() == (sNaviveBAHeuristic1b.hashCode()): " + sNaviveBAHeuristic1a.hashCode() + " == " + sNaviveBAHeuristic1b.hashCode() + ": "+ (sNaviveBAHeuristic1a.hashCode() == sNaviveBAHeuristic1b.hashCode()));
 //    	System.out.println("sNaviveBAHeuristic1a.hashCode() == (sNaviveBAHeuristic2a.hashCode()): " + sNaviveBAHeuristic1a.hashCode() + " == " + sNaviveBAHeuristic2a.hashCode() + ": "+ (sNaviveBAHeuristic1a.hashCode() == sNaviveBAHeuristic2a.hashCode()));
 		
-    	
+    	// toString
+    	RatedCoordinatesValueComparator comp = new RatedCoordinatesValueComparator();
+    	MoveAndDepth mvd = new MoveAndDepth(new ValuedMove(1,2, SVal.CIRCLE), 3);
+    	System.out.println(mvd);
+    	System.out.println(comp);
+    	AbstractCooValFromStreakEstimator castedAstimator = (AbstractCooValFromStreakEstimator) estimator;
+    	System.out.println(castedAstimator);
+    	System.out.println(estimator);
+    	System.out.println(sqNaiveBAH);
+    	System.out.println(sqMixedH);
+    	AbstractStrategy strategy = new DepthStrategy(new SquareMergeBlockAttackHeuristic(estimator, new FewBestRatedCoosFilter(7)), new GirdMergeHeuristic(sqMergeH, estimator, fewBestHeuristicFilter), new FewBestRatedCoosFilter(2), 3);
+    	System.out.println(strategy);
     	
     	////////////////////////////////////////////////////////////////////////////
 		//---------------------------------AI GAME----------------------------------
@@ -270,18 +284,18 @@ public class Experiments {
         ////////////////////////////////////////////////////////////////////////////
         //------------------STARTING SIGNIFICANCE EXPERIMENT------------------------
         ////////////////////////////////////////////////////////////////////////////
-    	StartingPointDifferenceExperiment startSignificanceExperiment = new StartingPointDifferenceExperiment();
-    	int[] gridSizes = {3, 4, 5, 5, 6, 7, 10};
-    	int[] streakLengths = {3, 3, 3, 4, 5, 5, 7};
-    	AbstractStrategy strategy1 = new NaiveBlockAttackStrategy();
-    	
-    	AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
-    	AbstractSquareHeuristic squareHeuristic = new SquareMergeBlockAttackHeuristic(estimator);
-    	AbstractStrategy strategy2 = new OneStepStrategy(squareHeuristic);
-    	
-    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy1, strategy1);
-    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy2, strategy2);
-    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy1, strategy2);
+//    	StartingPointDifferenceExperiment startSignificanceExperiment = new StartingPointDifferenceExperiment();
+//    	int[] gridSizes = {3, 4, 5, 5, 6, 7, 10};
+//    	int[] streakLengths = {3, 3, 3, 4, 5, 5, 7};
+//    	AbstractStrategy strategy1 = new NaiveBlockAttackStrategy();
+//
+//    	AbstractCooValFromStreakEstimator estimator = new PoweredLengthCooValEstimator(2);
+//    	AbstractSquareHeuristic squareHeuristic = new SquareMergeBlockAttackHeuristic(estimator);
+//    	AbstractStrategy strategy2 = new OneStepStrategy(squareHeuristic);
+//
+//    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy1, strategy1);
+//    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy2, strategy2);
+//    	startSignificanceExperiment.compareTwoStrategies(gridSizes, streakLengths, strategy1, strategy2);
     	
         ////////////////////////////////////////////////////////////////////////////
         //------------------------BEST STRATEGY FINDER------------------------------

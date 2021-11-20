@@ -113,4 +113,7 @@ public class SquareMergeBlockAttackHeuristic extends AbstractSquareHeuristic {
 		}
 	}
 
+	public String toString() {
+		return this.getClass().getSimpleName() + "(cooEstimator = " + cooEstimator + ", filter = " + filter + ")";
+	}
 }

@@ -1,5 +1,7 @@
 package strategies.support_classes;
 
+import java.lang.reflect.Field;
+
 import game_components.ValuedMove;
 
 public class MoveAndDepth {
@@ -19,9 +21,9 @@ public class MoveAndDepth {
 	public int getDepth() {
 		return depth;
 	}
-	
+
+	@Override
 	public String toString() {
-		return mv +" d:" + depth;
+		return this.getClass().getSimpleName() + "(mv = " + mv + ", deopth = " + depth + ")";
 	}
-	
 }

@@ -32,5 +32,9 @@ public class NaiveAttackStrategy extends AbstractStrategy {
 	public int hashCode() {
 		return 1;
 	}
-	
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "()";
+	}
 }

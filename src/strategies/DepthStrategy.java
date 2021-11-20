@@ -146,5 +146,11 @@ public class DepthStrategy extends AbstractStrategy {
 //			return md.subList(0, 1);
 //		}
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(squareHeuristic = " + squareHeuristic + ", gridHeuristic = " + gridHeuristic + ", ratedCoosFilter = " + ratedCoosFilter + ", depth = " + depth + ")";
+	}
+
 	
 }

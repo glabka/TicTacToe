@@ -69,5 +69,8 @@ public class NaiveBlockAttackStrategy extends AbstractStrategy {
 		return 2;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "()";
+	}
 }

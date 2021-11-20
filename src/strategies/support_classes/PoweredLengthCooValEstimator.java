@@ -43,4 +43,9 @@ public class PoweredLengthCooValEstimator extends AbstractCooValFromStreakEstima
 		return new PoweredLengthCooValEstimator(power);
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(power = " + power + ")";
+	}
+
 }

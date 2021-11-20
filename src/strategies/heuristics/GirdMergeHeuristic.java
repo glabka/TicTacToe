@@ -62,4 +62,8 @@ public class GirdMergeHeuristic extends AbstractGridHeuristic{
 				ratedCoosFilter.clone());
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(squareHeuristic = " + squareHeuristic + ", estimator = " + estimator + ", ratedCoosFilter = " + ratedCoosFilter + ")";
+	}
 }

@@ -31,6 +31,8 @@ public abstract class AbstractStrategy {
 	public abstract boolean equals(Object o);
 	
 	public abstract int hashCode();
+
+	public abstract String toString();
 	
 	public AbstractSquareHeuristic getSquareHeuristic() {
 		if (squareHeuristic == null) {

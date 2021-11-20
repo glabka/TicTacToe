@@ -55,4 +55,9 @@ public class FewBestRatedCoosFilter extends AbstractRatedCoosFilter {
 		return new FewBestRatedCoosFilter(howMuch);
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(howMuch = " + howMuch + ")";
+	}
+
 }

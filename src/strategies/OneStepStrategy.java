@@ -50,4 +50,9 @@ public class OneStepStrategy extends AbstractStrategy {
 		return ("" + this.squareHeuristic.hashCode()).hashCode();
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(squareHeuristic = " + squareHeuristic + ")";
+	}
+
 }

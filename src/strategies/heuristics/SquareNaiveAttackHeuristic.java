@@ -66,4 +66,9 @@ public class SquareNaiveAttackHeuristic extends AbstractSquareHeuristic {
 	public Object clone() {
 		return new SquareNaiveAttackHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone());
 	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(cooEstimator = " + cooEstimator + ")";
+	}
 }

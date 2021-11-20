@@ -244,5 +244,11 @@ public class TreeEvaluationStrategy extends AbstractStrategy {
 		public void setVal(int val) {
 			this.val = val;
 		}
-	}	
+	}
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(squareHeuristic = " + squareHeuristic + ", gridHeuristic = " + gridHeuristic + ", ratedCoosFilter = " + ratedCoosFilter + ", depth = " + depth + ")";
+	}
+	
 }

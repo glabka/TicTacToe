@@ -27,4 +27,6 @@ public abstract class AbstractSquareHeuristic implements Cloneable {
 	public abstract boolean equals(Object o);
 
 	public abstract int hashCode();
+
+	public abstract String toString();
 }

@@ -77,4 +77,8 @@ public class GridDiffHeuristic extends AbstractGridHeuristic {
 		return new GridDiffHeuristic((AbstractCooValFromStreakEstimator) estimator.clone());
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(estimator = " + estimator + ")";
+	}
 }

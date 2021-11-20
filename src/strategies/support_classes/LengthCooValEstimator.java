@@ -30,4 +30,8 @@ public class LengthCooValEstimator extends AbstractCooValFromStreakEstimator {
 		return new LengthCooValEstimator();
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "()";
+	}
 }

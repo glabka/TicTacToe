@@ -192,4 +192,8 @@ public class MergeStrategy extends AbstractStrategy {
 		return 0;
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "()";
+	}
 }

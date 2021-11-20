@@ -75,5 +75,9 @@ public class SquareMergedHeuristic extends AbstractSquareHeuristic{
 		return new SquareMergedHeuristic((AbstractCooValFromStreakEstimator) cooEstimator.clone());
 	}
 	
-
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(cooEstimator = " + cooEstimator + ")";
+		
+	}
 }

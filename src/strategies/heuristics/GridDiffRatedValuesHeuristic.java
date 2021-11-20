@@ -71,5 +71,8 @@ public class GridDiffRatedValuesHeuristic extends AbstractGridHeuristic {
 				estimator.clone(), (AbstractRatedCoosFilter) ratedCoosFilter.clone());
 	}
 	
-	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(squareHeuristic = " + squareHeuristic + ", estimator = " + estimator + ", ratedCoosFilter = " + ratedCoosFilter + ")";
+	}
 }

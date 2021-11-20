@@ -16,4 +16,6 @@ public abstract class AbstractRatedCoosFilter implements Cloneable {
 	public abstract boolean equals(Object o);
 
 	public abstract int hashCode();
+
+	public abstract String toString();
 }

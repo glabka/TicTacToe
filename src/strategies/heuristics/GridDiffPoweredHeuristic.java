@@ -59,5 +59,9 @@ public class GridDiffPoweredHeuristic extends AbstractGridHeuristic {
 	public Object clone() {
 		return new GridDiffPoweredHeuristic((AbstractCooValFromStreakEstimator) estimator.clone(), power);
 	}
-	
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(estimator = " + estimator + ", power = " + power + ")";
+	}
 }

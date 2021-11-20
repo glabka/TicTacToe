@@ -125,4 +125,9 @@ public class SquareDecidingMergeBlockAttackHeuristic extends AbstractSquareHeuri
 		}
 	}
 
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "(cooEstimator = " + cooEstimator + ", filter = " + filter + ")";
+		
+	}
 }

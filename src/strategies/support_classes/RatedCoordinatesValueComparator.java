@@ -36,7 +36,7 @@ public class RatedCoordinatesValueComparator  implements Comparator<RatedCoordin
 	
 	@Override
 	public String toString() {
-		return "RatedCoordinatesValueComparator";
+		return this.getClass().getSimpleName() + "()";
 	}
 
 }
