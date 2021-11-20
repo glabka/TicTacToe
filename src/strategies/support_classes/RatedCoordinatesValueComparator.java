@@ -18,4 +18,25 @@ public class RatedCoordinatesValueComparator  implements Comparator<RatedCoordin
 		}
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+	        return true;
+	    if (!(o instanceof RatedCoordinatesValueComparator)) {
+	        return false;
+		}
+
+	    return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		return 111;
+	}
+	
+	@Override
+	public String toString() {
+		return "RatedCoordinatesValueComparator";
+	}
+
 }
